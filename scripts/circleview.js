@@ -1,42 +1,57 @@
-    function circleview(metaData, data, queryData) {
-    this.metaData = jQuery.parseJSON(metaData);
-    this.data = jQuery.parseJSON(data);
-    this.queryData = jQuery.parseJSON(queryData);
+jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJsonText, dataJsonText, queryDataJsonText) {
 
-    this.zeroColor = null;
+    // TODO main section
+
+    var metaData = jQuery.parseJSON(metaDataJsonText);
+    var data = jQuery.parseJSON(dataJsonText);
+    var queryData = jQuery.parseJSON(queryDataJsonText);
+
+    this.each(function() {
+        console.log("in this.each");
+        var svg = d3.select(this).append('svg').attr('id', 'circles').attr('width', width).attr('height', height);
+    });
+
+    var mainSvgElement = d3.select('#circles');
+
+    drawRing(null);
 
     // TODO get an array of dataset names from the metadata
-    this.getDatasetNames = function() {
-        return Object.keys(this.metaData);
+    function getDatasetNames() {
+        return Object.keys(metaData);
     }
+
     // TODO log the object attributes to console
-    this.logData = function() {
-        console.log("metaData is " + JSON.stringify(this.metaData));
-        console.log("data is " + JSON.stringify(this.data));
-        console.log("queryData is " + JSON.stringify(this.queryData));
+    function logData() {
+        console.log("metaData is " + JSON.stringify(metaData));
+        console.log("data is " + JSON.stringify(data));
+        console.log("queryData is " + JSON.stringify(queryData));
     }
+
     // TODO get all sampleIDs from the metadata
-    this.getSampleNames = function() {
+    function getSampleNames() {
         var result = new Array();
-        var datasetNames = this.getDatasetNames();
+        var datasetNames = getDatasetNames();
         for (var datasetName in datasetNames) {
-            var sampleNames = this.metaData[datasetNames[datasetName]].sampleNames.split(",");
+            var sampleNames = metaData[datasetNames[datasetName]].sampleNames.split(",");
             for (var name in sampleNames) {
                 result[sampleNames[name]] = 0;
             }
         }
         return Object.keys(result);
     }
+
     // TODO create an svg arc via d3.js
-    this.createArc = function(innerRadius, outerRadius, startDegrees, endDegrees) {
+    function getRingData(innerRadius, outerRadius, startDegrees, endDegrees) {
         var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius).startAngle(startDegrees * (Math.PI / 180)).endAngle(endDegrees * (Math.PI / 180))
         return arc;
     }
+
     // TODO get the data for a ring
-    this.getRingData = function(dataName, feature) {
-        var ringData = this.data[dataName][feature];
+    function getRingData(dataName, feature) {
+        var ringData = data[dataName][feature];
         return ringData;
     }
+
     // TODO convert an rgb component to hex value
     function rgbComponentToHex(c) {
         var hex = c.toString(16);
@@ -54,7 +69,7 @@
     }
 
     // TODO get a color for a score
-    this.getHexColor = function(score, dataName) {
+    function getHexColor(score, dataName) {
         var isPositive = (score >= 0) ? true : false;
 
         var maxR = 255;
@@ -65,7 +80,7 @@
         var minG = 0;
         var minB = 0;
 
-        var normalizedScore = (score / this.metaData[dataName].cohortMax);
+        var normalizedScore = (score / metaData[dataName].cohortMax);
 
         if (!isPositive) {
             maxR = 0;
@@ -76,7 +91,7 @@
             minG = 0;
             minB = 0;
 
-            normalizedScore = (score / this.metaData[dataName].cohortMin);
+            normalizedScore = (score / metaData[dataName].cohortMin);
         }
 
         var newR = linearInterpolation(normalizedScore, minR, maxR);
@@ -87,27 +102,34 @@
 
         return hexColor;
     }
+
+    // TODO create an svg arc via d3.js
+    function createArc(innerRadius, outerRadius, startDegrees, endDegrees) {
+        var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius).startAngle(startDegrees * (Math.PI / 180)).endAngle(endDegrees * (Math.PI / 180))
+        return arc;
+    }
+
     // TODO draw a ring via d3.js
-    this.drawRing = function(circleDiv,feature) {
+    function drawRing(feature) {
         var innerRadius = 30;
-        var ringThickness = 10;
+        var ringThickness = 30;
         var startDegrees = 0;
-        var degreeIncrements = 360 / this.getSampleNames().length;
+        var degreeIncrements = 360 / getSampleNames().length;
 
-        var vis = circleDiv.append("g").attr("id",feature);
+        var vis = mainSvgElement.append('svg').append("g").attr("id", feature);
 
-        var dataName = Object.keys(this.data)[0];
-        feature = Object.keys(this.data[dataName])[0]
+        var dataName = Object.keys(data)[0];
+        feature = Object.keys(data[dataName])[0]
 
-        var ringData = this.getRingData(dataName, feature);
+        var ringData = getRingData(dataName, feature);
 
-        var sampleNames = this.getSampleNames();
+        var sampleNames = getSampleNames();
         for (var sampleID in sampleNames) {
             var sampleName = sampleNames[sampleID];
             var score = ringData[sampleName];
-            var hexColor = this.getHexColor(score, dataName);
+            var hexColor = getHexColor(score, dataName);
 
-            var arc = this.createArc(innerRadius, innerRadius + ringThickness, startDegrees, startDegrees + degreeIncrements);
+            var arc = createArc(innerRadius, innerRadius + ringThickness, startDegrees, startDegrees + degreeIncrements);
 
             vis.append("path").attr("d", arc).attr("transform", "translate(50,50)").style("fill", hexColor);
 
@@ -116,9 +138,12 @@
 
         return null;
     }
+
     // TODO get an ordering for sampleIDs
-    this.reorderDataSamples = function(orderFeature, orderRing) {
+    function reorderDataSamples(orderFeature, orderRing) {
 
         return null;
     }
+
+    return this;
 }

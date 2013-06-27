@@ -76,6 +76,7 @@ jQuery.fn.graphViewer = function(config) {
     colors = d3.scale.category10();
 
     this.each(function() {
+        console.log("gv in this.each");
         svg = d3.select(this).append('svg').attr('width', width).attr('height', height);
     });
 
