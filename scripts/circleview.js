@@ -13,7 +13,7 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
 
     var mainSvgElement = d3.select('#circles');
 
-    drawRing(null);
+    drawRing("testFeature", mainSvgElement);
 
     // TODO get an array of dataset names from the metadata
     function getDatasetNames() {
@@ -110,33 +110,41 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
     }
 
     // TODO draw a ring via d3.js
-    function drawRing(feature) {
-        var innerRadius = 30;
-        var ringThickness = 30;
-        var startDegrees = 0;
-        var degreeIncrements = 360 / getSampleNames().length;
+    function drawRing(feature, svgTagElement) {
+        var fullRadius = 100;
 
-        var vis = mainSvgElement.append('svg').append("g").attr("id", feature);
+        var numDatasets = Object.keys(data).length;
 
-        var dataName = Object.keys(data)[0];
-        feature = Object.keys(data[dataName])[0]
-
-        var ringData = getRingData(dataName, feature);
+        // +1 for the center
+        var ringThickness = fullRadius / (numDatasets + 1);
+        var innerRadius = ringThickness;
 
         var sampleNames = getSampleNames();
-        for (var sampleID in sampleNames) {
-            var sampleName = sampleNames[sampleID];
-            var score = ringData[sampleName];
-            var hexColor = getHexColor(score, dataName);
+        var degreeIncrements = 360 / sampleNames.length;
 
-            var arc = createArc(innerRadius, innerRadius + ringThickness, startDegrees, startDegrees + degreeIncrements);
+        // arc paths will be added to this SVG group
+        var circleMapGroup = svgTagElement.append("g").attr("id", feature).attr("transform", "translate(100,100)");
 
-            vis.append("path").attr("d", arc).attr("transform", "translate(50,50)").style("fill", hexColor);
+        // iterate over rings
+        for (var ring in Object.keys(data)) {
+            var dataName = Object.keys(data)[0];
+            feature = Object.keys(data[dataName])[0]
 
-            startDegrees = startDegrees + degreeIncrements;
+            var ringData = getRingData(dataName, feature);
+
+            var startDegrees = 0;
+            for (var sampleID in sampleNames) {
+                var sampleName = sampleNames[sampleID];
+                var score = ringData[sampleName];
+                var hexColor = getHexColor(score, dataName);
+
+                var arc = createArc(innerRadius, innerRadius + ringThickness, startDegrees, startDegrees + degreeIncrements);
+                circleMapGroup.append("path").attr("d", arc).attr("fill", hexColor);
+
+                // clockwise from 12 o clock
+                startDegrees = startDegrees + degreeIncrements;
+            }
         }
-
-        return null;
     }
 
     // TODO get an ordering for sampleIDs
@@ -147,3 +155,4 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
 
     return this;
 }
+
