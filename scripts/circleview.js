@@ -141,7 +141,7 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
         var degreeIncrements = 360 / sampleNames.length;
 
         // arc paths will be added to this SVG group
-        var circleMapGroup = svgTagElement.append("g").attr("id", feature).attr("transform", "translate(100,100)");
+        var circleMapGroup = svgTagElement.append("g").attr("id", feature).attr("transform", "translate(150,110)");
 
         // add a label
         circleMapGroup.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(feature);
@@ -166,6 +166,7 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
                 startDegrees = startDegrees + degreeIncrements;
             }
         }
+        return circleMapGroup;
     }
 
     // TODO get an ordering for sampleIDs
