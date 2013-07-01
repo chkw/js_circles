@@ -6,18 +6,36 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
     var data = jQuery.parseJSON(dataJsonText);
     var queryData = jQuery.parseJSON(queryDataJsonText);
 
+    // logData();
+
+    var features = getFeatureNames();
+
     this.each(function() {
-        console.log("in this.each");
         var svg = d3.select(this).append('svg').attr('id', 'circles').attr('width', width).attr('height', height);
     });
 
     var mainSvgElement = d3.select('#circles');
 
-    drawRing("testFeature", mainSvgElement);
+    for (var feature in features) {
+        drawRing(features[feature], mainSvgElement);
+    }
 
     // TODO get an array of dataset names from the metadata
     function getDatasetNames() {
         return Object.keys(metaData);
+    }
+
+    // TODO get an array of features from the data
+    function getFeatureNames() {
+        var result = new Object();
+        var datasetNames = getDatasetNames();
+        for (var datasetName in datasetNames) {
+            var datasetObject = data[datasetNames[datasetName]];
+            for (var feature in Object.keys(datasetObject)) {
+                result[Object.keys(datasetObject)[feature]] = 0;
+            }
+        }
+        return Object.keys(result);
     }
 
     // TODO log the object attributes to console
