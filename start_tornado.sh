@@ -2,6 +2,6 @@
 
 PATH="./"
 
-PORT="9999"
+PORT="9988"
 
 ./scripts/static_server.py $PATH $PORT
