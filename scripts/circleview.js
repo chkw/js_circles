@@ -143,6 +143,9 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
         // arc paths will be added to this SVG group
         var circleMapGroup = svgTagElement.append("g").attr("id", feature).attr("transform", "translate(100,100)");
 
+        // add a label
+        circleMapGroup.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(feature);
+
         // iterate over rings
         for (var ring in Object.keys(data)) {
             var dataName = Object.keys(data)[0];
