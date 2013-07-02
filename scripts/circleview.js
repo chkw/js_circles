@@ -34,6 +34,7 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
             var datasetObject = data[datasetName];
             Object.keys(datasetObject).forEach(function(val, idx, arr) {
                 var feature = val;
+                // This may break if feature name matches a prototype attribute.
                 result[feature] = 0;
             });
         });
@@ -60,12 +61,6 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
             });
         });
         return Object.keys(result);
-    }
-
-    // TODO create an svg arc via d3.js
-    function getRingData(innerRadius, outerRadius, startDegrees, endDegrees) {
-        var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius).startAngle(startDegrees * (Math.PI / 180)).endAngle(endDegrees * (Math.PI / 180))
-        return arc;
     }
 
     // TODO get the data for a ring
@@ -142,6 +137,13 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
         var innerRadius = ringThickness;
 
         var sampleNames = getSampleNames();
+
+        sampleNames.sort(reorderDataSamples);
+
+        sampleNames.forEach(function(val) {
+            console.log(val);
+        });
+
         var degreeIncrements = 360 / sampleNames.length;
 
         // arc paths will be added to this SVG group
@@ -174,9 +176,17 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
     }
 
     // TODO get an ordering for sampleIDs
-    function reorderDataSamples(orderFeature, orderRing) {
-
-        return null;
+    function reorderDataSamples(a, b) {
+        // console.log("a:" + a + " b:" + b + " orderFeature:" + orderFeature + " orderRing:" + orderRing);
+        if (a < b) {
+            return -1;
+        }
+        if (a > b) {
+            return 1;
+        }
+        if (a == b) {
+            return 0;
+        }
     }
 
     return this;
