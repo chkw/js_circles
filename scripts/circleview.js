@@ -16,9 +16,10 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
 
     var mainSvgElement = d3.select('#circles');
 
-    for (var feature in features) {
-        drawRing(features[feature], mainSvgElement);
-    }
+    features.forEach(function(val, idx, arr) {
+        var feature = val;
+        drawRing(feature, mainSvgElement);
+    });
 
     // TODO get an array of dataset names from the metadata
     function getDatasetNames() {
@@ -28,13 +29,14 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
     // TODO get an array of features from the data
     function getFeatureNames() {
         var result = new Object();
-        var datasetNames = getDatasetNames();
-        for (var datasetName in datasetNames) {
-            var datasetObject = data[datasetNames[datasetName]];
-            for (var feature in Object.keys(datasetObject)) {
-                result[Object.keys(datasetObject)[feature]] = 0;
-            }
-        }
+        getDatasetNames().forEach(function(val, idx, arr) {
+            var datasetName = val;
+            var datasetObject = data[datasetName];
+            Object.keys(datasetObject).forEach(function(val, idx, arr) {
+                var feature = val;
+                result[feature] = 0;
+            });
+        });
         return Object.keys(result);
     }
 
@@ -49,12 +51,14 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
     function getSampleNames() {
         var result = new Array();
         var datasetNames = getDatasetNames();
-        for (var datasetName in datasetNames) {
-            var sampleNames = metaData[datasetNames[datasetName]].sampleNames.split(",");
-            for (var name in sampleNames) {
-                result[sampleNames[name]] = 0;
-            }
-        }
+        datasetNames.forEach(function(val, idx, arr) {
+            var datasetName = val;
+            var sampleNames = metaData[datasetName]['sampleNames'].split(",");
+            sampleNames.forEach(function(val, idx, arr) {
+                var name = val;
+                result[name] = 0;
+            });
+        });
         return Object.keys(result);
     }
 
@@ -147,15 +151,15 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
         circleMapGroup.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(feature);
 
         // iterate over rings
-        for (var ring in Object.keys(data)) {
-            var dataName = Object.keys(data)[0];
+        Object.keys(data).forEach(function(val, idx, arr) {
+            var dataName = val;
             feature = Object.keys(data[dataName])[0]
 
             var ringData = getRingData(dataName, feature);
 
             var startDegrees = 0;
-            for (var sampleID in sampleNames) {
-                var sampleName = sampleNames[sampleID];
+            sampleNames.forEach(function(val, idx, arr) {
+                var sampleName = val;
                 var score = ringData[sampleName];
                 var hexColor = getHexColor(score, dataName);
 
@@ -164,8 +168,8 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
 
                 // clockwise from 12 o clock
                 startDegrees = startDegrees + degreeIncrements;
-            }
-        }
+            });
+        });
         return circleMapGroup;
     }
 
