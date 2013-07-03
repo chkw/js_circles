@@ -10,6 +10,8 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
 
     var features = getFeatureNames();
 
+    var sortedSamples = getSortedSamples(features[0], getDatasetNames());
+
     this.each(function() {
         var svg = d3.select(this).append('svg').attr('id', 'circles').attr('width', width).attr('height', height);
     });
@@ -18,7 +20,7 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
 
     features.forEach(function(val, idx, arr) {
         var feature = val;
-        drawRing(feature, mainSvgElement);
+        drawCircleMap(feature, sortedSamples, mainSvgElement);
     });
 
     // TODO get an array of dataset names from the metadata
@@ -63,6 +65,63 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
         return Object.keys(result);
     }
 
+    // TODO get sample names in sorted order
+    function getSortedSamples(sortingFeature, dataSortingOrder) {
+        console.log("sortingFeature --> " + sortingFeature + "\ndataSortingOrder --> " + dataSortingOrder);
+
+        var sampleObjects = new Array();
+        var allSampleIds = getSampleNames();
+        allSampleIds.forEach(function(val, idx, arr) {
+            var id = val;
+            var sampleObj = new Object();
+            sampleObjects.push(sampleObj);
+            sampleObj["id"] = id;
+            sampleObj["scores"] = new Array();
+
+            dataSortingOrder.forEach(function(val, idx, arr) {
+                var datasetName = val;
+                var score = getRingData(datasetName, sortingFeature)[id];
+                sampleObj["scores"].push(score);
+            });
+
+        });
+
+        sampleObjects.sort(compareSampleObjects);
+
+        var sortedSampleNames = sampleObjects.map(function(val, idx, arr) {
+            var sampleObj = val;
+            var name = sampleObj["id"];
+            return name;
+        });
+
+        // TODO comparison function
+        function compareSampleObjects(a, b) {
+            var scoresA = a["scores"].slice();
+            var scoresB = b["scores"].slice();
+
+            if (scoresA.length != scoresB.length) {
+                console.log(a["id"] + " and " + b["id"] + " have different number of scores.")
+                return 0;
+            }
+
+            for (var i = 0; i < scoresA.length; i++) {
+                var scoreA = +scoresA[i];
+                var scoreB = +scoresB[i];
+
+                if (scoreA < scoreB) {
+                    return -1;
+                }
+                if (scoreA > scoreB) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        };
+
+        return sortedSampleNames;
+    }
+
     // TODO get the data for a ring
     function getRingData(dataName, feature) {
         var ringData = data[dataName][feature];
@@ -93,9 +152,9 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
         var maxG = 0;
         var maxB = 0;
 
-        var minR = 0;
-        var minG = 0;
-        var minB = 0;
+        var minR = 255;
+        var minG = 255;
+        var minB = 255;
 
         var normalizedScore = (score / metaData[dataName].cohortMax);
 
@@ -104,9 +163,9 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
             maxG = 0;
             maxB = 255;
 
-            minR = 0;
-            minG = 0;
-            minB = 0;
+            minR = 255;
+            minG = 255;
+            minB = 255;
 
             normalizedScore = (score / metaData[dataName].cohortMin);
         }
@@ -126,8 +185,8 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
         return arc;
     }
 
-    // TODO draw a ring via d3.js
-    function drawRing(feature, svgTagElement) {
+    // TODO draw a CircleMap via d3.js
+    function drawCircleMap(feature, sortedSamples, svgTagElement) {
         var fullRadius = 100;
 
         var numDatasets = Object.keys(data).length;
@@ -136,15 +195,7 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
         var ringThickness = fullRadius / (numDatasets + 1);
         var innerRadius = ringThickness;
 
-        var sampleNames = getSampleNames();
-
-        sampleNames.sort(reorderDataSamples);
-
-        sampleNames.forEach(function(val) {
-            console.log(val);
-        });
-
-        var degreeIncrements = 360 / sampleNames.length;
+        var degreeIncrements = 360 / sortedSamples.length;
 
         // arc paths will be added to this SVG group
         var circleMapGroup = svgTagElement.append("g").attr("id", feature).attr("transform", "translate(150,110)");
@@ -155,12 +206,11 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
         // iterate over rings
         Object.keys(data).forEach(function(val, idx, arr) {
             var dataName = val;
-            feature = Object.keys(data[dataName])[0]
 
             var ringData = getRingData(dataName, feature);
 
             var startDegrees = 0;
-            sampleNames.forEach(function(val, idx, arr) {
+            sortedSamples.forEach(function(val, idx, arr) {
                 var sampleName = val;
                 var score = ringData[sampleName];
                 var hexColor = getHexColor(score, dataName);
@@ -173,20 +223,6 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataJson
             });
         });
         return circleMapGroup;
-    }
-
-    // TODO get an ordering for sampleIDs
-    function reorderDataSamples(a, b) {
-        // console.log("a:" + a + " b:" + b + " orderFeature:" + orderFeature + " orderRing:" + orderRing);
-        if (a < b) {
-            return -1;
-        }
-        if (a > b) {
-            return 1;
-        }
-        if (a == b) {
-            return 0;
-        }
     }
 
     return this;
