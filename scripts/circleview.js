@@ -15,7 +15,9 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
 
     // logData();
 
-    var queryFeatures = getQueryFeatures().slice(0, 19);
+    var numberOfCircleMapsToDraw = 5
+
+    var queryFeatures = getQueryFeatures().slice(0, numberOfCircleMapsToDraw);
     console.log("num query features: " + queryFeatures.length);
     console.log(queryFeatures.toString());
 
@@ -42,15 +44,27 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
     console.log("number selected --> " + selectionSize);
 
     randomElementLayout(selectAllCircleMaps(), width, height);
+    // forceElementLayout(selectAllCircleMaps(), new Array(), width, height);
+
+    /**
+     * Force layout
+     */
+    function forceElementLayout(elements, links, width, height) {
+        var force = d3.layout.force().nodes(elements).links(links).size([width - 200, height - 200]);
+        // elements.call(force.drag);
+        force.start();
+        return force;
+    }
 
     /**
      * Position the elements randomly.
      */
     function randomElementLayout(elementSelection, maxX, maxY) {
         elementSelection.each(function(d, i) {
-            var x = Math.floor(Math.random() * maxX);
-            var y = Math.floor(Math.random() * maxY);
-            this.setAttribute("transform", "translate(" + x + "," + y + ")");
+            var x = Math.floor(Math.random() * (maxX - 200));
+            var y = Math.floor(Math.random() * (maxY - 200));
+            this.setAttribute("x", x);
+            this.setAttribute("y", y);
         });
     }
 
@@ -297,7 +311,7 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
         var degreeIncrements = 360 / sortedSamples.length;
 
         // arc paths will be added to this SVG group
-        var circleMapGroup = svgTagElement.append("g").attr("id", feature).attr("class", "circleMap").attr("transform", "translate(150,110)");
+        var circleMapGroup = svgTagElement.append("svg").attr("id", feature).attr("class", "circleMap").append("g").attr("transform", "translate(100,100)");
 
         // iterate over rings
         Object.keys(data).forEach(function(val, idx, arr) {
