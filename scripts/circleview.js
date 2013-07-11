@@ -15,8 +15,9 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
 
     // logData();
 
-    var queryFeatures = getQueryFeatures().slice(0, 4);
+    var queryFeatures = getQueryFeatures().slice(0, 19);
     console.log("num query features: " + queryFeatures.length);
+    console.log(queryFeatures.toString());
 
     var sortedSamples = getSortedSamples(queryFeatures[0], getDatasetNames());
 
@@ -40,13 +41,18 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
     var selectionSize = selectAllCircleMaps().size();
     console.log("number selected --> " + selectionSize);
 
-    var circleMapCount = 0.5;
-    selectAllCircleMaps().each(function(d, i) {
-        console.log("id --> " + this.getAttribute("id"));
-        var y = 200 * circleMapCount;
-        circleMapCount++;
-        this.setAttribute("transform", "translate(" + y + "," + y + ")");
-    });
+    randomElementLayout(selectAllCircleMaps(), width, height);
+
+    /**
+     * Position the elements randomly.
+     */
+    function randomElementLayout(elementSelection, maxX, maxY) {
+        elementSelection.each(function(d, i) {
+            var x = Math.floor(Math.random() * maxX);
+            var y = Math.floor(Math.random() * maxY);
+            this.setAttribute("transform", "translate(" + x + "," + y + ")");
+        });
+    }
 
     /**
      * Select all elements with the class "circleMap".
@@ -74,23 +80,8 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
     }
 
     /**
-     * get an array of features from the data
+     * log the object attributes to console
      */
-    function getDataFeatures() {
-        var result = new Object();
-        getDatasetNames().forEach(function(val, idx, arr) {
-            var datasetName = val;
-            var datasetObject = data[datasetName];
-            Object.keys(datasetObject).forEach(function(val, idx, arr) {
-                var feature = val;
-                // This may break if feature name matches a prototype attribute.
-                result[feature] = 0;
-            });
-        });
-        return Object.keys(result);
-    }
-
-    // TODO log the object attributes to console
     function logData() {
         console.log("metaData is " + JSON.stringify(metaData));
         console.log("data is " + JSON.stringify(data));
@@ -101,25 +92,23 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
      * get all sampleIDs from the metadata
      */
     function getSampleNames() {
-        var result = new Array();
+        var namesSet = d3.set();
         var datasetNames = getDatasetNames();
         datasetNames.forEach(function(val, idx, arr) {
             var datasetName = val;
             var sampleNames = metaData[datasetName]['sampleNames'].split(",");
             sampleNames.forEach(function(val, idx, arr) {
                 var name = val;
-                result[name] = 0;
+                namesSet.add(name);
             });
         });
-        return Object.keys(result);
+        return namesSet.values();
     }
 
     /**
-     *get sample names in sorted order
+     * get sample names in sorted order
      */
     function getSortedSamples(sortingFeature, dataSortingOrder) {
-        console.log("sortingFeature --> " + sortingFeature + "\ndataSortingOrder --> " + dataSortingOrder);
-
         var sampleObjects = new Array();
         var allSampleIds = getSampleNames();
         allSampleIds.forEach(function(val, idx, arr) {
@@ -140,7 +129,6 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
                 }
                 sampleObj["scores"].push(score);
             });
-
         });
 
         sampleObjects.sort(compareSampleObjects);
@@ -192,13 +180,15 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
             }
             // Reach this if the score vectors are identical.
             return 0;
-
         };
-
         return sortedSampleNames;
     }
 
-    // TODO get the data for a ring
+    /**
+     * get the data for a ring
+     * @param {Object} dataName
+     * @param {Object} feature
+     */
     function getRingData(dataName, feature) {
         if ( dataName in data) {
             if ( feature in data[dataName]) {
@@ -209,23 +199,40 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
             return null;
     }
 
-    // TODO convert an rgb component to hex value
+    /**
+     * convert an rgb component to hex value
+     * @param {Object} c
+     */
     function rgbComponentToHex(c) {
         var hex = c.toString(16);
         return hex.length == 1 ? "0" + hex : hex;
     }
 
-    // TODO convert rgb color code to hex
+    /**
+     * convert rgb color code to hex
+     * @param {Object} r
+     * @param {Object} g
+     * @param {Object} b
+     */
     function rgbToHex(r, g, b) {
         return "#" + rgbComponentToHex(r) + rgbComponentToHex(g) + rgbComponentToHex(b);
     }
 
-    // TODO linear interpolation
+    /**
+     * linear interpolation
+     * @param {Object} percent
+     * @param {Object} minVal
+     * @param {Object} maxVal
+     */
     function linearInterpolation(percent, minVal, maxVal) {
         return ((maxVal - minVal) * percent) + minVal;
     }
 
-    // TODO get a color for a score
+    /**
+     * get a color for a score
+     * @param {Object} score
+     * @param {Object} dataName
+     */
     function getHexColor(score, dataName) {
         var isPositive = (score >= 0) ? true : false;
 
@@ -260,15 +267,25 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
         return hexColor;
     }
 
-    // TODO create an svg arc via d3.js
+    /**
+     * create an svg arc via d3.js
+     * @param {Object} innerRadius
+     * @param {Object} outerRadius
+     * @param {Object} startDegrees
+     * @param {Object} endDegrees
+     */
     function createArc(innerRadius, outerRadius, startDegrees, endDegrees) {
         var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius).startAngle(startDegrees * (Math.PI / 180)).endAngle(endDegrees * (Math.PI / 180))
         return arc;
     }
 
-    // TODO draw a CircleMap via d3.js
+    /**
+     * draw a CircleMap via d3.js
+     * @param {Object} feature
+     * @param {Object} sortedSamples
+     * @param {Object} svgTagElement
+     */
     function drawCircleMap(feature, sortedSamples, svgTagElement) {
-        console.log("drawCircleMap for " + feature);
         var fullRadius = 100;
 
         var numDatasets = Object.keys(data).length;
