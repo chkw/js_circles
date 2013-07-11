@@ -44,7 +44,6 @@ $(document).ready(function() {
     $("#title").append(pid)
     setURLAnchor(pid)
 
-
     var gv = $("#drawingElement").graphViewer({
         height : 400,
         width : 600
@@ -62,7 +61,6 @@ $(document).ready(function() {
         console.log(msg);
         alert(msg);
     });
-
 
     var myJSONObject = {
         "bindings" : [{
@@ -879,35 +877,39 @@ $(document).ready(function() {
         }
     };
 
-    // sampleID:score
-    var ringData = testData.TCGA_BRCA_Paradigm_Evidence_CNV.FOXM1;
-    for (var key in ringData) {
-        var value = ringData[key];
-        //    console.log(key + "-->" + value);
-    }
+    var metaData = null;
+    var metaDataUrl = "data/metaDataJson";
 
-    // get array of sampleIDs
-    var sampleIDs = Object.keys(ringData);
-    //console.log("sampleIDs --> " + sampleIDs);
+    var data = null;
+    var dataUrl = "data/dataJson";
+
+    var query = null;
+    var queryUrl = "data/queryJson";
+
+    $.getJSON(metaDataUrl, function(response) {
+        metaData = response;
+    }).done(function() {
+        console.log("number of metaData --> " + Object.keys(metaData).length);
+        $.getJSON(dataUrl, function(response) {
+            data = response;
+        }).done(function() {
+            console.log("number of data --> " + Object.keys(data).length);
+            $.getJSON(queryUrl, function(response) {
+                query = response;
+            }).done(function() {
+                console.log("number of query --> " + Object.keys(query).length);
+                var cv = $("#circleDiv").circleMapViewer(800, 800, metaData, data, query);
+            }).fail(function() {
+                alert("fail getting " + queryUrl);
+            });
+        }).fail(function() {
+            alert("fail getting " + dataUrl);
+        });
+    }).fail(function() {
+        alert("fail getting " + metaDataUrl);
+    });
 
     // TODO circleMapViewer
-    var cv = $("#circleDiv").circleMapViewer(800, 600, JSON.stringify(testMetaData), JSON.stringify(testData), JSON.stringify(null));
-    //
-    // var names = cv.getDatasetNames();
-    // for (var i = 0; i < names.length; i++){
-    // var name = names[i];
-    // console.log(name);
-    // }
-    //
-    // var sampleNames = cv.getSampleNames();
-    //
-    // console.log("1");
-    // var circleDivSVG = $("#circleDiv");
-    // console.log("2");
-    //
-    // var ring = cv.drawRing(circleDivSVG,null);
-    // console.log(ring);
-
-    //cv.logData();
-
+    // var cv = $("#circleDiv").circleMapViewer(800, 600, JSON.stringify(testMetaData), JSON.stringify(testData), JSON.stringify(null));
+    // var cv = $("#circleDiv").circleMapViewer(800, 600, JSON.stringify(testMetaData), JSON.stringify(testData), JSON.stringify(null));
 });
