@@ -1,4 +1,6 @@
 /**
+ * Use this with something like: <code>var cv = $("#circleDiv").circleMapViewer(800, 800, metaData, data, query);</code>
+ *
  * @param width
  * @param height
  * @param metaDataObj
@@ -15,7 +17,7 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
 
     // logData();
 
-    var numberOfCircleMapsToDraw = 5
+    var numberOfCircleMapsToDraw = 5;
 
     var queryFeatures = getQueryFeatures().slice(0, numberOfCircleMapsToDraw);
     console.log("num query features: " + queryFeatures.length);
@@ -43,15 +45,53 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
     var selectionSize = selectAllCircleMaps().size();
     console.log("number selected --> " + selectionSize);
 
+    var links = generateLinks(selectAllCircleMaps(), 3);
+    console.log(links);
+
     randomElementLayout(selectAllCircleMaps(), width, height);
-    // forceElementLayout(selectAllCircleMaps(), new Array(), width, height);
+    // forceElementLayout(selectAllCircleMaps(), links, width, height);
+    // forceElementLayout(new Array(), new Array(), width, height);
+
+    /**
+     * generate some random links
+     */
+    function generateLinks(elements, number) {
+
+        var elementMap = d3.map();
+        elements.each(function(d, i) {
+            var element = $(this);
+            elementMap.set(element.attr("id"), element);
+        });
+
+        var linksSet = d3.set();
+        for (; linksSet.values().length < number; ) {
+            var source = elementMap.keys()[Math.floor(Math.random() * elementMap.keys().length)];
+            var target = elementMap.keys()[Math.floor(Math.random() * elementMap.keys().length)];
+            if (source !== target) {
+                var link = source + "__LINK__" + target;
+                linksSet.add(link);
+            }
+        }
+
+        var links = new Array();
+        linksSet.values().forEach(function(val, idx, arr) {
+            var s = val.split("__LINK__");
+            var link = {
+                "source" : elementMap.get(s[0]),
+                "target" : elementMap.get(s[1])
+            };
+            links.push(link);
+        });
+
+        return links;
+    }
 
     /**
      * Force layout
      */
-    function forceElementLayout(elements, links, width, height) {
-        var force = d3.layout.force().nodes(elements).links(links).size([width - 200, height - 200]);
-        // elements.call(force.drag);
+    function forceElementLayout(graphNodes, graphLinks, width, height) {
+        var force = d3.layout.force().nodes(graphNodes).links(graphLinks).size([width - 200, height - 200]);
+        // graphNodes.call(force.drag);
         force.start();
         return force;
     }
@@ -61,10 +101,11 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
      */
     function randomElementLayout(elementSelection, maxX, maxY) {
         elementSelection.each(function(d, i) {
+            var element = $(this);
             var x = Math.floor(Math.random() * (maxX - 200));
             var y = Math.floor(Math.random() * (maxY - 200));
-            this.setAttribute("x", x);
-            this.setAttribute("y", y);
+            element.attr("x", x);
+            element.attr("y", y);
         });
     }
 
@@ -288,7 +329,7 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
      * @param {Object} startDegrees
      * @param {Object} endDegrees
      */
-    function createArc(innerRadius, outerRadius, startDegrees, endDegrees) {
+    function createD3Arc(innerRadius, outerRadius, startDegrees, endDegrees) {
         var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius).startAngle(startDegrees * (Math.PI / 180)).endAngle(endDegrees * (Math.PI / 180))
         return arc;
     }
@@ -297,9 +338,9 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
      * draw a CircleMap via d3.js
      * @param {Object} feature
      * @param {Object} sortedSamples
-     * @param {Object} svgTagElement
+     * @param {Object} d3SvgTagElement
      */
-    function drawCircleMap(feature, sortedSamples, svgTagElement) {
+    function drawCircleMap(feature, sortedSamples, d3SvgTagElement) {
         var fullRadius = 100;
 
         var numDatasets = Object.keys(data).length;
@@ -311,7 +352,8 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
         var degreeIncrements = 360 / sortedSamples.length;
 
         // arc paths will be added to this SVG group
-        var circleMapGroup = svgTagElement.append("svg").attr("id", feature).attr("class", "circleMap").append("g").attr("transform", "translate(100,100)");
+        var circleMapSvgElement = d3SvgTagElement.append("svg").attr("id", feature).attr("class", "circleMap");
+        var circleMapGroup = circleMapSvgElement.append("g").attr("class", "circleMapG").attr("transform", "translate(100,100)");
 
         // iterate over rings
         Object.keys(data).forEach(function(val, idx, arr) {
@@ -320,7 +362,7 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
             var ringData = getRingData(dataName, feature);
             if (ringData == null) {
                 // draw a grey ring for no data.
-                var arc = createArc(innerRadius, innerRadius + ringThickness, 0, 360);
+                var arc = createD3Arc(innerRadius, innerRadius + ringThickness, 0, 360);
                 circleMapGroup.append("path").attr("d", arc).attr("fill", "grey");
             } else {
                 var startDegrees = 0;
@@ -332,7 +374,7 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
                         hexColor = getHexColor(score, dataName);
                     }
 
-                    var arc = createArc(innerRadius, innerRadius + ringThickness, startDegrees, startDegrees + degreeIncrements);
+                    var arc = createD3Arc(innerRadius, innerRadius + ringThickness, startDegrees, startDegrees + degreeIncrements);
                     circleMapGroup.append("path").attr("d", arc).attr("fill", hexColor);
 
                     // clockwise from 12 o clock
