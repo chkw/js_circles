@@ -17,7 +17,7 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
 
     // logData();
 
-    var numberOfCircleMapsToDraw = 5;
+    var numberOfCircleMapsToDraw = 9;
 
     var queryFeatures = getQueryFeatures().slice(0, numberOfCircleMapsToDraw);
     console.log("num query features: " + queryFeatures.length);
@@ -352,7 +352,7 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
         var degreeIncrements = 360 / sortedSamples.length;
 
         // arc paths will be added to this SVG group
-        var circleMapSvgElement = d3SvgTagElement.append("svg").attr("id", feature).attr("class", "circleMap");
+        var circleMapSvgElement = d3SvgTagElement.append("svg").attr("id", feature).attr("class", "circleMap node").attr("name", feature);
         var circleMapGroup = circleMapSvgElement.append("g").attr("class", "circleMapG").attr("transform", "translate(100,100)");
 
         // iterate over rings

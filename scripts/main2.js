@@ -1,7 +1,10 @@
+// Draw CircleMaps just using D3, no jQuery.
+
 var width = 960, height = 500;
 var charge = -100;
 var linkDistance = 100;
 var nodeRadius = 20;
+var dataURL = "data/net";
 
 var color = d3.scale.category20();
 
@@ -9,17 +12,26 @@ var force = d3.layout.force().charge(charge).linkDistance(linkDistance).size([wi
 
 var svg = d3.select("body").append("svg").attr("width", width).attr("height", height);
 
-d3.json("data/net", function(error, graph) {
+d3.json(dataURL, function(error, data) {
+    if (error !== null) {
+        console.log("error --> " + error);
+    } else {
+        console.log("data --> " + JSON.stringify(data));
+    }
+    var graph = data;
+    var nodes = graph.nodes;
+    var links = graph.links;
+
     // start the layout
-    force.nodes(graph.nodes).links(graph.links).start();
+    force.nodes(nodes).links(links).start();
 
     // links
-    var link = svg.selectAll(".link").data(graph.links).enter().append("line").attr("class", "link").style("stroke-width", function(d) {
-        return Math.sqrt(d.value);
+    var link = svg.selectAll(".link").data(links).enter().append("line").attr("class", "link").style("stroke-width", function(d) {
+        return d.value;
     });
 
     // nodes
-    var node = svg.selectAll(".node").data(graph.nodes).enter().append("circle").attr("class", "node").attr("r", nodeRadius).style("fill", function(d) {
+    var node = svg.selectAll(".node").data(nodes).enter().append("circle").attr("class", "node").attr("r", nodeRadius).style("fill", function(d) {
         return color(d.group);
     }).call(force.drag);
 
