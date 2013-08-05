@@ -9,7 +9,7 @@ var friction = 0.3
 
 var color = d3.scale.category20();
 
-var force = d3.layout.force().charge(charge).linkDistance(linkDistance).size([width, height]);
+var force = d3.layout.force().charge(charge).linkDistance(linkDistance).size([width, height]).friction(friction);
 
 var form = d3.select("body").append("form");
 
@@ -30,6 +30,18 @@ d3.json(dataURL, function(error, data) {
     var nodes = graph.nodes;
     var links = graph.links;
 
+    // allow value to be removed without knowing the index
+    function removeA(arr) {
+        var what, a = arguments, L = a.length, ax;
+        while (L > 1 && arr.length) {
+            what = a[--L];
+            while (( ax = arr.indexOf(what)) !== -1) {
+                arr.splice(ax, 1);
+            }
+        }
+        return arr;
+    }
+
     function createNode(name, group) {
         newNode = new Object();
         newNode['name'] = name;
@@ -37,9 +49,54 @@ d3.json(dataURL, function(error, data) {
         return newNode;
     }
 
+    function deleteNode(name) {
+        console.log('delete node: ' + name);
+
+        // find index of node
+        idx = -1;
+        for (i in nodes) {
+            if (nodes[i]['name'] == name) {
+                idx = i;
+                break;
+            }
+        }
+        if (idx == -1) {
+            console.log('No node was found for ' + name);
+            return;
+        }
+
+        // find links
+        linksToDelete = new Array();
+        for (i in links) {
+            link = links[i];
+            source = link['source'];
+            target = link['target'];
+
+            if (source == idx || target == idx) {
+                linksToDelete.push(link);
+                continue;
+            } else if ((source['index'] == idx) || (target['index'] == idx)) {
+                linksToDelete.push(link);
+                continue;
+            }
+        }
+
+        // delete stuff
+        for (i in linksToDelete) {
+            link = linksToDelete[i];
+            removeA(links, link);
+        }
+        node = nodes[idx];
+        removeA(nodes, node);
+    }
+
     function setupLayout() {
+        // clear the current graph
+        svg.selectAll(".link").remove();
+        svg.selectAll(".node").remove();
+
         // start the layout
-        force.friction(friction).nodes(nodes).links(links).start();
+        force.nodes(nodes).links(links).start();
 
         // links
         var link = svg.selectAll(".link").data(links).enter().append("line").attr("class", "link").style("stroke-width", function(d) {
@@ -83,10 +140,10 @@ d3.json(dataURL, function(error, data) {
 
 
     form.append("input").attr({
-        id : "button",
+        id : "addButton",
         type : "button",
-        value : "test button",
-        name : "testButton"
+        value : "add button",
+        name : "addButton"
     }).on("click", function() {
         id = this.getAttribute("id");
         value = this.getAttribute("value");
@@ -98,7 +155,24 @@ d3.json(dataURL, function(error, data) {
         console.log('new size: ' + nodes.length);
 
         setupLayout();
+        return true;
+    });
 
+    form.append("input").attr({
+        id : "deleteButton",
+        type : "button",
+        value : "delete button",
+        name : "deleteButton"
+    }).on("click", function() {
+        id = this.getAttribute("id");
+        value = this.getAttribute("value");
+
+        // find/delete node and links
+        index = Math.floor(Math.random() * nodes.length);
+        name = nodes[index]['name'];
+        deleteNode(name);
+
+        setupLayout();
         return true;
     });
 });
