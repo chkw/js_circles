@@ -50,7 +50,11 @@ d3.json(dataURL, function(error, data) {
     }
 
     function deleteNode(name) {
-        console.log('delete node: ' + name);
+        // nothing to delete
+        if (nodes.length < 1) {
+            console.log('no nodes to delete');
+            return;
+        }
 
         // find index of node
         idx = -1;
@@ -94,6 +98,10 @@ d3.json(dataURL, function(error, data) {
         // clear the current graph
         svg.selectAll(".link").remove();
         svg.selectAll(".node").remove();
+
+        if (nodes.length < 1) {
+            return;
+        }
 
         // start the layout
         force.nodes(nodes).links(links).start();
@@ -142,7 +150,7 @@ d3.json(dataURL, function(error, data) {
     form.append("input").attr({
         id : "addButton",
         type : "button",
-        value : "add button",
+        value : "add random node",
         name : "addButton"
     }).on("click", function() {
         id = this.getAttribute("id");
@@ -150,9 +158,7 @@ d3.json(dataURL, function(error, data) {
 
         newNode = createNode(Math.random().toString(), 5);
 
-        console.log('old size: ' + nodes.length);
         nodes.push(newNode);
-        console.log('new size: ' + nodes.length);
 
         setupLayout();
         return true;
@@ -161,11 +167,15 @@ d3.json(dataURL, function(error, data) {
     form.append("input").attr({
         id : "deleteButton",
         type : "button",
-        value : "delete button",
+        value : "delete random node",
         name : "deleteButton"
     }).on("click", function() {
         id = this.getAttribute("id");
         value = this.getAttribute("value");
+
+        if (nodes.length < 1){
+            return;
+        }
 
         // find/delete node and links
         index = Math.floor(Math.random() * nodes.length);
