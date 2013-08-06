@@ -175,9 +175,7 @@ d3.json(dataURL, function(error, data) {
         value = this.getAttribute("value");
 
         group = Math.floor(Math.random() * 20)
-
         newNode = createNode(Math.random().toString(), group);
-
         nodes.push(newNode);
 
         setupLayout();
@@ -194,20 +192,16 @@ d3.json(dataURL, function(error, data) {
         value = this.getAttribute("value");
 
         group = Math.floor(Math.random() * 20)
-
         newNode = createNode(Math.random().toString(), group);
-
         nodes.push(newNode);
 
         sourceIdx = nodes.length - 1;
-
         targetIdx = Math.floor(Math.random() * nodes.length);
 
-        newLink = createLink(sourceIdx, targetIdx);
-
-        console.log(JSON.stringify(newLink));
-
-        links.push(newLink);
+        if (sourceIdx != targetIdx) {
+            newLink = createLink(sourceIdx, targetIdx);
+            links.push(newLink);
+        }
 
         setupLayout();
         return true;
