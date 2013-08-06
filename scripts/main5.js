@@ -119,14 +119,18 @@ d3.json(dataURL, function(error, data) {
         force.nodes(nodes).links(links).start();
 
         // links
-        var link = svg.selectAll(".link").data(links).enter().append("line").attr({
+        var linkSelection = svg.selectAll(".link").data(links).enter().append("line")
+
+        linkSelection.attr({
             class : "link"
         }).style("stroke-width", function(d) {
             return d.value;
         });
 
         // nodes
-        var node = svg.selectAll(".node").data(nodes).enter().append("circle").attr({
+        var nodeSelecton = svg.selectAll(".node").data(nodes).enter().append("circle");
+
+        nodeSelecton.attr({
             class : "node",
             r : nodeRadius
         }).style("fill", function(d) {
@@ -134,18 +138,18 @@ d3.json(dataURL, function(error, data) {
         }).call(force.drag);
 
         // tooltips
-        link.append("title").text(function(d) {
+        linkSelection.append("title").text(function(d) {
             var label = d.source.name + "-->" + d.target.name + ":" + d.value;
             return label;
         });
 
-        node.append("title").text(function(d) {
+        nodeSelecton.append("title").text(function(d) {
             return d.name;
         });
 
         // tick handler repositions graph elements
         force.on("tick", function() {
-            link.attr("x1", function(d) {
+            linkSelection.attr("x1", function(d) {
                 return d.source.x;
             }).attr("y1", function(d) {
                 return d.source.y;
@@ -155,7 +159,7 @@ d3.json(dataURL, function(error, data) {
                 return d.target.y;
             });
 
-            node.attr("cx", function(d) {
+            nodeSelecton.attr("cx", function(d) {
                 return d.x;
             }).attr("cy", function(d) {
                 return d.y;
