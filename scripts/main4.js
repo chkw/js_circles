@@ -7,12 +7,16 @@ var nodeRadius = 20;
 var dataURL = "data/net";
 var friction = 0.3
 
+// for d3 color mapping.
 var color = d3.scale.category20();
 
+// for d3 layout and rendering
 var force = d3.layout.force().charge(charge).linkDistance(linkDistance).size([width, height]).friction(friction);
 
+// where controls go
 var form = d3.select("body").append("form");
 
+// svg element that contains the graph
 var svg = d3.select("body").append("svg").attr({
     'width' : width,
     'height' : height
@@ -47,6 +51,14 @@ d3.json(dataURL, function(error, data) {
         newNode['name'] = name;
         newNode['group'] = group;
         return newNode;
+    }
+
+    function createLink(sourceIdx, targetIdx) {
+        newLink = new Object({
+            source : sourceIdx,
+            target : targetIdx
+        });
+        return newLink;
     }
 
     function deleteNode(name) {
@@ -151,6 +163,7 @@ d3.json(dataURL, function(error, data) {
         });
     }
 
+    setupLayout();
 
     form.append("input").attr({
         id : "addButton",
@@ -161,9 +174,40 @@ d3.json(dataURL, function(error, data) {
         id = this.getAttribute("id");
         value = this.getAttribute("value");
 
-        newNode = createNode(Math.random().toString(), 5);
+        group = Math.floor(Math.random() * 20)
+
+        newNode = createNode(Math.random().toString(), group);
 
         nodes.push(newNode);
+
+        setupLayout();
+        return true;
+    });
+
+    form.append("input").attr({
+        id : "addConnectedButton",
+        type : "button",
+        value : "add random connected node",
+        name : "addConnectedButton"
+    }).on("click", function() {
+        id = this.getAttribute("id");
+        value = this.getAttribute("value");
+
+        group = Math.floor(Math.random() * 20)
+
+        newNode = createNode(Math.random().toString(), group);
+
+        nodes.push(newNode);
+
+        sourceIdx = nodes.length - 1;
+
+        targetIdx = Math.floor(Math.random() * nodes.length);
+
+        newLink = createLink(sourceIdx, targetIdx);
+
+        console.log(JSON.stringify(newLink));
+
+        links.push(newLink);
 
         setupLayout();
         return true;
@@ -178,6 +222,7 @@ d3.json(dataURL, function(error, data) {
         id = this.getAttribute("id");
         value = this.getAttribute("value");
 
+        // no nodes to delete
         if (nodes.length < 1) {
             return;
         }
