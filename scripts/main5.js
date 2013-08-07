@@ -1,17 +1,18 @@
 // Draw CircleMaps just using D3, no jQuery.
 
 var width = 960, height = 500;
-var charge = -100;
-var linkDistance = 100;
+var linkDistance = 300;
+var linkStrength = 0.1;
+var friction = 0.3
+var charge = -500;
 var nodeRadius = 20;
 var dataURL = "data/net";
-var friction = 0.3
 
 // for d3 color mapping.
 var color = d3.scale.category20();
 
 // for d3 layout and rendering
-var force = d3.layout.force().charge(charge).linkDistance(linkDistance).size([width, height]).friction(friction);
+var force = d3.layout.force().size([width, height]).linkDistance(linkDistance).linkStrength(linkStrength).friction(friction);
 
 // where controls go
 var form = d3.select("body").append("form");
@@ -21,7 +22,6 @@ var svg = d3.select("body").append("svg").attr({
     'width' : width,
     'height' : height
 });
-// type="button" value="See Some Text" name="button2" onClick="window.status='You clicked the button!'; return true"
 
 d3.json(dataURL, function(error, data) {
 
