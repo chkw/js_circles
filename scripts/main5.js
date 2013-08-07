@@ -120,23 +120,24 @@ d3.json(dataURL, function(error, data) {
         force.nodes(nodes).links(links).start();
 
         // links
-        var linkSelection = svg.selectAll(".link").data(links).enter().append("line")
-
-        linkSelection.attr({
+        var linkSelection = svg.selectAll(".link").data(links).enter().append("line").attr({
             class : "link"
-        }).style("stroke-width", function(d) {
+        })
+
+        linkSelection.style("stroke-width", function(d) {
             return d.value;
         });
 
         // nodes
-        var nodeSelecton = svg.selectAll(".node").data(nodes).enter().append("g");
+        var nodeSelecton = svg.selectAll(".node").data(nodes).enter().append("g").attr({
+            class : "node"
+        }).call(force.drag);
 
         nodeSelecton.append("circle").attr({
-            class : "node",
             r : nodeRadius
         }).style("fill", function(d) {
             return color(d.group);
-        }).call(force.drag);
+        });
 
         nodeSelecton.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(function(d) {
             return d.name;
