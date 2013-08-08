@@ -31,83 +31,10 @@ d3.text(dataURL, function(error, data) {
         console.log("data --> " + JSON.stringify(data));
     }
 
-    var graph = new graphObject();
+    var graph = new graphData();
     graph.readPid(data);
     var nodes = graph.nodes;
     var links = graph.links;
-
-    // remove from array by value
-    function removeA(arr) {
-        var what, a = arguments, L = a.length, ax;
-        while (L > 1 && arr.length) {
-            what = a[--L];
-            while (( ax = arr.indexOf(what)) !== -1) {
-                arr.splice(ax, 1);
-            }
-        }
-        return arr;
-    }
-
-    function createNode(name, group) {
-        newNode = new Object();
-        newNode['name'] = name;
-        newNode['group'] = group;
-        return newNode;
-    }
-
-    function createLink(sourceIdx, targetIdx) {
-        newLink = new Object({
-            source : sourceIdx,
-            target : targetIdx,
-            value : (Math.floor(Math.random() * 10))
-        });
-        return newLink;
-    }
-
-    function deleteNode(name) {
-        // nothing to delete
-        if (nodes.length < 1) {
-            console.log('no nodes to delete');
-            return;
-        }
-
-        // find index of node
-        idx = -1;
-        for (i in nodes) {
-            if (nodes[i]['name'] == name) {
-                idx = i;
-                break;
-            }
-        }
-        if (idx == -1) {
-            console.log('No node was found for ' + name);
-            return;
-        }
-
-        // find links
-        linksToDelete = new Array();
-        for (i in links) {
-            link = links[i];
-            source = link['source'];
-            target = link['target'];
-
-            if (source == idx || target == idx) {
-                linksToDelete.push(link);
-                continue;
-            } else if ((source['index'] == idx) || (target['index'] == idx)) {
-                linksToDelete.push(link);
-                continue;
-            }
-        }
-
-        // delete stuff
-        for (i in linksToDelete) {
-            link = linksToDelete[i];
-            removeA(links, link);
-        }
-        node = nodes[idx];
-        removeA(nodes, node);
-    }
 
     function setupLayout() {
         // clear the current graph
@@ -190,9 +117,11 @@ d3.text(dataURL, function(error, data) {
         id = this.getAttribute("id");
         value = this.getAttribute("value");
 
-        group = Math.floor(Math.random() * 20)
-        newNode = createNode(Math.random().toString(), group);
-        nodes.push(newNode);
+        group = Math.floor(Math.random() * 20);
+        graph.addNode(new nodeData({
+            name : Math.random().toString(),
+            'group' : group
+        }));
 
         setupLayout();
         return true;
@@ -208,15 +137,19 @@ d3.text(dataURL, function(error, data) {
         value = this.getAttribute("value");
 
         group = Math.floor(Math.random() * 20)
-        newNode = createNode(Math.random().toString(), group);
-        nodes.push(newNode);
+        graph.addNode(new nodeData({
+            name : Math.random().toString(),
+            'group' : group
+        }));
 
         sourceIdx = nodes.length - 1;
         targetIdx = Math.floor(Math.random() * nodes.length);
 
         if (sourceIdx != targetIdx) {
-            newLink = createLink(sourceIdx, targetIdx);
-            links.push(newLink);
+            graph.addLink(new linkData({
+                'sourceIdx' : sourceIdx,
+                'targetIdx' : targetIdx
+            }));
         }
 
         setupLayout();
@@ -240,7 +173,7 @@ d3.text(dataURL, function(error, data) {
         // find/delete node and links
         index = Math.floor(Math.random() * nodes.length);
         name = nodes[index]['name'];
-        deleteNode(name);
+        graph.deleteNodeByName(name);
 
         setupLayout();
         return true;
