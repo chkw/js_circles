@@ -6,7 +6,7 @@ html {
 	stroke:#fff;
 	stroke-width:1.5px;
 }
-text {
+.node text {
 	stroke:darkslategrey;
 	fill:darkslategrey;
 }

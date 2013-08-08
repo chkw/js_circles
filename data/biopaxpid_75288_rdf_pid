@@ -1,0 +1,102 @@
+protein	2.1.1.125
+protein	2.7.11.1
+protein	AKT1
+protein	APRF
+protein	EP300
+complex	ER alpha/ER alpha/GRIP1/CARM1/p300
+protein	ERBB 1/3/4
+protein	ERBB ligand
+complex	ERBB ligand/ERBB2/ERBB 1/3/4
+complex	ERBB2/ERBB3
+protein	ESR1
+protein	GRIP1
+protein	IFNB2
+complex	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130
+complex	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/ERBB2
+complex	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/JAKs
+protein	JAKs
+protein	LRPPRC
+protein	MAP kinase 2
+protein	MAP kinase 3
+protein	MAP2K1
+protein	MEK 2
+protein	NEU
+protein	PDK1
+complex	PI3K
+protein	PI3K regulatory subunit alpha
+SmallMolecule	PIP2
+SmallMolecule	PIP3
+protein	Protein Ash
+complex	SHC/GRB2/SOS-1
+protein	SHCA
+protein	SOS1
+protein	Serine/threonine protein kinase PIK3CA
+protein	Transforming protein p21
+protein	Tyrosine kinase-type cell surface receptor HER3
+protein	gp80
+SmallMolecule	guanosine 5'-triphosphate
+SmallMolecule	guanosine diphosphate
+MEK 2	MEK 2	-a>
+MEK 2	MAP kinase 2	ACTIVATION
+MEK 2	MAP2K1	-a>
+LRPPRC	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/JAKs	component>
+LRPPRC	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/ERBB2	component>
+LRPPRC	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130	component>
+ERBB 1/3/4	ERBB ligand/ERBB2/ERBB 1/3/4	component>
+gp80	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/JAKs	component>
+gp80	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/ERBB2	component>
+gp80	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130	component>
+MAP2K1	MEK 2	-a>
+MAP2K1	MAP kinase 2	ACTIVATION
+MAP2K1	MAP2K1	-a>
+SHC/GRB2/SOS-1	SHC/GRB2/SOS-1	-a>
+SHC/GRB2/SOS-1	guanosine diphosphate	ACTIVATION
+ERBB ligand	ERBB ligand/ERBB2/ERBB 1/3/4	component>
+NEU	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/ERBB2	component>
+NEU	ERBB ligand/ERBB2/ERBB 1/3/4	component>
+NEU	ERBB2/ERBB3	component>
+Protein Ash	SHC/GRB2/SOS-1	component>
+Protein Ash	SHC/GRB2/SOS-1	component>
+2.7.11.1	MEK 2	ACTIVATION
+2.7.11.1	2.7.11.1	-a>
+MAP kinase 3	MAP kinase 3	transport
+MAP kinase 3	MAP kinase 2	transport
+MAP kinase 3	ESR1	ACTIVATION
+MAP kinase 2	MAP kinase 3	transport
+MAP kinase 2	MAP kinase 2	transport
+MAP kinase 2	ESR1	ACTIVATION
+IFNB2	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/JAKs	component>
+IFNB2	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/ERBB2	component>
+IFNB2	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130	component>
+PI3K regulatory subunit alpha	PI3K	component>
+PI3K regulatory subunit alpha	PI3K	component>
+Tyrosine kinase-type cell surface receptor HER3	ERBB2/ERBB3	component>
+AKT1	AKT1	-a>
+SHCA	SHC/GRB2/SOS-1	component>
+SHCA	SHC/GRB2/SOS-1	component>
+guanosine 5'-triphosphate	Transforming protein p21	-a>
+guanosine 5'-triphosphate	guanosine diphosphate	-a>
+APRF	APRF	-a>
+ERBB ligand/ERBB2/ERBB 1/3/4	SHC/GRB2/SOS-1	ACTIVATION
+PIP3	PDK1	ACTIVATION
+PI3K	PIP3	ACTIVATION
+PI3K	PI3K	-a>
+Transforming protein p21	Transforming protein p21	-a>
+Transforming protein p21	guanosine diphosphate	-a>
+Transforming protein p21	2.7.11.1	ACTIVATION
+Transforming protein p21	PI3K	ACTIVATION
+EP300	ER alpha/ER alpha/GRIP1/CARM1/p300	component>
+2.1.1.125	ER alpha/ER alpha/GRIP1/CARM1/p300	component>
+SOS1	SHC/GRB2/SOS-1	component>
+SOS1	SHC/GRB2/SOS-1	component>
+ESR1	ER alpha/ER alpha/GRIP1/CARM1/p300	component>
+ESR1	ESR1	-a>
+ERBB2/ERBB3	SHC/GRB2/SOS-1	ACTIVATION
+PDK1	PDK1	-a>
+PDK1	AKT1	ACTIVATION
+IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/JAKs	APRF	ACTIVATION
+PIP2	PIP3	-a>
+JAKs	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/JAKs	component>
+GRIP1	ER alpha/ER alpha/GRIP1/CARM1/p300	component>
+Serine/threonine protein kinase PIK3CA	PI3K	component>
+Serine/threonine protein kinase PIK3CA	PI3K	component>
