@@ -1,0 +1,16 @@
+html {
+    font-family:Verdana;
+}
+
+.node {
+	stroke:#fff;
+	stroke-width:1.5px;
+}
+.node text {
+	stroke:darkslategrey;
+	fill:darkslategrey;
+}
+.link {
+	stroke:#999;
+	stroke-opacity:.6;
+}
