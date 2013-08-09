@@ -1,0 +1,59 @@
+2.1.1.125	component>	ER alpha/ER alpha/GRIP1/CARM1/p300
+2.7.11.1	-a>	2.7.11.1
+2.7.11.1	ACTIVATION	MEK 2
+AKT1	-a>	AKT1
+APRF	-a>	APRF
+EP300	component>	ER alpha/ER alpha/GRIP1/CARM1/p300
+ERBB 1/3/4	component>	ERBB ligand/ERBB2/ERBB 1/3/4
+ERBB ligand	component>	ERBB ligand/ERBB2/ERBB 1/3/4
+ERBB ligand/ERBB2/ERBB 1/3/4	ACTIVATION	SHC/GRB2/SOS-1
+ERBB2/ERBB3	ACTIVATION	SHC/GRB2/SOS-1
+ESR1	-a>	ESR1
+ESR1	component>	ER alpha/ER alpha/GRIP1/CARM1/p300
+GRIP1	component>	ER alpha/ER alpha/GRIP1/CARM1/p300
+IFNB2	component>	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130
+IFNB2	component>	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/ERBB2
+IFNB2	component>	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/JAKs
+IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/JAKs	ACTIVATION	APRF
+JAKs	component>	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/JAKs
+LRPPRC	component>	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130
+LRPPRC	component>	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/ERBB2
+LRPPRC	component>	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/JAKs
+MAP kinase 2	ACTIVATION	ESR1
+MAP kinase 2	transport	MAP kinase 2
+MAP kinase 2	transport	MAP kinase 3
+MAP kinase 3	ACTIVATION	ESR1
+MAP kinase 3	transport	MAP kinase 2
+MAP kinase 3	transport	MAP kinase 3
+MAP2K1	-a>	MAP2K1
+MAP2K1	-a>	MEK 2
+MAP2K1	ACTIVATION	MAP kinase 2
+MEK 2	-a>	MAP2K1
+MEK 2	-a>	MEK 2
+MEK 2	ACTIVATION	MAP kinase 2
+NEU	component>	ERBB ligand/ERBB2/ERBB 1/3/4
+NEU	component>	ERBB2/ERBB3
+NEU	component>	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/ERBB2
+PDK1	-a>	PDK1
+PDK1	ACTIVATION	AKT1
+PI3K	-a>	PI3K
+PI3K	ACTIVATION	PIP3
+PI3K regulatory subunit alpha	component>	PI3K
+PIP2	-a>	PIP3
+PIP3	ACTIVATION	PDK1
+Protein Ash	component>	SHC/GRB2/SOS-1
+SHC/GRB2/SOS-1	-a>	SHC/GRB2/SOS-1
+SHC/GRB2/SOS-1	ACTIVATION	guanosine diphosphate
+SHCA	component>	SHC/GRB2/SOS-1
+SOS1	component>	SHC/GRB2/SOS-1
+Serine/threonine protein kinase PIK3CA	component>	PI3K
+Transforming protein p21	-a>	Transforming protein p21
+Transforming protein p21	-a>	guanosine diphosphate
+Transforming protein p21	ACTIVATION	2.7.11.1
+Transforming protein p21	ACTIVATION	PI3K
+Tyrosine kinase-type cell surface receptor HER3	component>	ERBB2/ERBB3
+gp80	component>	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130
+gp80	component>	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/ERBB2
+gp80	component>	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/JAKs
+guanosine 5'-triphosphate	-a>	Transforming protein p21
+guanosine 5'-triphosphate	-a>	guanosine diphosphate

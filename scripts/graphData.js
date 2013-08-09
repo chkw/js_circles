@@ -48,6 +48,20 @@ function graphData() {
         }
     }
     /**
+     * Get IDs for nodes that have the specified name.
+     */
+    this.getNodeIdsByName = function(name) {
+        var idList = new Array();
+        var nameUc = name.toUpperCase(name);
+        for (var i in this.nodes) {
+            var node = this.nodes[i];
+            if (node['name'].toUpperCase() == nameUc) {
+                idList.push(i);
+            }
+        }
+        return idList;
+    }
+    /**
      * Delete a node by the name.
      */
     this.deleteNodeByName = function(name) {
@@ -93,6 +107,54 @@ function graphData() {
         }
         node = this.nodes[idx];
         removeA(this.nodes, node);
+    }
+    /**
+     * read graph SIF text
+     */
+    this.readSif = function(text) {
+        // clear old graph
+        this.nodes = new Array();
+        this.links = new Array();
+
+        var lines = text.split('\n');
+
+        // nodes
+        var nodeNameArray = new Array();
+        for (var i in lines) {
+            var fields = lines[i].split('\t');
+            if (fields.length >= 3) {
+                var sourceName = fields[0];
+                var targetName = fields[2];
+                nodeNameArray.push(sourceName);
+                nodeNameArray.push(targetName);
+            }
+        }
+        nodeNameArray = d3.set(nodeNameArray).values();
+        for (var i in nodeNameArray) {
+            var nodeName = nodeNameArray[i];
+            this.addNode(new nodeData({
+                name : nodeName
+            }));
+        }
+
+        // links
+        for (var i in lines) {
+            var fields = lines[i].split('\t');
+            if (fields.length >= 3) {
+                var sourceName = fields[0];
+                var relation = fields[1];
+                var targetName = fields[2];
+
+                var sourceIdxList = this.getNodeIdsByName(sourceName);
+                var targetIdxList = this.getNodeIdsByName(targetName);
+
+                this.addLink(new linkData({
+                    sourceIdx : sourceIdxList[0],
+                    targetIdx : targetIdxList[0],
+                    'relation' : relation
+                }));
+            }
+        }
     }
     /**
      * read graph from PID text
