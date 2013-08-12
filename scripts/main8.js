@@ -1,5 +1,7 @@
 // Draw CircleMaps just using D3, no jQuery.
 
+var svgNamespaceUri = 'http://www.w3.org/2000/svg';
+
 var width = 960, height = 500;
 var linkDistance = 300;
 var linkStrength = 0.1;
@@ -62,10 +64,10 @@ d3.text(dataURL, function(error, data) {
             class : "node"
         }).call(force.drag);
 
-        nodeSelecton.append(function(){
-            return "circle";
-        }).attr({
-            r : nodeRadius
+        nodeSelecton.append(function(d) {
+            var newElement = document.createElementNS(svgNamespaceUri, 'circle');
+            newElement.setAttributeNS(null, 'r', nodeRadius);
+            return newElement;
         }).style("fill", function(d) {
             return color(d.group);
         });
