@@ -6,7 +6,7 @@ function nodeData(data) {
     if ('group' in data) {
         this.group = data['group'];
     } else {
-        this.group = 'protein';
+        this.group = 'unspecified';
     }
 }
 
