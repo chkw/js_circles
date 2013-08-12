@@ -1,45 +1,33 @@
+var svgNamespaceUri = 'http://www.w3.org/2000/svg';
 
-// TODO "main" section of the script.
-$(document).ready(function() {
+var width = 960, height = 500;
 
-    $("#input").hide();
+var metaData = null;
+var metaDataUrl = "data/metaDataJson";
 
-    // TODO circleMap tests
+var circleData = null;
+var dataUrl = "data/dataJson";
 
-    var metaData = null;
-    var metaDataUrl = "data/metaDataJson";
+var query = null;
+var queryUrl = "data/queryJson";
 
-    var data = null;
-    var dataUrl = "data/dataJson";
+// svg element that contains the graph
+var svg = d3.select("body").append("svg").attr({
+    'width' : width,
+    'height' : height,
+    'id': 'circleMaps'
+});
 
-    var query = null;
-    var queryUrl = "data/queryJson";
-
-    $.getJSON(metaDataUrl, function(response) {
-        metaData = response;
-    }).done(function() {
-        console.log("number of metaData --> " + Object.keys(metaData).length);
-        $.getJSON(dataUrl, function(response) {
-            data = response;
-        }).done(function() {
-            console.log("number of data --> " + Object.keys(data).length);
-            $.getJSON(queryUrl, function(response) {
-                query = response;
-            }).done(function() {
-                console.log("number of query --> " + Object.keys(query).length);
-                var cv = $("#circleDiv").circleMapViewer(800, 800, metaData, data, query);
-            }).fail(function() {
-                alert("fail getting " + queryUrl);
-            });
-        }).fail(function() {
-            alert("fail getting " + dataUrl);
+d3.json(metaDataUrl, function(error, data) {
+    metaData = data;
+    console.log("number of metaData --> " + Object.keys(metaData).length);
+    d3.json(dataUrl, function(error, data) {
+        circleData = data;
+        console.log("number of circleData --> " + Object.keys(circleData).length);
+        d3.json(queryUrl, function(error, data) {
+            query = data;
+            console.log("number of query --> " + Object.keys(query).length);
+            circleMapElements = circleMapViewer(width, height, metaData, circleData, query);
         });
-    }).fail(function() {
-        alert("fail getting " + metaDataUrl);
     });
-
-    // TODO circleMapViewer
-    // var cv = $("#circleDiv").circleMapViewer(800, 600, JSON.stringify(testMetaData), JSON.stringify(testData), JSON.stringify(null));
-    // var cv = $("#circleDiv").circleMapViewer(800, 600, JSON.stringify(testMetaData), JSON.stringify(testData), JSON.stringify(null));
-
 });

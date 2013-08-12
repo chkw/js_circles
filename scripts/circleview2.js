@@ -1,13 +1,12 @@
 /**
- * Use this with something like: <code>var cv = $("#circleDiv").circleMapViewer(800, 800, metaData, data, query);</code>
- *
  * @param width
  * @param height
  * @param metaDataObj
  * @param dataObj
  * @param queryDataObj
  */
-jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj, dataObj, queryDataObj) {
+function circleMapViewer(width, height, metaDataObj, dataObj, queryDataObj) {
+    var svgNamespaceUri = 'http://www.w3.org/2000/svg';
 
     // TODO main section
 
@@ -25,89 +24,30 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
 
     var sortedSamples = getSortedSamples(queryFeatures[0], getDatasetNames());
 
-    this.each(function() {
-        var svg = d3.select(this).append('svg').attr({
-            'id' : 'circleMaps',
-            'width' : width,
-            'height' : height
-        });
-    });
-
     var circleMapsSvgElement = d3.select('#circleMaps');
 
     // draw circleMaps
+    var circleMapElements = new Object();
     queryFeatures.forEach(function(val, idx, arr) {
         var feature = val;
-        drawCircleMap(feature, sortedSamples, circleMapsSvgElement);
+        var circleMap = drawCircleMap(feature, sortedSamples, circleMapsSvgElement);
+        circleMapElements[feature] = circleMap.style("display", "none");
+        circleMap.style("display", "");
+        console.log(circleMap);
     });
 
     // select circleMaps
     var selectionSize = selectAllCircleMaps().size();
     console.log("number selected --> " + selectionSize);
 
-    var links = generateLinks(selectAllCircleMaps(), 3);
-    console.log(links);
+    d3.selectAll(".circleMap").each(function(d, i) {
+        var element = this;
+        var x = Math.floor(Math.random() * (width - 200));
+        var y = Math.floor(Math.random() * (height - 200));
 
-    randomElementLayout(selectAllCircleMaps(), width, height);
-    // forceElementLayout(selectAllCircleMaps(), links, width, height);
-    // forceElementLayout(new Array(), new Array(), width, height);
-
-    /**
-     * generate some random links
-     */
-    function generateLinks(elements, number) {
-
-        var elementMap = d3.map();
-        elements.each(function(d, i) {
-            var element = $(this);
-            elementMap.set(element.attr("id"), element);
-        });
-
-        var linksSet = d3.set();
-        for (; linksSet.values().length < number; ) {
-            var source = elementMap.keys()[Math.floor(Math.random() * elementMap.keys().length)];
-            var target = elementMap.keys()[Math.floor(Math.random() * elementMap.keys().length)];
-            if (source !== target) {
-                var link = source + "__LINK__" + target;
-                linksSet.add(link);
-            }
-        }
-
-        var links = new Array();
-        linksSet.values().forEach(function(val, idx, arr) {
-            var s = val.split("__LINK__");
-            var link = {
-                "source" : elementMap.get(s[0]),
-                "target" : elementMap.get(s[1])
-            };
-            links.push(link);
-        });
-
-        return links;
-    }
-
-    /**
-     * Force layout
-     */
-    function forceElementLayout(graphNodes, graphLinks, width, height) {
-        var force = d3.layout.force().nodes(graphNodes).links(graphLinks).size([width - 200, height - 200]);
-        // graphNodes.call(force.drag);
-        force.start();
-        return force;
-    }
-
-    /**
-     * Position the elements randomly.
-     */
-    function randomElementLayout(elementSelection, maxX, maxY) {
-        elementSelection.each(function(d, i) {
-            var element = $(this);
-            var x = Math.floor(Math.random() * (maxX - 200));
-            var y = Math.floor(Math.random() * (maxY - 200));
-            element.attr("x", x);
-            element.attr("y", y);
-        });
-    }
+        element.setAttributeNS(null, 'x', x);
+        element.setAttributeNS(null, 'y', y);
+    });
 
     /**
      * Select all elements with the class "circleMap".
@@ -355,6 +295,10 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
         var circleMapSvgElement = d3SvgTagElement.append("svg").attr("id", feature).attr("class", "circleMap node").attr("name", feature);
         var circleMapGroup = circleMapSvgElement.append("g").attr("class", "circleMapG").attr("transform", "translate(100,100)");
 
+        // var circleMapGroup = document.createElementNS(svgNamespaceUri,"g");
+        // circleMapGroup.setAttributeNS(null, "class", "circleMapG");
+        // circleMapGroup.setAttributeNS(null, "transform", "translate(100,100)");
+
         // iterate over rings
         Object.keys(data).forEach(function(val, idx, arr) {
             var dataName = val;
@@ -391,6 +335,6 @@ jQuery.fn.circleMapViewer = function circleMapViewer(width, height, metaDataObj,
         return circleMapGroup;
     }
 
-    return this;
+    return circleMapElements;
 }
 
