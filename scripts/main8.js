@@ -64,10 +64,22 @@ d3.text(dataURL, function(error, data) {
             class : "node"
         }).call(force.drag);
 
+        // node visualization
         nodeSelecton.append(function(d) {
-            var newElement = document.createElementNS(svgNamespaceUri, 'circle');
-            newElement.setAttributeNS(null, 'r', nodeRadius);
-            return newElement;
+            if (d.group.toUpperCase() == 'SMALLMOLECULE') {
+                var newElement = document.createElementNS(svgNamespaceUri, 'rect');
+                newElement.setAttributeNS(null, 'width', nodeRadius * 2);
+                newElement.setAttributeNS(null, 'height', nodeRadius * 2);
+                newElement.setAttributeNS(null, 'x', -1 * nodeRadius);
+                newElement.setAttributeNS(null, 'y', -1 * nodeRadius);
+                newElement.setAttributeNS(null, 'rx', 9);
+                newElement.setAttributeNS(null, 'ry', 9);
+                return newElement;
+            } else {
+                var newElement = document.createElementNS(svgNamespaceUri, 'circle');
+                newElement.setAttributeNS(null, 'r', nodeRadius);
+                return newElement;
+            }
         }).style("fill", function(d) {
             return color(d.group);
         });
