@@ -203,7 +203,7 @@ function graphData() {
                     this.addLink(new linkData({
                         'sourceIdx' : parseInt(sourceIdx),
                         'targetIdx' : parseInt(targetIdx),
-                        value : 3,
+                        value : 3
                     }));
                 }
             }
