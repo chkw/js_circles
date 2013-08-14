@@ -109,6 +109,59 @@ function graphData() {
         removeA(this.nodes, node);
     }
     /**
+     * read graph links from TAB text
+     */
+    this.readTab = function(text) {
+        // clear old graph
+        this.nodes = new Array();
+        this.links = new Array();
+
+        var lines = text.split('\n');
+
+        // nodes
+        var nodeNameArray = new Array();
+        for (var i in lines) {
+            var fields = lines[i].split('\t');
+            if (fields.length >= 2) {
+                var sourceName = fields[0];
+                var targetName = fields[1];
+                nodeNameArray.push(sourceName);
+                nodeNameArray.push(targetName);
+            }
+        }
+        nodeNameArray = d3.set(nodeNameArray).values();
+        for (var i in nodeNameArray) {
+            var nodeName = nodeNameArray[i];
+            this.addNode(new nodeData({
+                name : nodeName
+            }));
+        }
+
+        // links
+        for (var i in lines) {
+            var fields = lines[i].split('\t');
+            if (fields.length >= 2) {
+                var sourceName = fields[0];
+                var targetName = fields[1];
+                var relation = '';
+                if (fields.length >= 3) {
+                    relation = fields[2];
+                } else {
+                    relation = 'unspecified';
+                }
+
+                var sourceIdxList = this.getNodeIdsByName(sourceName);
+                var targetIdxList = this.getNodeIdsByName(targetName);
+
+                this.addLink(new linkData({
+                    sourceIdx : sourceIdxList[0],
+                    targetIdx : targetIdxList[0],
+                    'relation' : relation
+                }));
+            }
+        }
+    }
+    /**
      * read graph SIF text
      */
     this.readSif = function(text) {

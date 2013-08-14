@@ -25,6 +25,15 @@ var svg = d3.select("body").append("svg").attr({
     'height' : height
 });
 
+/**
+ * Check if str ends with suffix.
+ * @param {Object} str
+ * @param {Object} suffix
+ */
+function endsWith(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+
 // asynchronous
 d3.text(dataURL, function(error, data) {
 
@@ -35,7 +44,13 @@ d3.text(dataURL, function(error, data) {
     }
 
     var graph = new graphData();
-    graph.readPid(data);
+    if (endsWith(dataURL.toUpperCase(), 'PID')) {
+        graph.readPid(data);
+    } else if (endsWith(dataURL.toUpperCase(), 'SIF')) {
+        graph.readSif(data);
+    } else {
+        graph.readTab(data);
+    }
     var nodes = graph.nodes;
     var links = graph.links;
 

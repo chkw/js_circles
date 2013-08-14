@@ -1,0 +1,59 @@
+2.1.1.125	ER alpha/ER alpha/GRIP1/CARM1/p300
+2.7.11.1	2.7.11.1
+2.7.11.1	MEK 2
+AKT1	AKT1
+APRF	APRF
+EP300	ER alpha/ER alpha/GRIP1/CARM1/p300
+ERBB 1/3/4	ERBB ligand/ERBB2/ERBB 1/3/4
+ERBB ligand	ERBB ligand/ERBB2/ERBB 1/3/4
+ERBB ligand/ERBB2/ERBB 1/3/4	SHC/GRB2/SOS-1
+ERBB2/ERBB3	SHC/GRB2/SOS-1
+ESR1	ESR1
+ESR1	ER alpha/ER alpha/GRIP1/CARM1/p300
+GRIP1	ER alpha/ER alpha/GRIP1/CARM1/p300
+IFNB2	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130
+IFNB2	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/ERBB2
+IFNB2	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/JAKs
+IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/JAKs	APRF
+JAKs	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/JAKs
+LRPPRC	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130
+LRPPRC	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/ERBB2
+LRPPRC	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/JAKs
+MAP kinase 2	ESR1
+MAP kinase 2	MAP kinase 2
+MAP kinase 2	MAP kinase 3
+MAP kinase 3	ESR1
+MAP kinase 3	MAP kinase 2
+MAP kinase 3	MAP kinase 3
+MAP2K1	MAP2K1
+MAP2K1	MEK 2
+MAP2K1	MAP kinase 2
+MEK 2	MAP2K1
+MEK 2	MEK 2
+MEK 2	MAP kinase 2
+NEU	ERBB ligand/ERBB2/ERBB 1/3/4
+NEU	ERBB2/ERBB3
+NEU	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/ERBB2
+PDK1	PDK1
+PDK1	AKT1
+PI3K	PI3K
+PI3K	PIP3
+PI3K regulatory subunit alpha	PI3K
+PIP2	PIP3
+PIP3	PDK1
+Protein Ash	SHC/GRB2/SOS-1
+SHC/GRB2/SOS-1	SHC/GRB2/SOS-1
+SHC/GRB2/SOS-1	guanosine diphosphate
+SHCA	SHC/GRB2/SOS-1
+SOS1	SHC/GRB2/SOS-1
+Serine/threonine protein kinase PIK3CA	PI3K
+Transforming protein p21	Transforming protein p21
+Transforming protein p21	guanosine diphosphate
+Transforming protein p21	2.7.11.1
+Transforming protein p21	PI3K
+Tyrosine kinase-type cell surface receptor HER3	ERBB2/ERBB3
+gp80	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130
+gp80	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/ERBB2
+gp80	IL-6/IL-6/IL-6R-alpha/IL-6R-alpha/GP130/GP130/JAKs
+guanosine 5'-triphosphate	Transforming protein p21
+guanosine 5'-triphosphate	guanosine diphosphate
