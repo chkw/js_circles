@@ -1,6 +1,5 @@
-// Draw CircleMaps just using D3, no jQuery.
-
 var svgNamespaceUri = 'http://www.w3.org/2000/svg';
+var xlinkUri = 'http://www.w3.org/1999/xlink';
 
 var width = 960, height = 500;
 var linkDistance = 300;
@@ -25,6 +24,21 @@ var svg = d3.select("body").append("svg").attr({
     'height' : height
 });
 
+function throbberOn() {
+    svg.append('image').attr({
+        id : 'throbber',
+        'xlink:href' : 'images/loading_16.gif',
+        x : (0.5 * width),
+        y : (0.5 * height),
+        'width' : 16,
+        'height' : 16
+    });
+}
+
+function throbberOff() {
+    d3.select('#throbber').remove();
+}
+
 /**
  * Check if str ends with suffix.
  * @param {Object} str
@@ -38,9 +52,7 @@ function endsWith(str, suffix) {
 d3.text(dataURL, function(error, data) {
 
     if (error !== null) {
-        console.log("error --> " + error);
-    } else {
-        console.log("data --> " + JSON.stringify(data));
+        console.log("error getting graph data --> " + error);
     }
 
     var graph = new graphData();
