@@ -1,97 +1,54 @@
-/**
- * @param width
- * @param height
+/**s
  * @param metaDataObj
  * @param dataObj
  * @param queryDataObj
  */
-function circleMapViewer(width, height, metaDataObj, dataObj, queryDataObj) {
+function circleMapGenerator(metaDataObj, dataObj, queryDataObj) {
+    var testing = false;
+
     var svgNamespaceUri = 'http://www.w3.org/2000/svg';
 
     // TODO main section
 
-    var metaData = metaDataObj;
-    var data = dataObj;
-    var queryData = queryDataObj;
+    this.metaData = metaDataObj;
+    this.data = dataObj;
+    this.queryData = queryDataObj;
 
     // logData();
-
-    var numberOfCircleMapsToDraw = 9;
-
-    var queryFeatures = getQueryFeatures().slice(0, numberOfCircleMapsToDraw);
-    console.log("num query features: " + queryFeatures.length);
-    console.log(queryFeatures.toString());
-
-    var sortedSamples = getSortedSamples(queryFeatures[0], getDatasetNames());
-
-    var circleMapsSvgElement = d3.select('#circleMaps');
-
-    // draw circleMaps
-    var circleMapElements = new Object();
-    queryFeatures.forEach(function(val, idx, arr) {
-        var feature = val;
-        var circleMap = drawCircleMap(feature, sortedSamples, circleMapsSvgElement);
-        circleMapElements[feature] = circleMap.style("display", "none");
-        circleMap.style("display", "");
-        console.log(circleMap);
-    });
-
-    // select circleMaps
-    var selectionSize = selectAllCircleMaps().size();
-    console.log("number selected --> " + selectionSize);
-
-    d3.selectAll(".circleMap").each(function(d, i) {
-        var element = this;
-        var x = Math.floor(Math.random() * (width - 200));
-        var y = Math.floor(Math.random() * (height - 200));
-
-        element.setAttributeNS(null, 'x', x);
-        element.setAttributeNS(null, 'y', y);
-    });
-
-    /**
-     * Select all elements with the class "circleMap".
-     */
-    function selectAllCircleMaps() {
-        return d3.selectAll(".circleMap");
-    }
-
-    /**
-     * get an array of dataset names from the metadata
-     */
-    function getDatasetNames() {
-        return Object.keys(metaData);
-    }
 
     /**
      * Get the query features.
      */
-    function getQueryFeatures() {
-        if ("features" in queryData) {
-            return queryData["features"];
+    this.getQueryFeatures = function() {
+        if ("features" in this.queryData) {
+            return this.queryData["features"];
         } else {
             return new Array();
         }
     }
-
+    /**
+     * get an array of dataset names from the metadata
+     */
+    this.getDatasetNames = function() {
+        return Object.keys(this.metaData);
+    }
     /**
      * log the object attributes to console
      */
-    function logData() {
-        console.log("metaData is " + JSON.stringify(metaData));
-        console.log("data is " + JSON.stringify(data));
-        console.log("queryData is " + JSON.stringify(queryData));
+    this.logData = function() {
+        console.log("metaData is " + JSON.stringify(this.metaData));
+        console.log("data is " + JSON.stringify(this.data));
+        console.log("queryData is " + JSON.stringify(this.queryData));
     }
-
     /**
      * get all sampleIDs from the metadata
      */
-    function getSampleNames() {
+    this.getSampleNames = function() {
         var namesSet = d3.set();
-        var datasetNames = getDatasetNames();
+        var datasetNames = this.getDatasetNames();
         datasetNames.forEach(function(val, idx, arr) {
             var datasetName = val;
-            var sampleNames = metaData[datasetName]['sampleNames'].split(",");
+            var sampleNames = this.metaData[datasetName]['sampleNames'].split(",");
             sampleNames.forEach(function(val, idx, arr) {
                 var name = val;
                 namesSet.add(name);
@@ -99,23 +56,39 @@ function circleMapViewer(width, height, metaDataObj, dataObj, queryDataObj) {
         });
         return namesSet.values();
     }
-
+    /**
+     * get the data for a ring
+     * @param {Object} dataName
+     * @param {Object} feature
+     */
+    this.getRingData = function(dataName, feature) {
+        if ( dataName in this.data) {
+            if ( feature in this.data[dataName]) {
+                return this.data[dataName][feature];
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
     /**
      * get sample names in sorted order
      */
-    function getSortedSamples(sortingFeature, dataSortingOrder) {
+    this.getSortedSamples = function(sortingFeature, dataSortingOrder) {
         var sampleObjects = new Array();
-        var allSampleIds = getSampleNames();
-        allSampleIds.forEach(function(val, idx, arr) {
-            var id = val;
+        var allSampleIds = this.getSampleNames();
+
+        for (var i in allSampleIds) {
+            var id = allSampleIds[i];
             var sampleObj = new Object();
             sampleObjects.push(sampleObj);
             sampleObj["id"] = id;
             sampleObj["scores"] = new Array();
 
-            dataSortingOrder.forEach(function(val, idx, arr) {
-                var datasetName = val;
-                var ringData = getRingData(datasetName, sortingFeature);
+            for (var j in dataSortingOrder) {
+                var datasetName = dataSortingOrder[j];
+                var ringData = this.getRingData(datasetName, sortingFeature);
                 var score;
                 if (ringData == null) {
                     score = null;
@@ -123,8 +96,9 @@ function circleMapViewer(width, height, metaDataObj, dataObj, queryDataObj) {
                     score = ringData[id];
                 }
                 sampleObj["scores"].push(score);
-            });
-        });
+            }
+
+        }
 
         sampleObjects.sort(compareSampleObjects);
 
@@ -179,20 +153,7 @@ function circleMapViewer(width, height, metaDataObj, dataObj, queryDataObj) {
         return sortedSampleNames;
     }
 
-    /**
-     * get the data for a ring
-     * @param {Object} dataName
-     * @param {Object} feature
-     */
-    function getRingData(dataName, feature) {
-        if ( dataName in data) {
-            if ( feature in data[dataName]) {
-                return data[dataName][feature];
-            } else
-                return null;
-        } else
-            return null;
-    }
+    this.sortedSamples = this.getSortedSamples(this.getQueryFeatures().slice(0, 1), this.getDatasetNames());
 
     /**
      * convert an rgb component to hex value
@@ -239,7 +200,7 @@ function circleMapViewer(width, height, metaDataObj, dataObj, queryDataObj) {
         var minG = 255;
         var minB = 255;
 
-        var normalizedScore = (score / metaData[dataName].cohortMax);
+        var normalizedScore = (score / this.metaData[dataName].cohortMax);
 
         if (!isPositive) {
             maxR = 0;
@@ -250,7 +211,7 @@ function circleMapViewer(width, height, metaDataObj, dataObj, queryDataObj) {
             minG = 255;
             minB = 255;
 
-            normalizedScore = (score / metaData[dataName].cohortMin);
+            normalizedScore = (score / this.metaData[dataName].cohortMin);
         }
 
         var newR = linearInterpolation(normalizedScore, minR, maxR);
@@ -277,40 +238,39 @@ function circleMapViewer(width, height, metaDataObj, dataObj, queryDataObj) {
     /**
      * draw a CircleMap via d3.js
      * @param {Object} feature
-     * @param {Object} sortedSamples
      * @param {Object} d3SvgTagElement
      */
-    function drawCircleMap(feature, sortedSamples, d3SvgTagElement) {
+    this.drawCircleMap = function(feature, d3SvgTagElement) {
+        console.log('feature: ' + feature);
+        console.log('d3SvgTagElement: ' + d3SvgTagElement);
+
         var fullRadius = 100;
 
-        var numDatasets = Object.keys(data).length;
+        var numDatasets = Object.keys(this.data).length;
 
         // +1 for the center
         var ringThickness = fullRadius / (numDatasets + 1);
         var innerRadius = ringThickness;
 
-        var degreeIncrements = 360 / sortedSamples.length;
+        var degreeIncrements = 360 / this.sortedSamples.length;
 
         // arc paths will be added to this SVG group
         var circleMapSvgElement = d3SvgTagElement.append("svg").attr("id", feature).attr("class", "circleMap node").attr("name", feature);
-        var circleMapGroup = circleMapSvgElement.append("g").attr("class", "circleMapG").attr("transform", "translate(100,100)");
-
-        // var circleMapGroup = document.createElementNS(svgNamespaceUri,"g");
-        // circleMapGroup.setAttributeNS(null, "class", "circleMapG");
-        // circleMapGroup.setAttributeNS(null, "transform", "translate(100,100)");
+        var circleMapGroup = circleMapSvgElement.append("g").attr("class", "circleMapG");
 
         // iterate over rings
-        Object.keys(data).forEach(function(val, idx, arr) {
-            var dataName = val;
 
-            var ringData = getRingData(dataName, feature);
+        var datasetNames = Object.keys(this.data);
+        for (var i in datasetNames) {
+            var dataName = datasetNames[i];
+            var ringData = this.getRingData(dataName, feature);
             if (ringData == null) {
                 // draw a grey ring for no data.
                 var arc = createD3Arc(innerRadius, innerRadius + ringThickness, 0, 360);
                 circleMapGroup.append("path").attr("d", arc).attr("fill", "grey");
             } else {
                 var startDegrees = 0;
-                sortedSamples.forEach(function(val, idx, arr) {
+                this.sortedSamples.forEach(function(val, idx, arr) {
                     var sampleName = val;
                     var hexColor = "grey";
                     if ( sampleName in ringData) {
@@ -327,14 +287,12 @@ function circleMapViewer(width, height, metaDataObj, dataObj, queryDataObj) {
             }
 
             innerRadius = innerRadius + ringThickness;
-        });
+        };
 
         // add a label
         circleMapGroup.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(feature);
 
         return circleMapGroup;
-    }
-
-    return circleMapElements;
+    };
 }
 

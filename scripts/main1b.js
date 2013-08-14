@@ -15,7 +15,7 @@ var queryUrl = "data/queryJson";
 var svg = d3.select("body").append("svg").attr({
     'width' : width,
     'height' : height,
-    'id': 'circleMaps'
+    'id' : 'circleMaps'
 });
 
 d3.json(metaDataUrl, function(error, data) {
@@ -27,7 +27,20 @@ d3.json(metaDataUrl, function(error, data) {
         d3.json(queryUrl, function(error, data) {
             query = data;
             console.log("number of query --> " + Object.keys(query).length);
-            circleMapElements = circleMapViewer(width, height, metaData, circleData, query);
+            var cmg = new circleMapGenerator(metaData, circleData, query);
+            var queryFeatures = cmg.getQueryFeatures();
+
+            for (var i in queryFeatures) {
+                var feature = queryFeatures[i];
+                var circleMapGroupElement = cmg.drawCircleMap(feature, svg);
+
+                // random position
+                var x = Math.floor(Math.random() * (width - 200));
+                var y = Math.floor(Math.random() * (height - 200));
+                circleMapGroupElement.attr({
+                    transform : 'translate(' + x + ',' + y + ')'
+                });
+            }
         });
     });
 });
