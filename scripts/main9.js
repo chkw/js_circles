@@ -1,7 +1,7 @@
 var svgNamespaceUri = 'http://www.w3.org/2000/svg';
 var xlinkUri = 'http://www.w3.org/1999/xlink';
 
-// vars fro d3.layout.force
+// vars for d3.layout.force
 var width = 960, height = 500;
 var linkDistance = 300;
 var linkStrength = 0.1;

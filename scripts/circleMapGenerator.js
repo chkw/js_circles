@@ -249,13 +249,12 @@ function circleMapGenerator(metaDataObj, dataObj, queryDataObj) {
 
         // arc paths will be added to this SVG group
         var circleMapSvgElement = d3SvgTagElement.append('svg').attr({
-            'id' : feature,
-            'class' : 'circleMap node',
-            'name' : feature
+            id : feature,
+            class : 'circleMapSvg',
+            name : feature
         });
         var circleMapGroup = circleMapSvgElement.append('g').attr({
-            class : 'circleMapG',
-            transform : 'translate(' + fullRadius + ',' + fullRadius + ')'
+            class : 'circleMapG'
         });
 
         // iterate over rings
