@@ -1,17 +1,30 @@
 html {
-    font-family:Verdana;
+	font-family:Verdana;
 }
-
+svg {
+	background-color:#FFF;
+	cursor:default;
+	-webkit-user-select:none;
+	-moz-user-select:none;
+	-ms-user-select:none;
+	-o-user-select:none;
+	user-select:none;
+}
+svg:not(.active):not(.ctrl) {
+	cursor:crosshair;
+}
+svg:not(.active):not(.ctrl) path.link {
+	cursor:pointer;
+}
 .node {
-    stroke:#fff;
-    stroke-width:1.5px;
+	stroke:#fff;
+	stroke-width:1.5px;
 }
 .node text {
-    stroke:darkslategrey;
-    fill:darkslategrey;
+	stroke:darkslategrey;
+	fill:darkslategrey;
 }
 .link {
-    stroke:#999;
-    stroke-opacity:.6;
+	stroke:#999;
+	stroke-opacity:.6;
 }
-
