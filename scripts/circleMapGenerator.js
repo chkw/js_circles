@@ -4,11 +4,7 @@
  * @param queryDataObj
  */
 function circleMapGenerator(metaDataObj, dataObj, queryDataObj) {
-    var testing = false;
-
     var svgNamespaceUri = 'http://www.w3.org/2000/svg';
-
-    // TODO main section
 
     this.metaData = metaDataObj;
     this.data = dataObj;
@@ -241,9 +237,6 @@ function circleMapGenerator(metaDataObj, dataObj, queryDataObj) {
      * @param {Object} d3SvgTagElement
      */
     this.drawCircleMap = function(feature, d3SvgTagElement) {
-        console.log('feature: ' + feature);
-        console.log('d3SvgTagElement: ' + d3SvgTagElement);
-
         var fullRadius = 100;
 
         var numDatasets = Object.keys(this.data).length;
@@ -255,8 +248,15 @@ function circleMapGenerator(metaDataObj, dataObj, queryDataObj) {
         var degreeIncrements = 360 / this.sortedSamples.length;
 
         // arc paths will be added to this SVG group
-        var circleMapSvgElement = d3SvgTagElement.append("svg").attr("id", feature).attr("class", "circleMap node").attr("name", feature);
-        var circleMapGroup = circleMapSvgElement.append("g").attr("class", "circleMapG");
+        var circleMapSvgElement = d3SvgTagElement.append('svg').attr({
+            'id' : feature,
+            'class' : 'circleMap node',
+            'name' : feature
+        });
+        var circleMapGroup = circleMapSvgElement.append('g').attr({
+            class : 'circleMapG',
+            transform : 'translate(' + fullRadius + ',' + fullRadius + ')'
+        });
 
         // iterate over rings
 
@@ -292,7 +292,7 @@ function circleMapGenerator(metaDataObj, dataObj, queryDataObj) {
         // add a label
         circleMapGroup.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(feature);
 
-        return circleMapGroup;
+        return circleMapSvgElement;
     };
 }
 
