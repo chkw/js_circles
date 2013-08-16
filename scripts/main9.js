@@ -21,6 +21,12 @@ var svg = d3.select("body").append("svg").attr({
     'height' : svgHeight,
     'id' : 'circleMaps'
 });
+var svgLinkLayer = svg.append('g').attr({
+    id : 'linkLayer'
+});
+var svgNodeLayer = svg.append('g').attr({
+    id : 'nodeLayer'
+});
 
 // vars for d3.layout.force
 var linkDistance = 300;
@@ -135,7 +141,7 @@ d3.json(metaDataUrl, function(error, data) {
                 var nodeNames = graph.getAllNodeNames();
                 for (var i in nodeNames) {
                     var feature = nodeNames[i];
-                    var circleMapElement = cmg.drawCircleMap(feature, svg);
+                    var circleMapElement = cmg.drawCircleMap(feature, svgNodeLayer);
                     // gElementRandomTranslate(circleMapElement.select('.circleMapG'), 100, 100, svgWidth, svgHeight);
                 }
 
@@ -152,7 +158,7 @@ d3.json(metaDataUrl, function(error, data) {
                     force.nodes(nodes).links(links).start();
 
                     // links
-                    var linkSelection = svg.selectAll(".link").data(links).enter().append("line").attr({
+                    var linkSelection = svgLinkLayer.selectAll(".link").data(links).enter().append("line").attr({
                         class : "link"
                     })
 
@@ -161,7 +167,7 @@ d3.json(metaDataUrl, function(error, data) {
                     });
 
                     // nodes
-                    var nodeSelecton = svg.selectAll(".node").data(nodes).enter().append("g").attr({
+                    var nodeSelecton = svgNodeLayer.selectAll(".node").data(nodes).enter().append("g").attr({
                         class : "node"
                     }).call(force.drag);
 
