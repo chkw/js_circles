@@ -1,7 +1,9 @@
 var svgNamespaceUri = 'http://www.w3.org/2000/svg';
 var xlinkUri = 'http://www.w3.org/1999/xlink';
 
-var width = 960, height = 500;
+var throbberUrl = 'images/loading_16.gif';
+
+var svgWidth = 960, svgHeight = 500;
 
 // circleMap data
 var metaData = null;
@@ -15,13 +17,12 @@ var queryUrl = "data/queryJson";
 
 // svg element that contains the graph
 var svg = d3.select("body").append("svg").attr({
-    'width' : width,
-    'height' : height,
+    'width' : svgWidth,
+    'height' : svgHeight,
     'id' : 'circleMaps'
 });
 
 // vars for d3.layout.force
-var width = 960, height = 500;
 var linkDistance = 300;
 var linkStrength = 0.8;
 var friction = 0.3
@@ -33,7 +34,7 @@ var dataURL = "data/test_tab";
 var color = d3.scale.category20();
 
 // for d3 layout and rendering
-var force = d3.layout.force().size([width, height]).linkDistance(linkDistance).linkStrength(linkStrength).friction(friction);
+var force = d3.layout.force().size([svgWidth, svgHeight]).linkDistance(linkDistance).linkStrength(linkStrength).friction(friction);
 
 // where controls go
 var form = d3.select("body").append("form");
@@ -74,9 +75,9 @@ function elementRandomPosition(element, maxX, maxY) {
 function throbberOn() {
     svg.append('image').attr({
         id : 'throbber',
-        'xlink:href' : 'images/loading_16.gif',
-        x : (0.5 * width),
-        y : (0.5 * height),
+        'xlink:href' : throbberUrl,
+        x : (0.5 * svgWidth),
+        y : (0.5 * svgHeight),
         'width' : 16,
         'height' : 16
     });
@@ -137,7 +138,7 @@ d3.json(metaDataUrl, function(error, data) {
                     var circleMapElement = cmg.drawCircleMap(feature, svg).attr({
                         display : 'block'
                     });
-                    gElementRandomTranslate(circleMapElement.select('.circleMapG'), 100, 100, width, height);
+                    gElementRandomTranslate(circleMapElement.select('.circleMapG'), 100, 100, svgWidth, svgHeight);
                 }
 
                 function setupLayout() {
