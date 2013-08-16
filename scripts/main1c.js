@@ -27,7 +27,7 @@ var linkStrength = 0.8;
 var friction = 0.3
 var charge = -500;
 var nodeRadius = 20;
-var dataURL = "data/biopaxpid_75288_rdf_pid";
+var dataURL = "data/test_tab";
 
 // for d3 color mapping.
 var color = d3.scale.category20();
@@ -135,9 +135,9 @@ d3.json(metaDataUrl, function(error, data) {
                 for (var i in queryFeatures) {
                     var feature = queryFeatures[i];
                     var circleMapElement = cmg.drawCircleMap(feature, svg).attr({
-                        display : 'none'
+                        display : 'block'
                     });
-                    // gElementRandomTranslate(circleMapElement.select('.circleMapG'), 100, 100, width, height);
+                    gElementRandomTranslate(circleMapElement.select('.circleMapG'), 100, 100, width, height);
                 }
 
                 function setupLayout() {
