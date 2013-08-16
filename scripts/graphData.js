@@ -30,6 +30,22 @@ function graphData() {
     this.nodes = new Array();
     this.links = new Array();
 
+    /**
+     * Get all the node names in the graph.
+     */
+    this.getAllNodeNames = function(){
+        var nodeNames = new Array();
+        for (var i in this.nodes){
+            var nodeData = this.nodes[i];
+            var nodeName = nodeData['name'];
+            nodeNames.push(nodeName);
+        }
+        return nodeNames;
+    }
+
+    /**
+     * Add a node to the graph.
+     */
     this.addNode = function(nodeData) {
         if (nodeData.constructor.name == 'nodeData') {
             this.nodes.push(nodeData);

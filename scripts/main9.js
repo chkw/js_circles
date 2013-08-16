@@ -132,13 +132,11 @@ d3.json(metaDataUrl, function(error, data) {
                 var cmg = new circleMapGenerator(metaData, circleData, query);
 
                 // create circleMap elements for each query feature.
-                var queryFeatures = cmg.getQueryFeatures();
-                for (var i in queryFeatures) {
-                    var feature = queryFeatures[i];
-                    var circleMapElement = cmg.drawCircleMap(feature, svg).attr({
-                        display : 'block'
-                    });
-                    gElementRandomTranslate(circleMapElement.select('.circleMapG'), 100, 100, svgWidth, svgHeight);
+                var nodeNames = graph.getAllNodeNames();
+                for (var i in nodeNames) {
+                    var feature = nodeNames[i];
+                    var circleMapElement = cmg.drawCircleMap(feature, svg);
+                    // gElementRandomTranslate(circleMapElement.select('.circleMapG'), 100, 100, svgWidth, svgHeight);
                 }
 
                 function setupLayout() {
@@ -169,7 +167,13 @@ d3.json(metaDataUrl, function(error, data) {
 
                     // node visualization
                     nodeSelecton.append(function(d) {
-                        if (d.group.toUpperCase() == 'SMALLMOLECULE') {
+                        var nodeName = d['name'];
+                        if (nodeNames.indexOf(nodeName) >= 0) {
+                            console.log('get circleMapSvg for ' + nodeName);
+                            // var stagedElement = document.getElementById("'circleMapSvg" + nodeName + "'");
+                            var stagedElement = document.getElementById('circleMapSvg' + nodeName);
+                            return stagedElement;
+                        } else if (d.group.toUpperCase() == 'SMALLMOLECULE') {
                             var newElement = document.createElementNS(svgNamespaceUri, 'rect');
                             newElement.setAttributeNS(null, 'width', nodeRadius * 2);
                             newElement.setAttributeNS(null, 'height', nodeRadius * 2);
