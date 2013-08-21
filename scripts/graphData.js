@@ -19,7 +19,7 @@ function linkData(data) {
     if ('value' in data) {
         this.value = parseFloat(data['value']);
     } else {
-        this.value = 1;
+        this.value = 3;
     }
 }
 
