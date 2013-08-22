@@ -180,7 +180,7 @@ d3.json(metaDataUrl, function(error, data) {
                     // links
                     var linkSelection = svgLinkLayer.selectAll(".link").data(links).enter().append("line").attr({
                         class : "link"
-                    })
+                    });
 
                     linkSelection.style("stroke-width", function(d) {
                         return d.value;
@@ -189,6 +189,10 @@ d3.json(metaDataUrl, function(error, data) {
                     // nodes
                     var nodeSelecton = svgNodeLayer.selectAll(".node").data(nodes).enter().append("g").attr({
                         class : "node"
+                    }).on('mouseover', function(d, i) {
+                        // TODO mouseover event for node
+                        var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
+                        console.log('mouseover event: ' + circleMapSvgElement.getAttributeNS(null, 'id'));
                     }).call(force.drag);
 
                     // node visualization
