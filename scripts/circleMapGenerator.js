@@ -21,13 +21,13 @@ function circleMapGenerator(metaDataObj, dataObj, queryDataObj) {
         } else {
             return new Array();
         }
-    }
+    };
     /**
      * get an array of dataset names from the metadata
      */
     this.getDatasetNames = function() {
         return Object.keys(this.metaData);
-    }
+    };
     /**
      * log the object attributes to console
      */
@@ -35,7 +35,7 @@ function circleMapGenerator(metaDataObj, dataObj, queryDataObj) {
         console.log("metaData is " + JSON.stringify(this.metaData));
         console.log("data is " + JSON.stringify(this.data));
         console.log("queryData is " + JSON.stringify(this.queryData));
-    }
+    };
     /**
      * get all sampleIDs from the metadata
      */
@@ -51,7 +51,7 @@ function circleMapGenerator(metaDataObj, dataObj, queryDataObj) {
             });
         });
         return namesSet.values();
-    }
+    };
     /**
      * get the data for a ring
      * @param {Object} dataName
@@ -67,7 +67,7 @@ function circleMapGenerator(metaDataObj, dataObj, queryDataObj) {
         } else {
             return null;
         }
-    }
+    };
     /**
      * get sample names in sorted order
      */
@@ -112,7 +112,7 @@ function circleMapGenerator(metaDataObj, dataObj, queryDataObj) {
             var scoresB = b["scores"];
 
             if (scoresA.length != scoresB.length) {
-                console.log(a["id"] + " and " + b["id"] + " have different number of scores.")
+                console.log(a["id"] + " and " + b["id"] + " have different number of scores.");
                 return 0;
             }
 
@@ -147,7 +147,7 @@ function circleMapGenerator(metaDataObj, dataObj, queryDataObj) {
             return 0;
         };
         return sortedSampleNames;
-    }
+    };
 
     this.sortedSamples = this.getSortedSamples(this.getQueryFeatures().slice(0, 1), this.getDatasetNames());
 
@@ -227,7 +227,7 @@ function circleMapGenerator(metaDataObj, dataObj, queryDataObj) {
      * @param {Object} endDegrees
      */
     function createD3Arc(innerRadius, outerRadius, startDegrees, endDegrees) {
-        var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius).startAngle(startDegrees * (Math.PI / 180)).endAngle(endDegrees * (Math.PI / 180))
+        var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius).startAngle(startDegrees * (Math.PI / 180)).endAngle(endDegrees * (Math.PI / 180));
         return arc;
     }
 
