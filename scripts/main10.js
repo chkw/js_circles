@@ -49,7 +49,7 @@ var svgNodeLayer = svg.append('g').attr({
 // vars for d3.layout.force
 var linkDistance = 300;
 var linkStrength = 0.8;
-var friction = 0.3
+var friction = 0.6;
 var charge = -500;
 var nodeRadius = 20;
 var dataURL = "data/test_tab";
@@ -62,39 +62,6 @@ var force = d3.layout.force().size([svgWidth, svgHeight]).linkDistance(linkDista
 
 // where controls go
 var form = d3.select("body").append("form");
-
-/**
- * Assign random position such that entire element is contained within specified boundary.
- * @param {Object} element
- * @param {Object} elementWidth
- * @param {Object} elementHeight
- * @param {Object} maxX
- * @param {Object} maxY
- */
-function gElementRandomTranslate(element, elementWidth, elementHeight, maxX, maxY) {
-    var x = Math.floor(Math.random() * (maxX - (2 * elementWidth))) + elementWidth;
-    var y = Math.floor(Math.random() * (maxY - (2 * elementHeight))) + elementHeight;
-    element.attr({
-        transform : 'translate(' + x + ',' + y + ')'
-    });
-}
-
-/**
- *
- * @param {Object} element
- * @param {Object} maxX
- * @param {Object} maxY
- */
-function elementRandomPosition(element, maxX, maxY) {
-    var elementWidth = 100;
-    var elementHeight = 100;
-    var x = Math.floor(Math.random() * (maxX - (2 * elementWidth)));
-    var y = Math.floor(Math.random() * (maxY - (2 * elementHeight)));
-    element.attr({
-        'x' : x,
-        'y' : y
-    });
-}
 
 function throbberOn() {
     svg.append('image').attr({
@@ -156,7 +123,10 @@ d3.json(metaDataUrl, function(error, data) {
                 var cmg = new circleMapGenerator(metaData, circleData, query);
 
                 // TODO setupLayout
-                function setupLayout() {
+                function setupLayout() {"use strict";
+
+                    var largeScale = 'scale(3)';
+                    var smallScale = 'scale(0.2)';
 
                     // clear the current graph
                     var removedLinks = svg.selectAll(".link").remove();
@@ -171,7 +141,6 @@ d3.json(metaDataUrl, function(error, data) {
                     for (var i in nodeNames) {
                         var feature = nodeNames[i];
                         var circleMapElement = cmg.drawCircleMap(feature, svgNodeLayer);
-                        // gElementRandomTranslate(circleMapElement.select('.circleMapG'), 100, 100, svgWidth, svgHeight);
                     }
 
                     // start the layout
@@ -187,16 +156,27 @@ d3.json(metaDataUrl, function(error, data) {
                     });
 
                     // nodes
-                    var nodeSelecton = svgNodeLayer.selectAll(".node").data(nodes).enter().append("g").attr({
+                    var nodeSelection = svgNodeLayer.selectAll(".node").data(nodes).enter().append("g").attr({
                         class : "node"
-                    }).on('mouseover', function(d, i) {
-                        // TODO mouseover event for node
+                    }).each(function(d) {
+                        // add attribute to the node data
                         var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
-                        console.log('mouseover event: ' + circleMapSvgElement.getAttributeNS(null, 'id'));
+                        var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
+                        circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
+                    }).on('mouseover', function(d, i) {
+                        // mouseover event for node
+                        var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
+                        var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
+                        circleMapGElement[0].setAttributeNS(null, 'transform', largeScale);
+                    }).on('mouseout', function(d, i) {
+                        // mouseout event for node
+                        var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
+                        var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
+                        circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
                     }).call(force.drag);
 
                     // node visualization
-                    nodeSelecton.append(function(d) {
+                    nodeSelection.append(function(d) {
                         var nodeName = d['name'];
                         if (nodeNames.indexOf(nodeName) >= 0) {
                             console.log('get circleMapSvg for ' + nodeName);
@@ -220,7 +200,7 @@ d3.json(metaDataUrl, function(error, data) {
                         return color(d.group);
                     });
 
-                    nodeSelecton.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(function(d) {
+                    nodeSelection.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(function(d) {
                         return d.name;
                     });
 
@@ -230,7 +210,7 @@ d3.json(metaDataUrl, function(error, data) {
                         return label;
                     });
 
-                    nodeSelecton.append("title").text(function(d) {
+                    nodeSelection.append("title").text(function(d) {
                         return d.group;
                     });
 
@@ -246,13 +226,13 @@ d3.json(metaDataUrl, function(error, data) {
                             return d.target.y;
                         });
 
-                        // nodeSelecton.attr("cx", function(d) {
+                        // nodeSelection.attr("cx", function(d) {
                         // return d.x;
                         // }).attr("cy", function(d) {
                         // return d.y;
                         // });
 
-                        nodeSelecton.attr("transform", function(d) {
+                        nodeSelection.attr("transform", function(d) {
                             return 'translate(' + d.x + ',' + d.y + ')';
                         });
                     });
@@ -288,7 +268,7 @@ d3.json(metaDataUrl, function(error, data) {
                     id = this.getAttribute("id");
                     value = this.getAttribute("value");
 
-                    group = Math.floor(Math.random() * 20)
+                    group = Math.floor(Math.random() * 20);
                     graph.addNode(new nodeData({
                         name : Math.random().toString(),
                         'group' : group
