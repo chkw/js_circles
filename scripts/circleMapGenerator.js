@@ -289,7 +289,7 @@ function circleMapGenerator(metaDataObj, dataObj, queryDataObj) {
         };
 
         // add a label
-        circleMapGroup.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(feature);
+        // circleMapGroup.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(feature);
 
         return circleMapSvgElement;
     };

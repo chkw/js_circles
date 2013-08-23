@@ -125,7 +125,7 @@ d3.json(metaDataUrl, function(error, data) {
                 // TODO setupLayout
                 function setupLayout() {"use strict";
 
-                    var largeScale = 'scale(3)';
+                    var largeScale = 'scale(2)';
                     var smallScale = 'scale(0.2)';
 
                     // clear the current graph
