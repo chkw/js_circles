@@ -1,3 +1,4 @@
+var htmlUri = 'http://www.w3.org/1999/xhtml';
 var svgNamespaceUri = 'http://www.w3.org/2000/svg';
 var xlinkUri = 'http://www.w3.org/1999/xlink';
 
@@ -85,6 +86,20 @@ function throbberOff() {
  */
 function endsWith(str, suffix) {
     return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+
+/**
+ * get the selected values of a list box control.
+ */
+function getListBoxSelectedValues(listboxElement) {
+    var selectedValues = new Array();
+    for (var i = 0; i < listboxElement.length; i++) {
+        var option = listboxElement[i];
+        if (option.selected) {
+            selectedValues.push(option.value);
+        }
+    }
+    return selectedValues;
 }
 
 // circleMap data
@@ -179,7 +194,6 @@ d3.json(metaDataUrl, function(error, data) {
                     nodeSelection.append(function(d) {
                         var nodeName = d['name'];
                         if (nodeNames.indexOf(nodeName) >= 0) {
-                            console.log('get circleMapSvg for ' + nodeName);
                             var stagedElement = document.getElementById('circleMapSvg' + nodeName);
                             return stagedElement;
                         } else if (d.group.toUpperCase() == 'SMALLMOLECULE') {
@@ -211,7 +225,7 @@ d3.json(metaDataUrl, function(error, data) {
                     });
 
                     nodeSelection.append("title").text(function(d) {
-                        return d.group;
+                        return d.name + ' : ' + d.group;
                     });
 
                     // tick handler repositions graph elements
@@ -239,6 +253,45 @@ d3.json(metaDataUrl, function(error, data) {
                 }
 
                 setupLayout();
+
+                var currentNodesListBox = form.append('select').attr({
+                    id : 'currentNodesListBox',
+                    name : 'currentNodesListBox'
+                }).on('change', function() {
+                    console.log('change');
+                });
+
+                function getSelectedNodes() {
+                    return getListBoxSelectedValues(currentNodesListBox);
+                }
+
+                /**
+                 *
+                 * @param {Object} currentGraphData
+                 */
+                function updateCurrentNodesListBox(currentGraphData) {
+                    var currentNodesListBox = document.getElementById('currentNodesListBox');
+
+                    // clear options starting from the bottom of the listbox
+                    var optionElements = currentNodesListBox.getElementsByTagName('option');
+                    for (var i = optionElements.length - 1; optionElements.length > 0; i--) {
+                        var optionElement = optionElements[i];
+                        optionElement.parentNode.removeChild(optionElement);
+                    }
+
+                    // add options
+                    for (var i in currentGraphData['nodes']) {
+                        var nodeData = currentGraphData['nodes'][i];
+                        var nodeName = nodeData['name'];
+                        var optionElement = document.createElementNS(htmlUri, 'option');
+                        optionElement.setAttributeNS(null, 'value', nodeName);
+                        optionElement.innerHTML = nodeName;
+
+                        currentNodesListBox.appendChild(optionElement);
+                    }
+                }
+
+                updateCurrentNodesListBox(graph);
 
                 form.append("input").attr({
                     id : "addButton",
@@ -310,6 +363,32 @@ d3.json(metaDataUrl, function(error, data) {
                     setupLayout();
                     return true;
                 });
+
+                form.append("input").attr({
+                    id : "deleteSelectedNodeButton",
+                    type : "button",
+                    value : "delete selected node",
+                    name : "deleteSelectedNodeButton"
+                }).on("click", function() {
+                    id = this.getAttribute("id");
+                    value = this.getAttribute("value");
+
+                    var currentNodesListBox = document.getElementById('currentNodesListBox');
+                    var selectedValues = getListBoxSelectedValues(currentNodesListBox);
+
+                    if (selectedValues.length >= 1) {
+                        for (var i in selectedValues) {
+                            var name = selectedValues[i];
+                            console.log('node to be deleted: ' + name);
+                            graph.deleteNodeByName(name);
+                        }
+                        setupLayout();
+                        updateCurrentNodesListBox(graph);
+                    } else {
+                        console.log('no node selected for deletion');
+                    }
+                });
+
             });
         });
     });
