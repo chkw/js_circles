@@ -294,6 +294,31 @@ d3.json(metaDataUrl, function(error, data) {
                 updateCurrentNodesListBox(graph);
 
                 form.append("input").attr({
+                    id : "deleteSelectedNodeButton",
+                    type : "button",
+                    value : "delete selected node",
+                    name : "deleteSelectedNodeButton"
+                }).on("click", function() {
+                    id = this.getAttribute("id");
+                    value = this.getAttribute("value");
+
+                    var currentNodesListBox = document.getElementById('currentNodesListBox');
+                    var selectedValues = getListBoxSelectedValues(currentNodesListBox);
+
+                    if (selectedValues.length >= 1) {
+                        for (var i in selectedValues) {
+                            var name = selectedValues[i];
+                            console.log('node to be deleted: ' + name);
+                            graph.deleteNodeByName(name);
+                        }
+                        setupLayout();
+                        updateCurrentNodesListBox(graph);
+                    } else {
+                        console.log('no node selected for deletion');
+                    }
+                });
+
+                form.append("input").attr({
                     id : "addButton",
                     type : "button",
                     value : "add random node",
@@ -309,6 +334,7 @@ d3.json(metaDataUrl, function(error, data) {
                     }));
 
                     setupLayout();
+                    updateCurrentNodesListBox(graph);
                     return true;
                 });
 
@@ -338,57 +364,9 @@ d3.json(metaDataUrl, function(error, data) {
                     }
 
                     setupLayout();
+                    updateCurrentNodesListBox(graph);
                     return true;
                 });
-
-                form.append("input").attr({
-                    id : "deleteButton",
-                    type : "button",
-                    value : "delete random node",
-                    name : "deleteButton"
-                }).on("click", function() {
-                    id = this.getAttribute("id");
-                    value = this.getAttribute("value");
-
-                    // no nodes to delete
-                    if (nodes.length < 1) {
-                        return;
-                    }
-
-                    // find/delete node and links
-                    index = Math.floor(Math.random() * nodes.length);
-                    name = nodes[index]['name'];
-                    graph.deleteNodeByName(name);
-
-                    setupLayout();
-                    return true;
-                });
-
-                form.append("input").attr({
-                    id : "deleteSelectedNodeButton",
-                    type : "button",
-                    value : "delete selected node",
-                    name : "deleteSelectedNodeButton"
-                }).on("click", function() {
-                    id = this.getAttribute("id");
-                    value = this.getAttribute("value");
-
-                    var currentNodesListBox = document.getElementById('currentNodesListBox');
-                    var selectedValues = getListBoxSelectedValues(currentNodesListBox);
-
-                    if (selectedValues.length >= 1) {
-                        for (var i in selectedValues) {
-                            var name = selectedValues[i];
-                            console.log('node to be deleted: ' + name);
-                            graph.deleteNodeByName(name);
-                        }
-                        setupLayout();
-                        updateCurrentNodesListBox(graph);
-                    } else {
-                        console.log('no node selected for deletion');
-                    }
-                });
-
             });
         });
     });
