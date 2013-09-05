@@ -6,8 +6,19 @@ function nodeData(data) {
     if ('group' in data) {
         this.group = data['group'];
     } else {
-        this.group = 'unspecified';
+        this.group = 'unspecified entity';
     }
+
+    /**
+     * Check if this nodeData is equal to the specified nodeData.
+     */
+    this.checkEquality = function(otherNodeData) {
+        if (this.name == otherNodeData.name && this.group == otherNodeData.group) {
+            return true;
+        } else {
+            return false;
+        }
+    };
 }
 
 /**
@@ -33,36 +44,57 @@ function graphData() {
     /**
      * Get all the node names in the graph.
      */
-    this.getAllNodeNames = function(){
+    this.getAllNodeNames = function() {
         var nodeNames = new Array();
-        for (var i in this.nodes){
+        for (var i in this.nodes) {
             var nodeData = this.nodes[i];
             var nodeName = nodeData['name'];
             nodeNames.push(nodeName);
         }
         return nodeNames;
-    }
+    };
 
     /**
      * Add a node to the graph.
      */
     this.addNode = function(nodeData) {
-        if (nodeData.constructor.name == 'nodeData') {
-            this.nodes.push(nodeData);
-        } else {
-            console.log('not adding node: ' + JSON.stringify(nodeData));
+        // check if it is nodeData object
+        if (nodeData.constructor.name != 'nodeData') {
+            console.log('not nodeData: ' + JSON.stringify(nodeData));
+            return null;
         }
-    }
+
+        // check if node already exists
+        var exists = false;
+        for (var i in this.nodes) {
+            var node = this.nodes[i];
+            if (node.checkEquality(nodeData)) {
+                console.log('nodeData exists');
+                exists = true;
+                break;
+            }
+        }
+
+        if (!exists) {
+            // add node
+            this.nodes.push(nodeData);
+            return nodeData;
+        } else {
+            return null;
+        }
+    };
     /**
      * Does not check if both source and target nodes exist.
      */
     this.addLink = function(linkData) {
+        // TODO first, check if link exists
         if (linkData.constructor.name == 'linkData') {
             this.links.push(linkData);
         } else {
             console.log('not adding link: ' + JSON.stringify(linkData));
         }
-    }
+    };
+
     /**
      * Get IDs for nodes that have the specified name.
      */
@@ -76,11 +108,12 @@ function graphData() {
             }
         }
         return idList;
-    }
+    };
     /**
      * Delete a node by the name.
      */
     this.deleteNodeByName = function(name) {
+        // TODO deleting node should force re-indexing of link source/targets
         // nothing to delete
         if (this.nodes.length < 1) {
             console.log('no nodes to delete');
@@ -123,7 +156,7 @@ function graphData() {
         }
         node = this.nodes[idx];
         removeA(this.nodes, node);
-    }
+    };
     /**
      * read graph links from TAB text
      */
@@ -176,7 +209,7 @@ function graphData() {
                 }));
             }
         }
-    }
+    };
     /**
      * read graph SIF text
      */
@@ -224,7 +257,7 @@ function graphData() {
                 }));
             }
         }
-    }
+    };
     /**
      * read graph from PID text
      */
@@ -277,7 +310,7 @@ function graphData() {
                 }
             }
         }
-    }
+    };
 }
 
 /**
