@@ -2,6 +2,8 @@ var htmlUri = 'http://www.w3.org/1999/xhtml';
 var svgNamespaceUri = 'http://www.w3.org/2000/svg';
 var xlinkUri = 'http://www.w3.org/1999/xlink';
 
+var entityTypes = ['unspecified entity', 'simple chemical', 'marcomolecule', 'nucleic acid feature', 'perturbing agent'];
+
 var throbberUrl = 'images/loading_16.gif';
 
 var svgWidth = 960, svgHeight = 500;
@@ -366,7 +368,6 @@ d3.json(metaDataUrl, function(error, data) {
                     updateCurrentNodesListBox(graph);
                 });
 
-                // TODO new node text box
                 form.append("input").attr({
                     id : "newNodeNameTextBox",
                     type : "text",
@@ -380,19 +381,49 @@ d3.json(metaDataUrl, function(error, data) {
                     if (keyCode == 13) {
                         // prevent page from reloading on return key (13)
                         d3.event.preventDefault();
-                        var name = this['value'];
-                        console.log('name: ' + name);
-
-                        group = Math.floor(Math.random() * 20);
-                        graph.addNode(new nodeData({
-                            'name' : name,
-                            'group' : group
-                        }));
-
-                        setupLayout();
-                        updateCurrentNodesListBox(graph);
                     }
                 });
+
+                // entity types listbox
+                var newNodeTypeListBox = form.append('select').attr({
+                    id : 'newNodeTypeListBox',
+                    name : 'newNodeTypeListBox'
+                }).on('change', function() {
+                    console.log('change');
+                }).each(function(d, i) {
+                    for (var i in entityTypes) {
+                        var entityType = entityTypes[i];
+                        var optionElement = document.createElementNS(htmlUri, 'option');
+                        optionElement.setAttributeNS(null, 'value', entityType);
+                        optionElement.innerHTML = entityType;
+
+                        this.appendChild(optionElement);
+                    }
+                });
+
+                // new node button
+                form.append("input").attr({
+                    id : "addNodeButton",
+                    type : "button",
+                    value : "add a new node",
+                    name : "addNodeButton"
+                }).on("click", function() {
+                    id = this.getAttribute("id");
+                    value = this.getAttribute("value");
+
+                    var name = document.getElementById('newNodeNameTextBox').value;
+
+                    // get the group
+                    groups = getListBoxSelectedValues(document.getElementById('newNodeTypeListBox'));
+                    graph.addNode(new nodeData({
+                        'name' : name,
+                        'group' : groups[0]
+                    }));
+
+                    setupLayout();
+                    updateCurrentNodesListBox(graph);
+                });
+
             });
         });
     });
