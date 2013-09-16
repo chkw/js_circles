@@ -55,7 +55,7 @@ var linkStrength = 0.8;
 var friction = 0.6;
 var charge = -500;
 var nodeRadius = 20;
-var graphDataURL = "data/test_tab";
+var graphDataURL = "data/test_pid";
 
 // for d3 color mapping.
 var color = d3.scale.category20();
@@ -447,6 +447,21 @@ d3.json(metaDataUrl, function(error, data) {
 
                     setupLayout();
                     updateCurrentNodesListBox(graph);
+                });
+
+                // graph as PID button
+                form.append("input").attr({
+                    id : "displayPidButton",
+                    type : "button",
+                    value : "graph as PID",
+                    name : "displayPidButton"
+                }).on("click", function() {
+                    id = this.getAttribute("id");
+                    value = this.getAttribute("value");
+
+                    var pidString = graph.toPid();
+
+                    alert(pidString);
                 });
 
             });
