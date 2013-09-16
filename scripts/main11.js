@@ -106,18 +106,34 @@ function getListBoxSelectedValues(listboxElement) {
 
 // circleMap data
 d3.json(metaDataUrl, function(error, data) {
+    var circleDataLoaded = true;
     metaData = data;
-    console.log("number of metaData --> " + Object.keys(metaData).length);
+    if (metaData != null && typeof metaData === 'object') {
+        console.log("number of metaData --> " + Object.keys(metaData).length);
+    } else {
+        circleDataLoaded = false;
+        console.log("could not load data from " + metaDataUrl);
+    }
 
     // circleMap data
     d3.json(circleDataUrl, function(error, data) {
         circleData = data;
-        console.log("number of circleData --> " + Object.keys(circleData).length);
+        if (circleData != null && typeof circleData === 'object') {
+            console.log("number of circleData --> " + Object.keys(circleData).length);
+        } else {
+            circleDataLoaded = false;
+            console.log("could not load data from " + circleDataUrl);
+        }
 
         // circleMap data
         d3.json(queryUrl, function(error, data) {
             query = data;
-            console.log("number of query --> " + Object.keys(query).length);
+            if (query != null && typeof query === 'object') {
+                console.log("number of query --> " + Object.keys(query).length);
+            } else {
+                circleDataLoaded = false;
+                console.log("could not load data from " + queryUrl);
+            }
 
             // network
             d3.text(graphDataURL, function(error, data) {
@@ -137,7 +153,10 @@ d3.json(metaDataUrl, function(error, data) {
                 var links = graph.links;
 
                 // prepare generator for creating SVG:g elements.
-                var cmg = new circleMapGenerator(metaData, circleData, query);
+                var cmg = null;
+                if (circleDataLoaded) {
+                    cmg = new circleMapGenerator(metaData, circleData, query);
+                }
 
                 // TODO setupLayout
                 function setupLayout() {"use strict";
@@ -155,9 +174,11 @@ d3.json(metaDataUrl, function(error, data) {
 
                     // reset circleMapSvg class elements by creating circleMap elements for each query feature.
                     var nodeNames = graph.getAllNodeNames();
-                    for (var i in nodeNames) {
-                        var feature = nodeNames[i];
-                        var circleMapElement = cmg.drawCircleMap(feature, svgNodeLayer);
+                    if (circleDataLoaded) {
+                        for (var i in nodeNames) {
+                            var feature = nodeNames[i];
+                            var circleMapElement = cmg.drawCircleMap(feature, svgNodeLayer);
+                        }
                     }
 
                     // start the layout
@@ -175,27 +196,31 @@ d3.json(metaDataUrl, function(error, data) {
                     // nodes
                     var nodeSelection = svgNodeLayer.selectAll(".node").data(nodes).enter().append("g").attr({
                         class : "node"
-                    }).each(function(d) {
-                        // add attribute to the node data
-                        var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
-                        var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
-                        circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
-                    }).on('mouseover', function(d, i) {
-                        // mouseover event for node
-                        var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
-                        var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
-                        circleMapGElement[0].setAttributeNS(null, 'transform', largeScale);
-                    }).on('mouseout', function(d, i) {
-                        // mouseout event for node
-                        var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
-                        var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
-                        circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
-                    }).call(force.drag);
+                    });
+                    if (circleDataLoaded) {
+                        nodeSelection.each(function(d) {
+                            // add attribute to the node data
+                            var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
+                            var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
+                            circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
+                        }).on('mouseover', function(d, i) {
+                            // mouseover event for node
+                            var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
+                            var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
+                            circleMapGElement[0].setAttributeNS(null, 'transform', largeScale);
+                        }).on('mouseout', function(d, i) {
+                            // mouseout event for node
+                            var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
+                            var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
+                            circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
+                        });
+                    }
+                    nodeSelection.call(force.drag);
 
                     // node visualization
                     nodeSelection.append(function(d) {
                         var nodeName = d['name'];
-                        if (nodeNames.indexOf(nodeName) >= 0) {
+                        if ((circleDataLoaded ) && (nodeNames.indexOf(nodeName) >= 0)) {
                             var stagedElement = document.getElementById('circleMapSvg' + nodeName);
                             return stagedElement;
                         } else if (d.group.toUpperCase() == 'SMALLMOLECULE') {
