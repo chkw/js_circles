@@ -32,6 +32,9 @@ function linkData(data) {
     } else {
         this.value = 3;
     }
+    if ('relation' in data) {
+        this.relation = data['relation'];
+    }
 }
 
 /**
@@ -305,11 +308,38 @@ function graphData() {
                     this.addLink(new linkData({
                         'sourceIdx' : parseInt(sourceIdx),
                         'targetIdx' : parseInt(targetIdx),
-                        value : 3
+                        'relation' : relation
                     }));
                 }
             }
         }
+    };
+
+    /**
+     * Get the graph as a PID string.
+     */
+    this.toPid = function() {
+        var pidString = '';
+
+        // nodes
+        for (var i in this.nodes) {
+            var node = this.nodes[i];
+            var nodeString = node['group'] + '\t' + node['name'] + '\n';
+            pidString = pidString + nodeString;
+        }
+
+        // relations
+        for (var i in this.links) {
+            var link = this.links[i];
+            var relation = link['value'];
+            if ('relation' in link) {
+                relation = link['relation'];
+            }
+            var linkString = link['source']['name'] + '\t' + link['target']['name'] + '\t' + relation + '\n';
+            pidString = pidString + linkString;
+        }
+
+        return pidString;
     };
 }
 
