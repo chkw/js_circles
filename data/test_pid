@@ -1,0 +1,22 @@
+protein	BRCA2
+protein	CDC25B
+complex	Cyclin A-E1/CDK1-2 (complex)
+complex	Cyclin D1/CDK4 (complex)
+protein	ETV5
+complex	FOXM1B/Cbp/p300 (complex)
+protein	HIST1H2BA
+protein	LAMA4
+protein	MMP2
+protein	NEK2
+protein	PLK1
+complex	RB1/FOXM1C (complex)
+protein	SKP2
+CDC25B	LAMA4	-a>
+SKP2	RB1/FOXM1C (complex)	-a>
+RB1/FOXM1C (complex)	LAMA4	-a>
+PLK1	Cyclin A-E1/CDK1-2 (complex)	-a>
+FOXM1B/Cbp/p300 (complex)	HIST1H2BA	-a>
+ETV5	PLK1	-a>
+Cyclin D1/CDK4 (complex)	Cyclin D1/CDK4 (complex)	-a>
+RB1/FOXM1C (complex)	MMP2	-a>
+NEK2	BRCA2	-a>
