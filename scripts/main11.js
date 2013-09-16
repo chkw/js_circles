@@ -13,7 +13,7 @@ var metaData = null;
 var metaDataUrl = "data/metaDataJson";
 
 var circleData = null;
-var dataUrl = "data/dataJson";
+var circleDataUrl = "data/dataJson";
 
 var query = null;
 var queryUrl = "data/queryJson";
@@ -55,7 +55,7 @@ var linkStrength = 0.8;
 var friction = 0.6;
 var charge = -500;
 var nodeRadius = 20;
-var dataURL = "data/test_tab";
+var graphDataURL = "data/test_tab";
 
 // for d3 color mapping.
 var color = d3.scale.category20();
@@ -110,7 +110,7 @@ d3.json(metaDataUrl, function(error, data) {
     console.log("number of metaData --> " + Object.keys(metaData).length);
 
     // circleMap data
-    d3.json(dataUrl, function(error, data) {
+    d3.json(circleDataUrl, function(error, data) {
         circleData = data;
         console.log("number of circleData --> " + Object.keys(circleData).length);
 
@@ -120,15 +120,15 @@ d3.json(metaDataUrl, function(error, data) {
             console.log("number of query --> " + Object.keys(query).length);
 
             // network
-            d3.text(dataURL, function(error, data) {
+            d3.text(graphDataURL, function(error, data) {
                 if (error !== null) {
                     console.log("error getting graph data --> " + error);
                 }
 
                 var graph = new graphData();
-                if (endsWith(dataURL.toUpperCase(), 'PID')) {
+                if (endsWith(graphDataURL.toUpperCase(), 'PID')) {
                     graph.readPid(data);
-                } else if (endsWith(dataURL.toUpperCase(), 'SIF')) {
+                } else if (endsWith(graphDataURL.toUpperCase(), 'SIF')) {
                     graph.readSif(data);
                 } else {
                     graph.readTab(data);
