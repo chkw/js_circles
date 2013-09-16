@@ -1,8 +1,9 @@
-CDC25B	CENPA
-NEK2	CKS1B
-PLK1	LAMA4
-Cyclin D1/CDK4 (complex)	FOXM1B/Cbp/p300 (complex)
-ETV5	HIST1H2BA
-SKP2	MMP2
-Cyclin A-E1/CDK1-2 (complex)	RB1/FOXM1C (complex)
-BRCA2	MAP2K1
+CDC25B	LAMA4
+SKP2	RB1/FOXM1C (complex)
+RB1/FOXM1C (complex)	LAMA4
+PLK1	Cyclin A-E1/CDK1-2 (complex)
+FOXM1B/Cbp/p300 (complex)	HIST1H2BA
+ETV5	PLK1
+Cyclin D1/CDK4 (complex)	Cyclin D1/CDK4 (complex)
+RB1/FOXM1C (complex)	MMP2
+NEK2	BRCA2
