@@ -10,7 +10,7 @@ var svgWidth = 960, svgHeight = 500;
 
 // circleMap data
 var metaData = null;
-var metaDataUrl = "data/metaDataJson";
+var metaDataUrl = "data/metaDataJsonqq";
 
 var circleData = null;
 var circleDataUrl = "data/dataJson";
@@ -231,6 +231,11 @@ d3.json(metaDataUrl, function(error, data) {
                             newElement.setAttributeNS(null, 'y', -1 * nodeRadius);
                             newElement.setAttributeNS(null, 'rx', 9);
                             newElement.setAttributeNS(null, 'ry', 9);
+                            return newElement;
+                        } else if (d.group.toUpperCase() == 'NUCLEIC ACID FEATURE') {
+                            var newElement = document.createElementNS(svgNamespaceUri, 'path');
+                            var path = bottomRoundedRectPath(-20, -20, 40, 40, 5);
+                            newElement.setAttributeNS(null, 'd', path);
                             return newElement;
                         } else {
                             var newElement = document.createElementNS(svgNamespaceUri, 'circle');
@@ -468,4 +473,18 @@ d3.json(metaDataUrl, function(error, data) {
         });
     });
 });
+
+// Returns path data for a rectangle with rounded bottom corners.
+// The top-left corner is <x,y>.
+function bottomRoundedRectPath(x, y, width, height, radius) {
+  return "M" + x + "," + y
+       + "h" + (width)
+       + "v" + (height - radius)
+       + "a" + radius + "," + radius + " 0 0 1 " + (-1 * radius) + "," + (radius)
+       + "h" + (-1 * (width - 2 * radius))
+       + "a" + radius + "," + radius + " 0 0 1 " + (-1 * radius) + "," + (-1 * radius)
+       + "v" + (-1 * (height - radius))
+       + "z";
+}
+
 
