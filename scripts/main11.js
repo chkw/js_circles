@@ -2,7 +2,7 @@ var htmlUri = 'http://www.w3.org/1999/xhtml';
 var svgNamespaceUri = 'http://www.w3.org/2000/svg';
 var xlinkUri = 'http://www.w3.org/1999/xlink';
 
-var entityTypes = ['unspecified entity', 'simple chemical', 'marcomolecule', 'nucleic acid feature', 'perturbing agent'];
+var entityTypes = ['unspecified entity', 'simple chemical', 'macromolecule', 'nucleic acid feature', 'perturbing agent'];
 
 var throbberUrl = 'images/loading_16.gif';
 
@@ -234,12 +234,29 @@ d3.json(metaDataUrl, function(error, data) {
                             return newElement;
                         } else if (d.group.toUpperCase() == 'NUCLEIC ACID FEATURE') {
                             var newElement = document.createElementNS(svgNamespaceUri, 'path');
-                            var path = bottomRoundedRectPath(-20, -20, 40, 40, 5);
+                            var path = bottomRoundedRectPath(-20, -15, 40, 30, 10);
+                            newElement.setAttributeNS(null, 'd', path);
+                            return newElement;
+                        } else if (d.group.toUpperCase() == 'MACROMOLECULE') {
+                            var newElement = document.createElementNS(svgNamespaceUri, 'path');
+                            var path = allRoundedRectPath(-20, -15, 40, 30, 10);
+                            newElement.setAttributeNS(null, 'd', path);
+                            return newElement;
+                        } else if (d.group.toUpperCase() == 'SIMPLE CHEMICAL') {
+                            var newElement = document.createElementNS(svgNamespaceUri, 'circle');
+                            newElement.setAttributeNS(null, 'r', nodeRadius);
+                            return newElement;
+                        } else if (d.group.toUpperCase() == 'COMPLEX') {
+                            var newElement = document.createElementNS(svgNamespaceUri, 'path');
+                            var path = allAngledRectPath(-50, -30, 100, 60);
                             newElement.setAttributeNS(null, 'd', path);
                             return newElement;
                         } else {
-                            var newElement = document.createElementNS(svgNamespaceUri, 'circle');
-                            newElement.setAttributeNS(null, 'r', nodeRadius);
+                            var newElement = document.createElementNS(svgNamespaceUri, 'ellipse');
+                            newElement.setAttributeNS(null, 'cx', 0);
+                            newElement.setAttributeNS(null, 'cy', 0);
+                            newElement.setAttributeNS(null, 'rx', 1.5 * nodeRadius);
+                            newElement.setAttributeNS(null, 'ry', 0.75 * nodeRadius);
                             return newElement;
                         }
                     }).style("fill", function(d) {
@@ -474,17 +491,72 @@ d3.json(metaDataUrl, function(error, data) {
     });
 });
 
-// Returns path data for a rectangle with rounded bottom corners.
-// The top-left corner is <x,y>.
+/**
+ * Returns path data for a rectangle with rounded bottom corners.
+ * The top-left corner is (x,y).
+ * @param {Object} x
+ * @param {Object} y
+ * @param {Object} width
+ * @param {Object} height
+ * @param {Object} radius
+ */
 function bottomRoundedRectPath(x, y, width, height, radius) {
-  return "M" + x + "," + y
-       + "h" + (width)
-       + "v" + (height - radius)
-       + "a" + radius + "," + radius + " 0 0 1 " + (-1 * radius) + "," + (radius)
-       + "h" + (-1 * (width - 2 * radius))
-       + "a" + radius + "," + radius + " 0 0 1 " + (-1 * radius) + "," + (-1 * radius)
-       + "v" + (-1 * (height - radius))
-       + "z";
+    var pathString = '';
+    pathString += "M" + x + "," + y;
+    pathString += "h" + (width);
+    pathString += "v" + (height - radius);
+    pathString += "a" + radius + "," + radius + " 0 0 1 " + (-1 * radius) + "," + (radius);
+    pathString += "h" + (-1 * (width - 2 * radius));
+    pathString += "a" + radius + "," + radius + " 0 0 1 " + (-1 * radius) + "," + (-1 * radius);
+    pathString += "v" + (-1 * (height - radius));
+    pathString += 'z';
+    return pathString;
 }
 
+/**
+ * Returns path data for a rectangle with all rounded corners.
+ * The top-left corner is (x,y).
+ * @param {Object} x
+ * @param {Object} y
+ * @param {Object} width
+ * @param {Object} height
+ * @param {Object} radius
+ */
+function allRoundedRectPath(x, y, width, height, radius) {
+    var pathString = '';
+    pathString += "M" + (x) + "," + (y + radius);
+    pathString += "a" + (radius) + "," + (radius) + " 0 0 1 " + (radius) + "," + (-1 * radius);
+    pathString += "h" + (width - 2 * radius);
+    pathString += "a" + radius + "," + radius + " 0 0 1 " + (radius) + "," + (radius);
+    pathString += "v" + (height - 2 * radius);
+    pathString += "a" + radius + "," + radius + " 0 0 1 " + (-1 * radius) + "," + (radius);
+    pathString += "h" + (-1 * (width - 2 * radius));
+    pathString += "a" + radius + "," + radius + " 0 0 1 " + (-1 * radius) + "," + (-1 * radius);
+    pathString += "v" + (-1 * (height - 2 * radius));
+    pathString += 'z';
+    return pathString;
+}
+
+/**
+ * Returns path data for a rectangle with angled corners.
+ * The top-left corner is (x,y).
+ * @param {Object} x
+ * @param {Object} y
+ * @param {Object} width
+ * @param {Object} height
+ */
+function allAngledRectPath(x, y, width, height) {
+    var pad = (width > height) ? width / 8 : height / 8;
+    var pathString = '';
+    pathString += "M" + (x) + "," + (y);
+    pathString += "h" + (width - 2 * pad);
+    pathString += 'l' + pad + ',' + pad;
+    pathString += "v" + (height - 2 * pad);
+    pathString += 'l' + (-1 * pad) + ',' + (pad);
+    pathString += "h" + (-1 * (width - 2 * pad));
+    pathString += 'l' + (-1 * pad) + ',' + (-1 * pad);
+    pathString += "v" + (-1 * (height - 2 * pad));
+    pathString += 'z';
+    return pathString;
+}
 
