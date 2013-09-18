@@ -4,6 +4,12 @@ var xlinkUri = 'http://www.w3.org/1999/xlink';
 
 var entityTypes = ['unspecified entity', 'simple chemical', 'macromolecule', 'nucleic acid feature', 'perturbing agent'];
 
+var macromoleculeTypes = ['macromolecule', 'protein', 'gene', 'mrna', 'mirna', 'shrna', 'dna'];
+var nucleicAcidFeatureType = ['nucleicacidfeature'];
+var unspecifiedEntityType = ['unspecifiedentity'];
+var simpleChemicalType = ['simplechemical'];
+var perturbingAgentType = ['perturbingagent'];
+
 var throbberUrl = 'images/loading_16.gif';
 
 var svgWidth = 960, svgHeight = 500;
@@ -221,10 +227,11 @@ d3.json(metaDataUrl, function(error, data) {
                     var opacityVal = 0.6;
                     nodeSelection.append(function(d) {
                         var nodeName = d['name'];
+                        var type = d.group.toUpperCase();
                         if ((circleDataLoaded ) && (nodeNames.indexOf(nodeName) >= 0)) {
                             var stagedElement = document.getElementById('circleMapSvg' + nodeName);
                             return stagedElement;
-                        } else if (d.group.toUpperCase() == 'SMALLMOLECULE') {
+                        } else if (type == 'SMALLMOLECULE') {
                             var newElement = document.createElementNS(svgNamespaceUri, 'rect');
                             newElement.setAttributeNS(null, 'width', nodeRadius * 2);
                             newElement.setAttributeNS(null, 'height', nodeRadius * 2);
@@ -234,24 +241,24 @@ d3.json(metaDataUrl, function(error, data) {
                             newElement.setAttributeNS(null, 'ry', 9);
                             newElement.setAttributeNS(null, 'opacity', opacityVal);
                             return newElement;
-                        } else if (d.group.toUpperCase() == 'NUCLEIC ACID FEATURE') {
+                        } else if (type == 'NUCLEIC ACID FEATURE') {
                             var newElement = document.createElementNS(svgNamespaceUri, 'path');
                             var path = bottomRoundedRectPath(-20, -15, 40, 30, 10);
                             newElement.setAttributeNS(null, 'd', path);
                             newElement.setAttributeNS(null, 'opacity', opacityVal);
                             return newElement;
-                        } else if (d.group.toUpperCase() == 'MACROMOLECULE') {
+                        } else if (type == 'MACROMOLECULE') {
                             var newElement = document.createElementNS(svgNamespaceUri, 'path');
                             var path = allRoundedRectPath(-20, -15, 40, 30, 10);
                             newElement.setAttributeNS(null, 'd', path);
                             newElement.setAttributeNS(null, 'opacity', opacityVal);
                             return newElement;
-                        } else if (d.group.toUpperCase() == 'SIMPLE CHEMICAL') {
+                        } else if (type == 'SIMPLE CHEMICAL') {
                             var newElement = document.createElementNS(svgNamespaceUri, 'circle');
                             newElement.setAttributeNS(null, 'r', nodeRadius);
                             newElement.setAttributeNS(null, 'opacity', opacityVal);
                             return newElement;
-                        } else if (d.group.toUpperCase() == 'COMPLEX') {
+                        } else if (type == 'COMPLEX') {
                             var newElement = document.createElementNS(svgNamespaceUri, 'path');
                             var path = allAngledRectPath(-50, -30, 100, 60);
                             newElement.setAttributeNS(null, 'd', path);
@@ -494,19 +501,17 @@ d3.json(metaDataUrl, function(error, data) {
                 });
 
                 // viz mode toggle button
-                form.append("input").attr({
-                    id : "vizModeToggleButton",
-                    type : "button",
-                    value : "(toggle between circleMap & SBGN viz mode)",
-                    name : "vizModeToggleButton"
-                }).on("click", function() {
-                    id = this.getAttribute("id");
-                    value = this.getAttribute("value");
-
-                    alert(circleDataLoaded);
-
-
-                });
+                // form.append("input").attr({
+                // id : "vizModeToggleButton",
+                // type : "button",
+                // value : "(toggle between circleMap & SBGN viz mode)",
+                // name : "vizModeToggleButton"
+                // }).on("click", function() {
+                // id = this.getAttribute("id");
+                // value = this.getAttribute("value");
+                //
+                // alert(circleDataLoaded);
+                // });
 
             });
         });
@@ -568,9 +573,10 @@ function allRoundedRectPath(x, y, width, height, radius) {
  * @param {Object} height
  */
 function allAngledRectPath(x, y, width, height) {
+    // calculated from longer side
     var pad = (width > height) ? width / 8 : height / 8;
     var pathString = '';
-    pathString += "M" + (x) + "," + (y);
+    pathString += "M" + (x + pad) + "," + (y);
     pathString += "h" + (width - 2 * pad);
     pathString += 'l' + pad + ',' + pad;
     pathString += "v" + (height - 2 * pad);
