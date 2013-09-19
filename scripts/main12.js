@@ -19,7 +19,7 @@ var svgWidth = 960, svgHeight = 500;
 
 // circleMap data
 var metaData = null;
-var metaDataUrl = "data/metaDataJsonqq";
+var metaDataUrl = "data/metaDataJson";
 
 var circleData = null;
 var circleDataUrl = "data/dataJson";
@@ -116,6 +116,9 @@ function getListBoxSelectedValues(listboxElement) {
 // circleMap data
 d3.json(metaDataUrl, function(error, data) {
     var circleDataLoaded = true;
+    if (getQueryStringParameterByName('circles').toLowerCase() == 'false') {
+        circleDataLoaded = false;
+    }
     metaData = data;
     if (metaData != null && typeof metaData === 'object') {
         console.log("number of metaData --> " + Object.keys(metaData).length);
