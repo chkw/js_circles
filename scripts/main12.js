@@ -1,3 +1,5 @@
+// http://bl.ocks.org/mbostock/929623 shows a nice way to build a graph with intuitive controls.
+
 var htmlUri = 'http://www.w3.org/1999/xhtml';
 var svgNamespaceUri = 'http://www.w3.org/2000/svg';
 var xlinkUri = 'http://www.w3.org/1999/xlink';
@@ -228,7 +230,7 @@ d3.json(metaDataUrl, function(error, data) {
                     var opacityVal = 0.6;
                     nodeSelection.append(function(d) {
                         var nodeName = d['name'];
-                        var type = d.group.toLowerCase();
+                        var type = d.group.toString().toLowerCase();
                         if ((circleDataLoaded ) && (nodeNames.indexOf(nodeName) >= 0)) {
                             // circleMap
                             var stagedElement = document.getElementById('circleMapSvg' + nodeName);
@@ -324,7 +326,8 @@ d3.json(metaDataUrl, function(error, data) {
 
                 var currentNodesListBox = form.append('select').attr({
                     id : 'currentNodesListBox',
-                    name : 'currentNodesListBox'
+                    name : 'currentNodesListBox',
+                    class : 'deleteControl'
                 }).on('change', function() {
                     console.log('change');
                 });
@@ -365,7 +368,8 @@ d3.json(metaDataUrl, function(error, data) {
                     id : "deleteSelectedNodeButton",
                     type : "button",
                     value : "delete selected node",
-                    name : "deleteSelectedNodeButton"
+                    name : "deleteSelectedNodeButton",
+                    class : "deleteControl"
                 }).on("click", function() {
                     id = this.getAttribute("id");
                     value = this.getAttribute("value");
@@ -386,60 +390,67 @@ d3.json(metaDataUrl, function(error, data) {
                     }
                 });
 
-                form.append("input").attr({
-                    id : "addButton",
-                    type : "button",
-                    value : "add random node",
-                    name : "addButton"
-                }).on("click", function() {
-                    id = this.getAttribute("id");
-                    value = this.getAttribute("value");
+                if (getQueryStringParameterByName('test').toLowerCase() == 'true') {
+                    form.append("input").attr({
+                        id : "addButton",
+                        type : "button",
+                        value : "add random node",
+                        name : "addButton",
+                        class : 'addControl'
+                    }).on("click", function() {
+                        id = this.getAttribute("id");
+                        value = this.getAttribute("value");
 
-                    group = Math.floor(Math.random() * 20);
-                    graph.addNode(new nodeData({
-                        name : Math.random().toString(),
-                        'group' : group
-                    }));
-
-                    setupLayout();
-                    updateCurrentNodesListBox(graph);
-                });
-
-                form.append("input").attr({
-                    id : "addConnectedButton",
-                    type : "button",
-                    value : "add random connected node",
-                    name : "addConnectedButton"
-                }).on("click", function() {
-                    id = this.getAttribute("id");
-                    value = this.getAttribute("value");
-
-                    group = Math.floor(Math.random() * 20);
-                    graph.addNode(new nodeData({
-                        name : Math.random().toString(),
-                        'group' : group
-                    }));
-
-                    sourceIdx = nodes.length - 1;
-                    targetIdx = Math.floor(Math.random() * nodes.length);
-
-                    if (sourceIdx != targetIdx) {
-                        graph.addLink(new linkData({
-                            'sourceIdx' : sourceIdx,
-                            'targetIdx' : targetIdx
+                        group = Math.floor(Math.random() * 20);
+                        graph.addNode(new nodeData({
+                            name : Math.random().toString(),
+                            'group' : group
                         }));
-                    }
 
-                    setupLayout();
-                    updateCurrentNodesListBox(graph);
-                });
+                        setupLayout();
+                        updateCurrentNodesListBox(graph);
+                    });
+                }
+
+                if (getQueryStringParameterByName('test').toLowerCase() == 'true') {
+                    form.append("input").attr({
+                        id : "addConnectedButton",
+                        type : "button",
+                        value : "add random connected node",
+                        name : "addConnectedButton",
+                        class : 'addControl'
+                    }).on("click", function() {
+                        id = this.getAttribute("id");
+                        value = this.getAttribute("value");
+
+                        group = Math.floor(Math.random() * 20);
+                        graph.addNode(new nodeData({
+                            name : Math.random().toString(),
+                            'group' : group
+                        }));
+
+                        sourceIdx = nodes.length - 1;
+                        targetIdx = Math.floor(Math.random() * nodes.length);
+
+                        if (sourceIdx != targetIdx) {
+                            graph.addLink(new linkData({
+                                'sourceIdx' : sourceIdx,
+                                'targetIdx' : targetIdx
+                            }));
+                        }
+
+                        setupLayout();
+                        updateCurrentNodesListBox(graph);
+                    });
+                }
 
                 form.append("input").attr({
                     id : "newNodeNameTextBox",
                     type : "text",
                     value : "name of new node",
                     name : "newNodeNameTextBox",
-                    title : 'name of new node'
+                    title : 'name of new node',
+                    class : 'addControl'
                 }).on('keypress', function() {
                     // http://stackoverflow.com/questions/15261447/how-do-i-capture-keystroke-events-in-d3-js
                     console.log('keypress');
@@ -453,7 +464,8 @@ d3.json(metaDataUrl, function(error, data) {
                 // entity types listbox
                 var newNodeTypeListBox = form.append('select').attr({
                     id : 'newNodeTypeListBox',
-                    name : 'newNodeTypeListBox'
+                    name : 'newNodeTypeListBox',
+                    class : 'addControl'
                 }).on('change', function() {
                     console.log('change');
                 }).each(function(d, i) {
@@ -472,7 +484,8 @@ d3.json(metaDataUrl, function(error, data) {
                     id : "addNodeButton",
                     type : "button",
                     value : "add a new node",
-                    name : "addNodeButton"
+                    name : "addNodeButton",
+                    class : 'addControl'
                 }).on("click", function() {
                     id = this.getAttribute("id");
                     value = this.getAttribute("value");
@@ -495,7 +508,8 @@ d3.json(metaDataUrl, function(error, data) {
                     id : "displayPidButton",
                     type : "button",
                     value : "graph as PID",
-                    name : "displayPidButton"
+                    name : "displayPidButton",
+                    class : 'displayControl'
                 }).on("click", function() {
                     id = this.getAttribute("id");
                     value = this.getAttribute("value");
@@ -517,7 +531,6 @@ d3.json(metaDataUrl, function(error, data) {
                 //
                 // alert(circleDataLoaded);
                 // });
-
             });
         });
     });
@@ -593,3 +606,14 @@ function allAngledRectPath(x, y, width, height) {
     return pathString;
 }
 
+/**
+ * Get the value of a parameter from the query string.  If parameter has not value or does not exist, return <code>null</code>.
+ * From <a href='http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values'>here</a>.
+ * @param {Object} name
+ */
+function getQueryStringParameterByName(name) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+    var results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
