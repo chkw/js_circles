@@ -65,6 +65,7 @@ var friction = 0.6;
 var charge = -500;
 var nodeRadius = 20;
 var graphDataURL = "data/test_pid";
+graphDataURL = 'data/biopaxpid_75288_rdf_pid';
 
 // for d3 color mapping.
 var color = d3.scale.category20();
@@ -199,6 +200,8 @@ d3.json(metaDataUrl, function(error, data) {
                     // links
                     var linkSelection = svgLinkLayer.selectAll(".link").data(links).enter().append("line").attr({
                         class : "link"
+                    }).style("stroke", function(d) {
+                        return color(d.relation);
                     });
 
                     linkSelection.style("stroke-width", function(d) {
@@ -293,7 +296,7 @@ d3.json(metaDataUrl, function(error, data) {
 
                     // tooltips
                     linkSelection.append("title").text(function(d) {
-                        var label = d.source.name + "-->" + d.target.name + ":" + d.value;
+                        var label = d.source.name + " " + d.relation + " " + d.target.name + ":" + d.value;
                         return label;
                     });
 
