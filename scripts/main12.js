@@ -1,5 +1,6 @@
 // http://bl.ocks.org/mbostock/929623 shows a nice way to build a graph with intuitive controls.
-
+// bl.ocks.org/rkirsling/5001347
+// blueprints and rexster https://github.com/tinkerpop/blueprints/wiki
 var htmlUri = 'http://www.w3.org/1999/xhtml';
 var svgNamespaceUri = 'http://www.w3.org/2000/svg';
 var xlinkUri = 'http://www.w3.org/1999/xlink';
@@ -27,11 +28,22 @@ var circleDataUrl = "data/dataJson";
 var query = null;
 var queryUrl = "data/queryJson";
 
+// vars for d3.layout.force
+var linkDistance = 120;
+var linkStrength = 0.2;
+var friction = 0.8;
+var charge = -500;
+var gravity = 0.01;
+
+var nodeRadius = 20;
+var graphDataURL = "data/test_pid";
+graphDataURL = 'data/biopaxpid_75288_rdf_pid';
+
 // svg element that contains the graph
 
 var svg = d3.select("body").append("svg").attr({
-    'width' : svgWidth,
-    'height' : svgHeight,
+    'width' : '100%',
+    'height' : '85%',
     'id' : 'circleMaps'
 });
 
@@ -58,20 +70,11 @@ var svgNodeLayer = svg.append('g').attr({
     id : 'nodeLayer'
 });
 
-// vars for d3.layout.force
-var linkDistance = 300;
-var linkStrength = 0.8;
-var friction = 0.6;
-var charge = -500;
-var nodeRadius = 20;
-var graphDataURL = "data/test_pid";
-graphDataURL = 'data/biopaxpid_75288_rdf_pid';
-
 // for d3 color mapping.
 var color = d3.scale.category20();
 
 // for d3 layout and rendering
-var force = d3.layout.force().size([svgWidth, svgHeight]).linkDistance(linkDistance).linkStrength(linkStrength).friction(friction);
+var force = d3.layout.force().size([svgWidth, svgHeight]).linkDistance(linkDistance).linkStrength(linkStrength).friction(friction).gravity(gravity);
 
 // where controls go
 var form = d3.select("body").append("form");
@@ -241,17 +244,6 @@ d3.json(metaDataUrl, function(error, data) {
                             // circleMap
                             var stagedElement = document.getElementById('circleMapSvg' + nodeName);
                             return stagedElement;
-                            // } else if ( type in simpleChemicalTypes) {
-                            // // rectangle
-                            // var newElement = document.createElementNS(svgNamespaceUri, 'rect');
-                            // newElement.setAttributeNS(null, 'width', nodeRadius * 2);
-                            // newElement.setAttributeNS(null, 'height', nodeRadius * 2);
-                            // newElement.setAttributeNS(null, 'x', -1 * nodeRadius);
-                            // newElement.setAttributeNS(null, 'y', -1 * nodeRadius);
-                            // newElement.setAttributeNS(null, 'rx', 9);
-                            // newElement.setAttributeNS(null, 'ry', 9);
-                            // newElement.setAttributeNS(null, 'opacity', opacityVal);
-                            // return newElement;
                         } else if (nucleicAcidFeatureTypes.indexOf(type) != -1) {
                             var newElement = document.createElementNS(svgNamespaceUri, 'path');
                             var path = bottomRoundedRectPath(-20, -15, 40, 30, 10);
@@ -316,12 +308,6 @@ d3.json(metaDataUrl, function(error, data) {
                             return d.target.y;
                         });
 
-                        // nodeSelection.attr("cx", function(d) {
-                        // return d.x;
-                        // }).attr("cy", function(d) {
-                        // return d.y;
-                        // });
-
                         nodeSelection.attr("transform", function(d) {
                             return 'translate(' + d.x + ',' + d.y + ')';
                         });
@@ -330,6 +316,9 @@ d3.json(metaDataUrl, function(error, data) {
 
                 setupLayout();
 
+                /**
+                 * Current nodes listbox
+                 */
                 var currentNodesListBox = form.append('select').attr({
                     id : 'currentNodesListBox',
                     name : 'currentNodesListBox',
@@ -337,10 +326,6 @@ d3.json(metaDataUrl, function(error, data) {
                 }).on('change', function() {
                     console.log('change');
                 });
-
-                function getSelectedNodes() {
-                    return getListBoxSelectedValues(currentNodesListBox);
-                }
 
                 /**
                  *
@@ -393,6 +378,82 @@ d3.json(metaDataUrl, function(error, data) {
                         updateCurrentNodesListBox(graph);
                     } else {
                         console.log('no node selected for deletion');
+                    }
+                });
+
+                /**
+                 * current edges listbox
+                 */
+                var currentEdgesListBox = form.append('select').attr({
+                    id : 'currentEdgesListBox',
+                    name : 'currentEdgesListBox',
+                    class : 'deleteControl'
+                }).on('change', function() {
+                    console.log('change');
+                });
+
+                /**
+                 *
+                 * @param {Object} currentGraphData
+                 */
+                function updateCurrentEdgesListBox(currentGraphData) {
+                    var listbox = document.getElementById('currentEdgesListBox');
+
+                    // clear options starting from the bottom of the listbox
+                    var optionElements = listbox.getElementsByTagName('option');
+                    for (var i = optionElements.length - 1; optionElements.length > 0; i--) {
+                        var optionElement = optionElements[i];
+                        optionElement.parentNode.removeChild(optionElement);
+                    }
+
+                    // add options
+                    for (var i in currentGraphData['links']) {
+                        var linkData = currentGraphData['links'][i];
+                        var sourceNode = linkData['source'];
+                        var targetNode = linkData['target'];
+                        var relation = linkData['relation'];
+
+                        var value = sourceNode['name'] + ' ' + relation + ' ' + targetNode['name'];
+
+                        var optionElement = document.createElementNS(htmlUri, 'option');
+                        optionElement.setAttributeNS(null, 'value', i);
+                        optionElement.innerHTML = value;
+
+                        listbox.appendChild(optionElement);
+                    }
+                }
+
+                updateCurrentEdgesListBox(graph);
+
+                function updateCurrentGraphElementsListBoxes(currentGraphData) {
+                    updateCurrentNodesListBox(currentGraphData);
+                    updateCurrentEdgesListBox(currentGraphData);
+                }
+
+
+                form.append("input").attr({
+                    id : "deleteSelectedEdgeButton",
+                    type : "button",
+                    value : "delete selected edge",
+                    name : "deleteSelectedEdgeButton",
+                    class : "deleteControl"
+                }).on("click", function() {
+                    id = this.getAttribute("id");
+                    value = this.getAttribute("value");
+
+                    var listbox = document.getElementById('currentEdgesListBox');
+                    var selectedValues = getListBoxSelectedValues(listbox);
+
+                    if (selectedValues.length >= 1) {
+                        for (var i in selectedValues) {
+                            var val = selectedValues[i];
+                            console.log('edge to be deleted: ' + val);
+                            graph.deleteLinkByIndex(val);
+                        }
+                        setupLayout();
+                        updateCurrentEdgesListBox(graph);
+                    } else {
+                        console.log('no edge selected for deletion');
                     }
                 });
 
@@ -513,7 +574,7 @@ d3.json(metaDataUrl, function(error, data) {
                 form.append("input").attr({
                     id : "displayPidButton",
                     type : "button",
-                    value : "graph as PID",
+                    value : "export to UCSC superpathway format",
                     name : "displayPidButton",
                     class : 'displayControl'
                 }).on("click", function() {
@@ -524,19 +585,6 @@ d3.json(metaDataUrl, function(error, data) {
 
                     alert(pidString);
                 });
-
-                // viz mode toggle button
-                // form.append("input").attr({
-                // id : "vizModeToggleButton",
-                // type : "button",
-                // value : "(toggle between circleMap & SBGN viz mode)",
-                // name : "vizModeToggleButton"
-                // }).on("click", function() {
-                // id = this.getAttribute("id");
-                // value = this.getAttribute("value");
-                //
-                // alert(circleDataLoaded);
-                // });
             });
         });
     });

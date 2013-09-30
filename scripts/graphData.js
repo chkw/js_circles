@@ -161,6 +161,12 @@ function graphData() {
         removeA(this.nodes, node);
     };
     /**
+     * Delete a link by its array index.
+     */
+    this.deleteLinkByIndex = function(linkIdx) {
+        this.links.splice(linkIdx, 1);
+    };
+    /**
      * read graph links from TAB text
      */
     this.readTab = function(text) {
@@ -316,7 +322,7 @@ function graphData() {
     };
 
     /**
-     * Get the graph as a PID string.
+     * Get the graph as a PID string.  Bug: Nodes that have same name, different group/type will give possibly unexpected results in the relations section.
      */
     this.toPid = function() {
         var pidString = '';
