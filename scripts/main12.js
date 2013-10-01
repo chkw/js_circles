@@ -7,12 +7,12 @@ var xlinkUri = 'http://www.w3.org/1999/xlink';
 
 var macromoleculeTypes = ['macromolecule', 'protein', 'gene', 'mrna', 'mirna', 'shrna', 'dna', 'transcription factor'];
 var nucleicAcidFeatureTypes = ['nucleic acid feature', 'promoter'];
-var unspecifiedEntityTypes = ['unspecified entity'];
+var unspecifiedEntityTypes = ['unspecified entity', 'family', 'abstract'];
 var simpleChemicalTypes = ['simple chemical', 'small molecule'];
 var perturbingAgentTypes = ['perturbing agent'];
 var complexTypes = ['complex'];
 
-var entityTypes = ['unspecified entity', 'protein', 'gene', 'mRNA', 'miRNA', 'nucleic acid feature', 'small molecule', 'perturbing agent', 'complex'];
+var selectableEntityTypes = ['unspecified entity', 'protein', 'gene', 'mRNA', 'miRNA', 'nucleic acid feature', 'small molecule', 'perturbing agent', 'complex'];
 
 var throbberUrl = 'images/loading_16.gif';
 
@@ -314,8 +314,6 @@ d3.json(metaDataUrl, function(error, data) {
                     });
                 }
 
-                setupLayout();
-
                 /**
                  * Current nodes listbox
                  */
@@ -353,32 +351,12 @@ d3.json(metaDataUrl, function(error, data) {
                     }
                 }
 
-                updateCurrentNodesListBox(graph);
-
-                form.append("input").attr({
+                var deleteSelectedNodeButton = form.append("input").attr({
                     id : "deleteSelectedNodeButton",
                     type : "button",
-                    value : "delete selected node",
+                    value : "delete selected NODE",
                     name : "deleteSelectedNodeButton",
                     class : "deleteControl"
-                }).on("click", function() {
-                    id = this.getAttribute("id");
-                    value = this.getAttribute("value");
-
-                    var currentNodesListBox = document.getElementById('currentNodesListBox');
-                    var selectedValues = getListBoxSelectedValues(currentNodesListBox);
-
-                    if (selectedValues.length >= 1) {
-                        for (var i in selectedValues) {
-                            var name = selectedValues[i];
-                            console.log('node to be deleted: ' + name);
-                            graph.deleteNodeByName(name);
-                        }
-                        setupLayout();
-                        updateCurrentNodesListBox(graph);
-                    } else {
-                        console.log('no node selected for deletion');
-                    }
                 });
 
                 /**
@@ -423,21 +401,49 @@ d3.json(metaDataUrl, function(error, data) {
                     }
                 }
 
-                updateCurrentEdgesListBox(graph);
-
-                function updateCurrentGraphElementsListBoxes(currentGraphData) {
+                /**
+                 * Update to current graphData:
+                 * <ul>
+                 * <li>currentNodesListBox</li>
+                 * <li>currentEdgesListBox</li>
+                 * </ul>
+                 */
+                function updateToCurrentGraphData(currentGraphData) {
+                    setupLayout();
                     updateCurrentNodesListBox(currentGraphData);
                     updateCurrentEdgesListBox(currentGraphData);
                 }
 
+                updateToCurrentGraphData(graph);
 
-                form.append("input").attr({
+                deleteSelectedNodeButton.on("click", function() {
+                    id = this.getAttribute("id");
+                    value = this.getAttribute("value");
+
+                    var currentNodesListBox = document.getElementById('currentNodesListBox');
+                    var selectedValues = getListBoxSelectedValues(currentNodesListBox);
+
+                    if (selectedValues.length >= 1) {
+                        for (var i in selectedValues) {
+                            var name = selectedValues[i];
+                            console.log('node to be deleted: ' + name);
+                            graph.deleteNodeByName(name);
+                        }
+                        updateToCurrentGraphData(graph);
+                    } else {
+                        console.log('no node selected for deletion');
+                    }
+                });
+
+                var deleteSelectedEdgeButton = form.append("input").attr({
                     id : "deleteSelectedEdgeButton",
                     type : "button",
-                    value : "delete selected edge",
+                    value : "delete selected EDGE",
                     name : "deleteSelectedEdgeButton",
                     class : "deleteControl"
-                }).on("click", function() {
+                });
+
+                deleteSelectedEdgeButton.on("click", function() {
                     id = this.getAttribute("id");
                     value = this.getAttribute("value");
 
@@ -450,8 +456,7 @@ d3.json(metaDataUrl, function(error, data) {
                             console.log('edge to be deleted: ' + val);
                             graph.deleteLinkByIndex(val);
                         }
-                        setupLayout();
-                        updateCurrentEdgesListBox(graph);
+                        updateToCurrentGraphData(graph);
                     } else {
                         console.log('no edge selected for deletion');
                     }
@@ -474,8 +479,7 @@ d3.json(metaDataUrl, function(error, data) {
                             'group' : group
                         }));
 
-                        setupLayout();
-                        updateCurrentNodesListBox(graph);
+                        updateToCurrentGraphData(graph);
                     });
                 }
 
@@ -506,8 +510,7 @@ d3.json(metaDataUrl, function(error, data) {
                             }));
                         }
 
-                        setupLayout();
-                        updateCurrentNodesListBox(graph);
+                        updateToCurrentGraphData(graph);
                     });
                 }
 
@@ -536,8 +539,8 @@ d3.json(metaDataUrl, function(error, data) {
                 }).on('change', function() {
                     console.log('change');
                 }).each(function(d, i) {
-                    for (var i in entityTypes) {
-                        var entityType = entityTypes[i];
+                    for (var i in selectableEntityTypes) {
+                        var entityType = selectableEntityTypes[i];
                         var optionElement = document.createElementNS(htmlUri, 'option');
                         optionElement.setAttributeNS(null, 'value', entityType);
                         optionElement.innerHTML = entityType;
@@ -566,8 +569,7 @@ d3.json(metaDataUrl, function(error, data) {
                         'group' : groups[0]
                     }));
 
-                    setupLayout();
-                    updateCurrentNodesListBox(graph);
+                    updateToCurrentGraphData(graph);
                 });
 
                 // graph as PID button
