@@ -576,7 +576,7 @@ d3.json(metaDataUrl, function(error, data) {
                 form.append("input").attr({
                     id : "displayPidButton",
                     type : "button",
-                    value : "export to UCSC superpathway format",
+                    value : "export to UCSC pathway format",
                     name : "displayPidButton",
                     class : 'displayControl'
                 }).on("click", function() {
@@ -587,6 +587,20 @@ d3.json(metaDataUrl, function(error, data) {
 
                     alert(pidString);
                 });
+
+                if (getQueryStringParameterByName('test').toLowerCase() == 'true') {
+                    form.append('input').attr({
+                        id : 'testButton',
+                        type : 'button',
+                        value : 'testButton',
+                        name : 'testButton',
+                        class : 'displayControl'
+                    }).on('click', function() {
+                        $(function() {
+                            $("#dialog").dialog();
+                        });
+                    });
+                }
             });
         });
     });

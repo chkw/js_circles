@@ -1,52 +1,46 @@
 html {
-    font-family: Verdana;
+	font-family:Verdana;
 }
 svg {
-    background-color: #FFF;
-    cursor: default;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
-    user-select: none;
+	background-color:#FFF;
+	cursor:default;
+	-webkit-user-select:none;
+	-moz-user-select:none;
+	-ms-user-select:none;
+	-o-user-select:none;
+	user-select:none;
 }
 svg:not(.active):not(.ctrl) {
-    cursor: crosshair;
+	cursor:crosshair;
 }
 svg:not(.active):not(.ctrl) path.link {
-    cursor: pointer;
+	cursor:pointer;
 }
 .node not(.circleMapG) {
 stroke:#fff;
 stroke-width:1.5px;
 }
-
 .node .circleMapSvg {
-    overflow: visible
+	overflow:visible
 }
 .node text {
-    stroke: darkslategrey;
-    fill: darkslategrey;
+	stroke:darkslategrey;
+	fill:darkslategrey;
 }
 .link {
-    stroke: black;
-    stroke-opacity: .6;
+	stroke:black;
+	stroke-opacity:.6;
 }
-
 .deleteControl {
-    background-color: lightblue
+	background-color:lightblue
 }
-
 .addControl {
-    background-color: salmon
+	background-color:salmon
 }
-
 .displayControl {
-    background-color: mediumseagreen
+	background-color:mediumseagreen
 }
-
 /*for d3 zoom*/
-
 /*.overlay {
  fill: none;
  pointer-events: visible;
