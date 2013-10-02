@@ -39,7 +39,7 @@ var nodeRadius = 20;
 var graphDataURL = "data/test_pid";
 graphDataURL = 'data/biopaxpid_75288_rdf_pid';
 
-// svg element that contains the graph
+// TODO svg element that contains the graph
 
 var svg = d3.select("body").append("svg").attr({
     'width' : '100%',
@@ -76,8 +76,127 @@ var color = d3.scale.category20();
 // for d3 layout and rendering
 var force = d3.layout.force().size([svgWidth, svgHeight]).linkDistance(linkDistance).linkStrength(linkStrength).friction(friction).gravity(gravity);
 
-// where controls go
+//TODO setup controls
 var form = d3.select("body").append("form");
+
+var currentNodesListBox = form.append('select').attr({
+    id : 'currentNodesListBox',
+    name : 'currentNodesListBox',
+    class : 'deleteControl'
+}).on('change', function() {
+    console.log('change');
+});
+
+var deleteSelectedNodeButton = form.append("input").attr({
+    id : "deleteSelectedNodeButton",
+    type : "button",
+    value : "delete selected NODE",
+    name : "deleteSelectedNodeButton",
+    class : "deleteControl"
+});
+
+var currentEdgesListBox = form.append('select').attr({
+    id : 'currentEdgesListBox',
+    name : 'currentEdgesListBox',
+    class : 'deleteControl'
+}).on('change', function() {
+    console.log('change');
+});
+
+var deleteSelectedEdgeButton = form.append("input").attr({
+    id : "deleteSelectedEdgeButton",
+    type : "button",
+    value : "delete selected EDGE",
+    name : "deleteSelectedEdgeButton",
+    class : "deleteControl"
+});
+
+var newNodeNameTextBox = form.append("input").attr({
+    id : "newNodeNameTextBox",
+    type : "text",
+    value : "name of new node",
+    name : "newNodeNameTextBox",
+    title : 'name of new node',
+    class : 'addControl'
+}).on('keypress', function() {
+    // http://stackoverflow.com/questions/15261447/how-do-i-capture-keystroke-events-in-d3-js
+    console.log('keypress');
+    var keyCode = d3.event.keyCode;
+    if (keyCode == 13) {
+        // prevent page from reloading on return key (13)
+        d3.event.preventDefault();
+    }
+});
+
+var newNodeTypeListBox = form.append('select').attr({
+    id : 'newNodeTypeListBox',
+    name : 'newNodeTypeListBox',
+    class : 'addControl'
+}).on('change', function() {
+    console.log('change');
+});
+
+var newNodeButton = form.append("input").attr({
+    id : "addNodeButton",
+    type : "button",
+    value : "add a new node",
+    name : "addNodeButton",
+    class : 'addControl'
+});
+
+var exportToUcscFormatButton = form.append("input").attr({
+    id : "exportToUcscFormatButton",
+    type : "button",
+    value : "export to UCSC pathway format",
+    name : "exportToUcscFormatButton",
+    class : 'displayControl'
+});
+
+var addRandomNodeButton = form.append("input").attr({
+    id : "addRandomNodeButton",
+    type : "button",
+    value : "add random node",
+    name : "addRandomNodeButton",
+    class : 'addControl'
+}).style({
+    display : 'none'
+});
+
+var addRandomConnectedNodeButton = form.append("input").attr({
+    id : "addConnectedButton",
+    type : "button",
+    value : "add random connected node",
+    name : "addConnectedButton",
+    class : 'addControl'
+}).style({
+    display : 'none'
+});
+
+var testButton = form.append('input').attr({
+    id : 'testButton',
+    type : 'button',
+    value : 'testButton',
+    name : 'testButton',
+    class : 'displayControl'
+}).on('click', function() {
+    $(function() {
+        $("#dialog").dialog();
+    });
+}).style({
+    display : 'none'
+});
+
+// $("input[type=button]").button();
+
+// dialogBox
+var dialogBox = d3.select('body').append('div').attr({
+    id : 'dialog',
+    title : 'basic dialog'
+}).style({
+    display : 'none'
+}).append('p').text("This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.");
+
+// TODO draw graph
 
 function throbberOn() {
     svg.append('image').attr({
@@ -92,29 +211,6 @@ function throbberOn() {
 
 function throbberOff() {
     d3.select('#throbber').remove();
-}
-
-/**
- * Check if str ends with suffix.
- * @param {Object} str
- * @param {Object} suffix
- */
-function endsWith(str, suffix) {
-    return str.indexOf(suffix, str.length - suffix.length) !== -1;
-}
-
-/**
- * get the selected values of a list box control.
- */
-function getListBoxSelectedValues(listboxElement) {
-    var selectedValues = new Array();
-    for (var i = 0; i < listboxElement.length; i++) {
-        var option = listboxElement[i];
-        if (option.selected) {
-            selectedValues.push(option.value);
-        }
-    }
-    return selectedValues;
 }
 
 // circleMap data
@@ -315,17 +411,6 @@ d3.json(metaDataUrl, function(error, data) {
                 }
 
                 /**
-                 * Current nodes listbox
-                 */
-                var currentNodesListBox = form.append('select').attr({
-                    id : 'currentNodesListBox',
-                    name : 'currentNodesListBox',
-                    class : 'deleteControl'
-                }).on('change', function() {
-                    console.log('change');
-                });
-
-                /**
                  *
                  * @param {Object} currentGraphData
                  */
@@ -350,25 +435,6 @@ d3.json(metaDataUrl, function(error, data) {
                         currentNodesListBox.appendChild(optionElement);
                     }
                 }
-
-                var deleteSelectedNodeButton = form.append("input").attr({
-                    id : "deleteSelectedNodeButton",
-                    type : "button",
-                    value : "delete selected NODE",
-                    name : "deleteSelectedNodeButton",
-                    class : "deleteControl"
-                });
-
-                /**
-                 * current edges listbox
-                 */
-                var currentEdgesListBox = form.append('select').attr({
-                    id : 'currentEdgesListBox',
-                    name : 'currentEdgesListBox',
-                    class : 'deleteControl'
-                }).on('change', function() {
-                    console.log('change');
-                });
 
                 /**
                  *
@@ -435,14 +501,6 @@ d3.json(metaDataUrl, function(error, data) {
                     }
                 });
 
-                var deleteSelectedEdgeButton = form.append("input").attr({
-                    id : "deleteSelectedEdgeButton",
-                    type : "button",
-                    value : "delete selected EDGE",
-                    name : "deleteSelectedEdgeButton",
-                    class : "deleteControl"
-                });
-
                 deleteSelectedEdgeButton.on("click", function() {
                     id = this.getAttribute("id");
                     value = this.getAttribute("value");
@@ -462,13 +520,48 @@ d3.json(metaDataUrl, function(error, data) {
                     }
                 });
 
+                // entity types listbox
+                newNodeTypeListBox.each(function(d, i) {
+                    for (var i in selectableEntityTypes) {
+                        var entityType = selectableEntityTypes[i];
+                        var optionElement = document.createElementNS(htmlUri, 'option');
+                        optionElement.setAttributeNS(null, 'value', entityType);
+                        optionElement.innerHTML = entityType;
+
+                        this.appendChild(optionElement);
+                    }
+                });
+
+                // new node button
+                newNodeButton.on("click", function() {
+                    id = this.getAttribute("id");
+                    value = this.getAttribute("value");
+
+                    var name = document.getElementById('newNodeNameTextBox').value;
+
+                    // get the group
+                    groups = getListBoxSelectedValues(document.getElementById('newNodeTypeListBox'));
+                    graph.addNode(new nodeData({
+                        'name' : name,
+                        'group' : groups[0]
+                    }));
+
+                    updateToCurrentGraphData(graph);
+                });
+
+                // graph as PID button
+                exportToUcscFormatButton.on("click", function() {
+                    id = this.getAttribute("id");
+                    value = this.getAttribute("value");
+
+                    var pidString = graph.toPid();
+
+                    alert(pidString);
+                });
+
                 if (getQueryStringParameterByName('test').toLowerCase() == 'true') {
-                    form.append("input").attr({
-                        id : "addButton",
-                        type : "button",
-                        value : "add random node",
-                        name : "addButton",
-                        class : 'addControl'
+                    addRandomNodeButton.style({
+                        display : 'inline'
                     }).on("click", function() {
                         id = this.getAttribute("id");
                         value = this.getAttribute("value");
@@ -481,15 +574,9 @@ d3.json(metaDataUrl, function(error, data) {
 
                         updateToCurrentGraphData(graph);
                     });
-                }
 
-                if (getQueryStringParameterByName('test').toLowerCase() == 'true') {
-                    form.append("input").attr({
-                        id : "addConnectedButton",
-                        type : "button",
-                        value : "add random connected node",
-                        name : "addConnectedButton",
-                        class : 'addControl'
+                    addRandomConnectedNodeButton.style({
+                        display : 'inline'
                     }).on("click", function() {
                         id = this.getAttribute("id");
                         value = this.getAttribute("value");
@@ -512,99 +599,40 @@ d3.json(metaDataUrl, function(error, data) {
 
                         updateToCurrentGraphData(graph);
                     });
-                }
 
-                form.append("input").attr({
-                    id : "newNodeNameTextBox",
-                    type : "text",
-                    value : "name of new node",
-                    name : "newNodeNameTextBox",
-                    title : 'name of new node',
-                    class : 'addControl'
-                }).on('keypress', function() {
-                    // http://stackoverflow.com/questions/15261447/how-do-i-capture-keystroke-events-in-d3-js
-                    console.log('keypress');
-                    var keyCode = d3.event.keyCode;
-                    if (keyCode == 13) {
-                        // prevent page from reloading on return key (13)
-                        d3.event.preventDefault();
-                    }
-                });
-
-                // entity types listbox
-                var newNodeTypeListBox = form.append('select').attr({
-                    id : 'newNodeTypeListBox',
-                    name : 'newNodeTypeListBox',
-                    class : 'addControl'
-                }).on('change', function() {
-                    console.log('change');
-                }).each(function(d, i) {
-                    for (var i in selectableEntityTypes) {
-                        var entityType = selectableEntityTypes[i];
-                        var optionElement = document.createElementNS(htmlUri, 'option');
-                        optionElement.setAttributeNS(null, 'value', entityType);
-                        optionElement.innerHTML = entityType;
-
-                        this.appendChild(optionElement);
-                    }
-                });
-
-                // new node button
-                form.append("input").attr({
-                    id : "addNodeButton",
-                    type : "button",
-                    value : "add a new node",
-                    name : "addNodeButton",
-                    class : 'addControl'
-                }).on("click", function() {
-                    id = this.getAttribute("id");
-                    value = this.getAttribute("value");
-
-                    var name = document.getElementById('newNodeNameTextBox').value;
-
-                    // get the group
-                    groups = getListBoxSelectedValues(document.getElementById('newNodeTypeListBox'));
-                    graph.addNode(new nodeData({
-                        'name' : name,
-                        'group' : groups[0]
-                    }));
-
-                    updateToCurrentGraphData(graph);
-                });
-
-                // graph as PID button
-                form.append("input").attr({
-                    id : "displayPidButton",
-                    type : "button",
-                    value : "export to UCSC pathway format",
-                    name : "displayPidButton",
-                    class : 'displayControl'
-                }).on("click", function() {
-                    id = this.getAttribute("id");
-                    value = this.getAttribute("value");
-
-                    var pidString = graph.toPid();
-
-                    alert(pidString);
-                });
-
-                if (getQueryStringParameterByName('test').toLowerCase() == 'true') {
-                    form.append('input').attr({
-                        id : 'testButton',
-                        type : 'button',
-                        value : 'testButton',
-                        name : 'testButton',
-                        class : 'displayControl'
-                    }).on('click', function() {
-                        $(function() {
-                            $("#dialog").dialog();
-                        });
+                    testButton.style({
+                        display : 'inline'
                     });
                 }
             });
         });
     });
 });
+
+// TODO static methods
+
+/**
+ * Check if str ends with suffix.
+ * @param {Object} str
+ * @param {Object} suffix
+ */
+function endsWith(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+
+/**
+ * get the selected values of a list box control.
+ */
+function getListBoxSelectedValues(listboxElement) {
+    var selectedValues = new Array();
+    for (var i = 0; i < listboxElement.length; i++) {
+        var option = listboxElement[i];
+        if (option.selected) {
+            selectedValues.push(option.value);
+        }
+    }
+    return selectedValues;
+}
 
 /**
  * Returns path data for a rectangle with rounded bottom corners.
