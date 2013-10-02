@@ -47,6 +47,15 @@ var svg = d3.select("body").append("svg").attr({
     'id' : 'circleMaps'
 });
 
+// TODO context menu on svg area
+svg.on("contextmenu", function(d, i) {
+    d3.event.preventDefault();
+    d3.event.stopPropagation();
+    var position = d3.mouse(this);
+
+    console.log('right click on blank svg');
+});
+
 // for zoom/pan
 // var svg = d3.select("body").append("svg").attr({
 // 'width' : svgWidth,
@@ -416,7 +425,7 @@ d3.json(metaDataUrl, function(error, data) {
 
 // TODO instance methods
 
-// requires svg, force, graph, cmg, circleDataLoaded
+// requires svg, force, graph, cmg, circleDataLoaded, and various constants
 function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
 
     var largeScale = 'scale(2)';
@@ -455,6 +464,15 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         return d.value;
     });
 
+    // TODO context menu for link
+    linkSelection.on("contextmenu", function(d, i) {
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+        var position = d3.mouse(this);
+
+        console.log('right click on link: ' + d.source.name + ' ' + d.relation + ' ' + d.target.name);
+    });
+
     // nodes
     var nodeSelection = svgNodeLayer.selectAll(".node").data(graph.nodes).enter().append("g").attr({
         class : "node"
@@ -478,6 +496,15 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         });
     }
     nodeSelection.call(force.drag);
+
+    // TODO context menu for node
+    nodeSelection.on("contextmenu", function(d, i) {
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+        var position = d3.mouse(this);
+
+        console.log('right click on node: ' + d.name);
+    });
 
     // node visualization
     var opacityVal = 0.6;
