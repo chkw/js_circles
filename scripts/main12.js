@@ -63,10 +63,10 @@ var svg = d3.select("body").append("svg").attr({
 // svg.attr("transform", "translate(" + tr + ")scale(" + scale + ")");
 // }
 
-var svgLinkLayer = svg.append('g').attr({
+svg.append('g').attr({
     id : 'linkLayer'
 });
-var svgNodeLayer = svg.append('g').attr({
+svg.append('g').attr({
     id : 'nodeLayer'
 });
 
@@ -261,8 +261,6 @@ d3.json(metaDataUrl, function(error, data) {
                 } else {
                     graph.readTab(data);
                 }
-                var nodes = graph.nodes;
-                var links = graph.links;
 
                 // prepare generator for creating SVG:g elements.
                 var cmg = null;
@@ -270,212 +268,19 @@ d3.json(metaDataUrl, function(error, data) {
                     cmg = new circleMapGenerator(metaData, circleData, query);
                 }
 
-                // TODO setupLayout
-                function setupLayout() {"use strict";
-
-                    var largeScale = 'scale(2)';
-                    var smallScale = 'scale(0.2)';
-
-                    // clear the current graph
-                    var removedLinks = svg.selectAll(".link").remove();
-                    var removedNodes = svg.selectAll(".node").remove();
-
-                    if (nodes.length < 1) {
-                        return;
-                    }
-
-                    // reset circleMapSvg class elements by creating circleMap elements for each query feature.
-                    var nodeNames = graph.getAllNodeNames();
-                    if (circleDataLoaded) {
-                        for (var i in nodeNames) {
-                            var feature = nodeNames[i];
-                            var circleMapElement = cmg.drawCircleMap(feature, svgNodeLayer);
-                        }
-                    }
-
-                    // start the layout
-                    force.nodes(nodes).links(links).start();
-
-                    // links
-                    var linkSelection = svgLinkLayer.selectAll(".link").data(links).enter().append("line").attr({
-                        class : "link"
-                    }).style("stroke", function(d) {
-                        return color(d.relation);
-                    });
-
-                    linkSelection.style("stroke-width", function(d) {
-                        return d.value;
-                    });
-
-                    // nodes
-                    var nodeSelection = svgNodeLayer.selectAll(".node").data(nodes).enter().append("g").attr({
-                        class : "node"
-                    });
-                    if (circleDataLoaded) {
-                        nodeSelection.each(function(d) {
-                            // add attribute to the node data
-                            var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
-                            var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
-                            circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
-                        }).on('mouseover', function(d, i) {
-                            // mouseover event for node
-                            var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
-                            var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
-                            circleMapGElement[0].setAttributeNS(null, 'transform', largeScale);
-                        }).on('mouseout', function(d, i) {
-                            // mouseout event for node
-                            var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
-                            var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
-                            circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
-                        });
-                    }
-                    nodeSelection.call(force.drag);
-
-                    // node visualization
-                    var opacityVal = 0.6;
-                    nodeSelection.append(function(d) {
-                        var nodeName = d['name'];
-                        var type = d.group.toString().toLowerCase();
-                        if ((circleDataLoaded ) && (nodeNames.indexOf(nodeName) >= 0)) {
-                            // circleMap
-                            var stagedElement = document.getElementById('circleMapSvg' + nodeName);
-                            return stagedElement;
-                        } else if (nucleicAcidFeatureTypes.indexOf(type) != -1) {
-                            var newElement = document.createElementNS(svgNamespaceUri, 'path');
-                            var path = bottomRoundedRectPath(-20, -15, 40, 30, 10);
-                            newElement.setAttributeNS(null, 'd', path);
-                            newElement.setAttributeNS(null, 'opacity', opacityVal);
-                            return newElement;
-                        } else if (macromoleculeTypes.indexOf(type) != -1) {
-                            var newElement = document.createElementNS(svgNamespaceUri, 'path');
-                            var path = allRoundedRectPath(-20, -15, 40, 30, 10);
-                            newElement.setAttributeNS(null, 'd', path);
-                            newElement.setAttributeNS(null, 'opacity', opacityVal);
-                            return newElement;
-                        } else if (simpleChemicalTypes.indexOf(type) != -1) {
-                            // circle
-                            var newElement = document.createElementNS(svgNamespaceUri, 'circle');
-                            newElement.setAttributeNS(null, 'r', nodeRadius);
-                            newElement.setAttributeNS(null, 'opacity', opacityVal);
-                            return newElement;
-                        } else if (complexTypes.indexOf(type) != -1) {
-                            var newElement = document.createElementNS(svgNamespaceUri, 'path');
-                            var path = allAngledRectPath(-50, -30, 100, 60);
-                            newElement.setAttributeNS(null, 'd', path);
-                            newElement.setAttributeNS(null, 'opacity', opacityVal);
-                            return newElement;
-                        } else {
-                            // unspecified entity
-                            var newElement = document.createElementNS(svgNamespaceUri, 'ellipse');
-                            newElement.setAttributeNS(null, 'cx', 0);
-                            newElement.setAttributeNS(null, 'cy', 0);
-                            newElement.setAttributeNS(null, 'rx', 1.5 * nodeRadius);
-                            newElement.setAttributeNS(null, 'ry', 0.75 * nodeRadius);
-                            newElement.setAttributeNS(null, 'opacity', opacityVal);
-                            return newElement;
-                        }
-                    }).style("fill", function(d) {
-                        return color(d.group);
-                    });
-
-                    nodeSelection.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(function(d) {
-                        return d.name;
-                    });
-
-                    // tooltips
-                    linkSelection.append("title").text(function(d) {
-                        var label = d.source.name + " " + d.relation + " " + d.target.name + ":" + d.value;
-                        return label;
-                    });
-
-                    nodeSelection.append("title").text(function(d) {
-                        return d.name + ' : ' + d.group;
-                    });
-
-                    // tick handler repositions graph elements
-                    force.on("tick", function() {
-                        linkSelection.attr("x1", function(d) {
-                            return d.source.x;
-                        }).attr("y1", function(d) {
-                            return d.source.y;
-                        }).attr("x2", function(d) {
-                            return d.target.x;
-                        }).attr("y2", function(d) {
-                            return d.target.y;
-                        });
-
-                        nodeSelection.attr("transform", function(d) {
-                            return 'translate(' + d.x + ',' + d.y + ')';
-                        });
-                    });
-                }
-
-                /**
-                 *
-                 * @param {Object} currentGraphData
-                 */
-                function updateCurrentNodesListBox(currentGraphData) {
-                    var currentNodesListBox = document.getElementById('currentNodesListBox');
-
-                    // clear options starting from the bottom of the listbox
-                    var optionElements = currentNodesListBox.getElementsByTagName('option');
-                    for (var i = optionElements.length - 1; optionElements.length > 0; i--) {
-                        var optionElement = optionElements[i];
-                        optionElement.parentNode.removeChild(optionElement);
-                    }
-
-                    // add options
-                    for (var i in currentGraphData['nodes']) {
-                        var nodeData = currentGraphData['nodes'][i];
-                        var nodeName = nodeData['name'];
-                        var optionElement = document.createElementNS(htmlUri, 'option');
-                        optionElement.setAttributeNS(null, 'value', nodeName);
-                        optionElement.innerHTML = nodeName;
-
-                        currentNodesListBox.appendChild(optionElement);
-                    }
-                }
-
-                /**
-                 *
-                 * @param {Object} currentGraphData
-                 */
-                function updateCurrentEdgesListBox(currentGraphData) {
-                    var listbox = document.getElementById('currentEdgesListBox');
-
-                    // clear options starting from the bottom of the listbox
-                    var optionElements = listbox.getElementsByTagName('option');
-                    for (var i = optionElements.length - 1; optionElements.length > 0; i--) {
-                        var optionElement = optionElements[i];
-                        optionElement.parentNode.removeChild(optionElement);
-                    }
-
-                    // add options
-                    for (var i in currentGraphData['links']) {
-                        var linkData = currentGraphData['links'][i];
-                        var sourceNode = linkData['source'];
-                        var targetNode = linkData['target'];
-                        var relation = linkData['relation'];
-
-                        var value = sourceNode['name'] + ' ' + relation + ' ' + targetNode['name'];
-
-                        var optionElement = document.createElementNS(htmlUri, 'option');
-                        optionElement.setAttributeNS(null, 'value', i);
-                        optionElement.innerHTML = value;
-
-                        listbox.appendChild(optionElement);
-                    }
-                }
+                // TODO render graph
+                renderGraph(svg, force, graph, cmg, circleDataLoaded);
 
                 /**
                  * Update to current graphData:
                  * <ul>
+                 * <li>graph rendering</li>
                  * <li>currentNodesListBox</li>
                  * <li>currentEdgesListBox</li>
                  * </ul>
                  */
                 function updateToCurrentGraphData(currentGraphData) {
-                    setupLayout();
+                    renderGraph(svg, force, currentGraphData, cmg, circleDataLoaded);
                     updateCurrentNodesListBox(currentGraphData);
                     updateCurrentEdgesListBox(currentGraphData);
                 }
@@ -587,8 +392,8 @@ d3.json(metaDataUrl, function(error, data) {
                             'group' : group
                         }));
 
-                        sourceIdx = nodes.length - 1;
-                        targetIdx = Math.floor(Math.random() * nodes.length);
+                        sourceIdx = graph.nodes.length - 1;
+                        targetIdx = Math.floor(Math.random() * graph.nodes.length);
 
                         if (sourceIdx != targetIdx) {
                             graph.addLink(new linkData({
@@ -608,6 +413,207 @@ d3.json(metaDataUrl, function(error, data) {
         });
     });
 });
+
+// TODO instance methods
+
+// requires svg, force, graph, cmg, circleDataLoaded
+function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
+
+    var largeScale = 'scale(2)';
+    var smallScale = 'scale(0.2)';
+
+    // clear the current graph
+    var removedLinks = svg.selectAll(".link").remove();
+    var removedNodes = svg.selectAll(".node").remove();
+
+    if (graph.nodes.length < 1) {
+        return;
+    }
+
+    // reset circleMapSvg class elements by creating circleMap elements for each query feature.
+    var svgNodeLayer = svg.select('#nodeLayer');
+    var nodeNames = graph.getAllNodeNames();
+    if (circleDataLoaded) {
+        for (var i in nodeNames) {
+            var feature = nodeNames[i];
+            var circleMapElement = cmg.drawCircleMap(feature, svgNodeLayer);
+        }
+    }
+
+    // start the layout
+    force.nodes(graph.nodes).links(graph.links).start();
+
+    // links
+    var svgLinkLayer = svg.select('#linkLayer');
+    var linkSelection = svgLinkLayer.selectAll(".link").data(graph.links).enter().append("line").attr({
+        class : "link"
+    }).style("stroke", function(d) {
+        return color(d.relation);
+    });
+
+    linkSelection.style("stroke-width", function(d) {
+        return d.value;
+    });
+
+    // nodes
+    var nodeSelection = svgNodeLayer.selectAll(".node").data(graph.nodes).enter().append("g").attr({
+        class : "node"
+    });
+    if (circleDataLoaded) {
+        nodeSelection.each(function(d) {
+            // add attribute to the node data
+            var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
+            var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
+            circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
+        }).on('mouseover', function(d, i) {
+            // mouseover event for node
+            var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
+            var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
+            circleMapGElement[0].setAttributeNS(null, 'transform', largeScale);
+        }).on('mouseout', function(d, i) {
+            // mouseout event for node
+            var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
+            var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
+            circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
+        });
+    }
+    nodeSelection.call(force.drag);
+
+    // node visualization
+    var opacityVal = 0.6;
+    nodeSelection.append(function(d) {
+        var nodeName = d['name'];
+        var type = d.group.toString().toLowerCase();
+        if ((circleDataLoaded ) && (nodeNames.indexOf(nodeName) >= 0)) {
+            // circleMap
+            var stagedElement = document.getElementById('circleMapSvg' + nodeName);
+            return stagedElement;
+        } else if (nucleicAcidFeatureTypes.indexOf(type) != -1) {
+            var newElement = document.createElementNS(svgNamespaceUri, 'path');
+            var path = bottomRoundedRectPath(-20, -15, 40, 30, 10);
+            newElement.setAttributeNS(null, 'd', path);
+            newElement.setAttributeNS(null, 'opacity', opacityVal);
+            return newElement;
+        } else if (macromoleculeTypes.indexOf(type) != -1) {
+            var newElement = document.createElementNS(svgNamespaceUri, 'path');
+            var path = allRoundedRectPath(-20, -15, 40, 30, 10);
+            newElement.setAttributeNS(null, 'd', path);
+            newElement.setAttributeNS(null, 'opacity', opacityVal);
+            return newElement;
+        } else if (simpleChemicalTypes.indexOf(type) != -1) {
+            // circle
+            var newElement = document.createElementNS(svgNamespaceUri, 'circle');
+            newElement.setAttributeNS(null, 'r', nodeRadius);
+            newElement.setAttributeNS(null, 'opacity', opacityVal);
+            return newElement;
+        } else if (complexTypes.indexOf(type) != -1) {
+            var newElement = document.createElementNS(svgNamespaceUri, 'path');
+            var path = allAngledRectPath(-50, -30, 100, 60);
+            newElement.setAttributeNS(null, 'd', path);
+            newElement.setAttributeNS(null, 'opacity', opacityVal);
+            return newElement;
+        } else {
+            // unspecified entity
+            var newElement = document.createElementNS(svgNamespaceUri, 'ellipse');
+            newElement.setAttributeNS(null, 'cx', 0);
+            newElement.setAttributeNS(null, 'cy', 0);
+            newElement.setAttributeNS(null, 'rx', 1.5 * nodeRadius);
+            newElement.setAttributeNS(null, 'ry', 0.75 * nodeRadius);
+            newElement.setAttributeNS(null, 'opacity', opacityVal);
+            return newElement;
+        }
+    }).style("fill", function(d) {
+        return color(d.group);
+    });
+
+    nodeSelection.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(function(d) {
+        return d.name;
+    });
+
+    // tooltips
+    linkSelection.append("title").text(function(d) {
+        var label = d.source.name + " " + d.relation + " " + d.target.name + ":" + d.value;
+        return label;
+    });
+
+    nodeSelection.append("title").text(function(d) {
+        return d.name + ' : ' + d.group;
+    });
+
+    // tick handler repositions graph elements
+    force.on("tick", function() {
+        linkSelection.attr("x1", function(d) {
+            return d.source.x;
+        }).attr("y1", function(d) {
+            return d.source.y;
+        }).attr("x2", function(d) {
+            return d.target.x;
+        }).attr("y2", function(d) {
+            return d.target.y;
+        });
+
+        nodeSelection.attr("transform", function(d) {
+            return 'translate(' + d.x + ',' + d.y + ')';
+        });
+    });
+}
+
+/**
+ *
+ * @param {Object} currentGraphData
+ */
+function updateCurrentNodesListBox(currentGraphData) {
+    var currentNodesListBox = document.getElementById('currentNodesListBox');
+
+    // clear options starting from the bottom of the listbox
+    var optionElements = currentNodesListBox.getElementsByTagName('option');
+    for (var i = optionElements.length - 1; optionElements.length > 0; i--) {
+        var optionElement = optionElements[i];
+        optionElement.parentNode.removeChild(optionElement);
+    }
+
+    // add options
+    for (var i in currentGraphData['nodes']) {
+        var nodeData = currentGraphData['nodes'][i];
+        var nodeName = nodeData['name'];
+        var optionElement = document.createElementNS(htmlUri, 'option');
+        optionElement.setAttributeNS(null, 'value', nodeName);
+        optionElement.innerHTML = nodeName;
+
+        currentNodesListBox.appendChild(optionElement);
+    }
+}
+
+/**
+ *
+ * @param {Object} currentGraphData
+ */
+function updateCurrentEdgesListBox(currentGraphData) {
+    var listbox = document.getElementById('currentEdgesListBox');
+
+    // clear options starting from the bottom of the listbox
+    var optionElements = listbox.getElementsByTagName('option');
+    for (var i = optionElements.length - 1; optionElements.length > 0; i--) {
+        var optionElement = optionElements[i];
+        optionElement.parentNode.removeChild(optionElement);
+    }
+
+    // add options
+    for (var i in currentGraphData['links']) {
+        var linkData = currentGraphData['links'][i];
+        var sourceNode = linkData['source'];
+        var targetNode = linkData['target'];
+        var relation = linkData['relation'];
+
+        var value = sourceNode['name'] + ' ' + relation + ' ' + targetNode['name'];
+
+        var optionElement = document.createElementNS(htmlUri, 'option');
+        optionElement.setAttributeNS(null, 'value', i);
+        optionElement.innerHTML = value;
+
+        listbox.appendChild(optionElement);
+    }
+}
 
 // TODO static methods
 
