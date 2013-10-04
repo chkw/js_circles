@@ -6,6 +6,10 @@ select {
     width: 15em;
 }
 
+.ui-menu {
+    width: 150px;
+}
+
 svg {
     background-color: #FFF;
     cursor: default;

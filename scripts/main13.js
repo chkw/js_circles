@@ -1,6 +1,8 @@
 // http://bl.ocks.org/mbostock/929623 shows a nice way to build a graph with intuitive controls.
 // bl.ocks.org/rkirsling/5001347
 // blueprints and rexster https://github.com/tinkerpop/blueprints/wiki
+// context menu: http://joewalnes.com/2011/07/22/a-simple-good-looking-context-menu-for-jquery/
+// context menu: https://github.com/arnklint/jquery-contextMenu
 var htmlUri = 'http://www.w3.org/1999/xhtml';
 var svgNamespaceUri = 'http://www.w3.org/2000/svg';
 var xlinkUri = 'http://www.w3.org/1999/xlink';
@@ -39,6 +41,21 @@ var nodeRadius = 20;
 var graphDataURL = "data/test_pid";
 graphDataURL = 'data/biopaxpid_75288_rdf_pid';
 
+// $("input[type=button]").button();
+
+// TODO dialogBox
+var dialogBox = d3.select('body').append('div').attr({
+    id : 'dialog',
+    title : 'basic dialog'
+}).style({
+    display : 'none'
+}).append('p').text("This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.");
+
+// TODO test context menu
+d3.select('body').append('div').attr({
+    id : 'mythingy'
+});
+
 // TODO svg element that contains the graph
 
 var svg = d3.select("body").append("svg").attr({
@@ -48,13 +65,36 @@ var svg = d3.select("body").append("svg").attr({
 });
 
 // TODO context menu on svg area
-svg.on("contextmenu", function(d, i) {
-    d3.event.preventDefault();
-    d3.event.stopPropagation();
-    var position = d3.mouse(this);
 
-    console.log('right click on blank svg');
+$(function() {
+
+    $('#circleMaps').contextPopup({
+        // title : 'My Popup Menu',
+        items : [{
+            label : 'new node',
+            // icon : 'icons/shopping-basket.png',
+            action : function() {
+                console.log('clicked new node')
+            }
+        }, null, // divider
+        {
+            label : 'some other thing',
+            // icon : 'icons/application-monitor.png',
+            action : function() {
+                console.log('clicked some other thing')
+            }
+        }]
+    });
+
 });
+
+// svg.on("contextmenu", function(d, i) {
+// d3.event.preventDefault();
+// d3.event.stopPropagation();
+// var position = d3.mouse(this);
+//
+// console.log('right click on blank svg');
+// });
 
 // for zoom/pan
 // var svg = d3.select("body").append("svg").attr({
@@ -86,6 +126,7 @@ var color = d3.scale.category20();
 var force = d3.layout.force().size([svgWidth, svgHeight]).linkDistance(linkDistance).linkStrength(linkStrength).friction(friction).gravity(gravity);
 
 //TODO setup controls
+
 var form = d3.select("body").append("form");
 
 var currentNodesListBox = form.append('select').attr({
@@ -194,16 +235,6 @@ var testButton = form.append('input').attr({
 }).style({
     display : 'none'
 });
-
-// $("input[type=button]").button();
-
-// dialogBox
-var dialogBox = d3.select('body').append('div').attr({
-    id : 'dialog',
-    title : 'basic dialog'
-}).style({
-    display : 'none'
-}).append('p').text("This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.");
 
 // TODO draw graph
 
@@ -470,7 +501,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         d3.event.stopPropagation();
         var position = d3.mouse(this);
 
-        console.log('right click on link: ' + d.source.name + ' ' + d.relation + ' ' + d.target.name);
+        console.log('right click on link: ' + d.source.name + ' ' + d.relation + ' ' + d.target.name + '(' + i + ')');
     });
 
     // nodes
@@ -503,7 +534,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         d3.event.stopPropagation();
         var position = d3.mouse(this);
 
-        console.log('right click on node: ' + d.name);
+        console.log('right click on node: ' + d.name + '(' + i + ')');
     });
 
     // node visualization
@@ -557,12 +588,13 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         return d.name;
     });
 
-    // tooltips
+    // edge tooltips
     linkSelection.append("title").text(function(d) {
-        var label = d.source.name + " " + d.relation + " " + d.target.name + ":" + d.value;
+        var label = d.source.name + " " + d.relation + " " + d.target.name;
         return label;
     });
 
+    // node tooltips
     nodeSelection.append("title").text(function(d) {
         return d.name + ' : ' + d.group;
     });
