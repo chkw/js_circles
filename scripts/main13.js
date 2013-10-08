@@ -43,13 +43,13 @@ graphDataURL = 'data/biopaxpid_75288_rdf_pid';
 
 // $("input[type=button]").button();
 
-// TODO dialogBox
+// TODO dialogBox is a div
 var dialogBox = d3.select('body').append('div').attr({
     id : 'dialog',
-    title : 'basic dialog'
+    title : ''
 }).style({
     display : 'none'
-}).append('p').text("This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.");
+});
 
 // TODO test context menu
 d3.select('body').append('div').attr({
@@ -69,19 +69,19 @@ var svg = d3.select("body").append("svg").attr({
 $(function() {
 
     $('#circleMaps').contextPopup({
-        // title : 'My Popup Menu',
+        title : 'blank area popup',
         items : [{
             label : 'new node',
             // icon : 'icons/shopping-basket.png',
             action : function() {
-                console.log('clicked new node')
+                console.log('clicked new node');
             }
         }, null, // divider
         {
             label : 'some other thing',
             // icon : 'icons/application-monitor.png',
             action : function() {
-                console.log('clicked some other thing')
+                console.log('clicked some other thing');
             }
         }]
     });
@@ -222,6 +222,19 @@ var addRandomConnectedNodeButton = form.append("input").attr({
     display : 'none'
 });
 
+var showDialogBox = function(title, text) {
+    $("#dialog").removeAttr('title');
+    $("#dialog").empty();
+    $("#dialog").append('p').text(text);
+    $("#dialog").dialog({
+        'title' : title
+    });
+};
+
+var closeDialogBox = function() {
+    $("#dialog").dialog('close');
+};
+
 var testButton = form.append('input').attr({
     id : 'testButton',
     type : 'button',
@@ -229,9 +242,8 @@ var testButton = form.append('input').attr({
     name : 'testButton',
     class : 'displayControl'
 }).on('click', function() {
-    $(function() {
-        $("#dialog").dialog();
-    });
+    // $(showDialogBox('my title', 'my text'));
+    closeDialogBox();
 }).style({
     display : 'none'
 });
@@ -448,6 +460,10 @@ d3.json(metaDataUrl, function(error, data) {
                     testButton.style({
                         display : 'inline'
                     });
+
+                    testButton2.style({
+                        display : 'inline'
+                    });
                 }
             });
         });
@@ -497,16 +513,19 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
 
     // TODO context menu for link
     linkSelection.on("contextmenu", function(d, i) {
+        var position = d3.mouse(this);
+        var linkDesc = d.source.name + ' ' + d.relation + ' ' + d.target.name;
+        console.log('right click on link: ' + linkDesc + '(' + i + ')');
+
+        $(showDialogBox('edge', linkDesc + '(' + i + ')'));
+
         d3.event.preventDefault();
         d3.event.stopPropagation();
-        var position = d3.mouse(this);
-
-        console.log('right click on link: ' + d.source.name + ' ' + d.relation + ' ' + d.target.name + '(' + i + ')');
     });
 
     // nodes
-    var nodeSelection = svgNodeLayer.selectAll(".node").data(graph.nodes).enter().append("g").attr({
-        class : "node"
+    var nodeSelection = svgNodeLayer.selectAll(".node").data(graph.nodes).enter().append("g").attr('class', function(d, i) {
+        return "node " + d.name + ' ' + d.group;
     });
     if (circleDataLoaded) {
         nodeSelection.each(function(d) {
@@ -530,11 +549,13 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
 
     // TODO context menu for node
     nodeSelection.on("contextmenu", function(d, i) {
+        var position = d3.mouse(this);
+        console.log('right click on node: ' + d.name + '(' + i + ')');
+
+        $(showDialogBox('node', d.name + '(' + i + ')'));
+
         d3.event.preventDefault();
         d3.event.stopPropagation();
-        var position = d3.mouse(this);
-
-        console.log('right click on node: ' + d.name + '(' + i + ')');
     });
 
     // node visualization
