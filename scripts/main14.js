@@ -71,7 +71,7 @@ d3.select('body').append('div').attr({
 
 var svg = d3.select("body").append("svg").attr({
     'width' : '100%',
-    'height' : '85%',
+    'height' : '100%',
     'id' : 'circleMaps'
 });
 
@@ -80,7 +80,7 @@ var svg = d3.select("body").append("svg").attr({
 $(function() {
 
     $('#circleMaps').contextPopup({
-        title : 'blank area popup',
+        title : '',
         items : [{
             label : 'new node',
             // icon : 'icons/shopping-basket.png',
