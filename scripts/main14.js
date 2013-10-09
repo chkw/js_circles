@@ -200,6 +200,8 @@ var exportToUcscFormatButton = form.append("input").attr({
     value : "export to UCSC pathway format",
     name : "exportToUcscFormatButton",
     class : 'displayControl'
+}).style({
+    display : 'none'
 });
 
 var addRandomNodeButton = form.append("input").attr({
@@ -399,16 +401,6 @@ d3.json(metaDataUrl, function(error, data) {
                     updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
                 });
 
-                // graph as PID button
-                exportToUcscFormatButton.on("click", function() {
-                    id = this.getAttribute("id");
-                    value = this.getAttribute("value");
-
-                    var pidString = graph.toPid();
-
-                    alert(pidString);
-                });
-
                 if (getQueryStringParameterByName('test').toLowerCase() == 'true') {
                     currentNodesListBox.style({
                         display : 'inline'
@@ -456,6 +448,18 @@ d3.json(metaDataUrl, function(error, data) {
                         }
 
                         updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
+                    });
+
+                    // graph as PID button
+                    exportToUcscFormatButton.on("click", function() {
+                        id = this.getAttribute("id");
+                        value = this.getAttribute("value");
+
+                        var pidString = graph.toPid();
+
+                        alert(pidString);
+                    }).style({
+                        display : 'inline'
                     });
 
                     testButton.style({
