@@ -222,12 +222,34 @@ var addRandomConnectedNodeButton = form.append("input").attr({
     display : 'none'
 });
 
-var showDialogBox = function(title, text) {
+var showDialogBox = function(type, graph, index) {
     $("#dialog").removeAttr('title');
     $("#dialog").empty();
-    $("#dialog").append('p').text(text);
+    if (type.toUpperCase() === 'EDGE') {
+        var data = graph.links[index];
+        $("#dialog").append('p').text(data.source.name + ' ' + data.relation + ' ' + data.target.name);
+    } else if (type.toUpperCase() === 'NODE') {
+        var data = graph.nodes[index];
+        $("#dialog").append('p').text(data.name);
+    }
     $("#dialog").dialog({
-        'title' : title
+        'title' : type,
+        buttons : {
+            "delete" : function() {
+                // TODO delete edge
+                graph.deleteLinkByIndex(index);
+                updateToCurrentGraphData(graph);
+                $(this).dialog("close");
+            },
+            "close" : function() {
+                $(this).dialog("close");
+            }, //this just closes it - doesn't clean it up!!
+            "destroy" : function() {
+                $(this).dialog("destroy");
+                //this completely empties the dialog
+                //and returns it to its initial state
+            }
+        }
     });
 };
 
@@ -321,23 +343,9 @@ d3.json(metaDataUrl, function(error, data) {
                 }
 
                 // TODO render graph
-                renderGraph(svg, force, graph, cmg, circleDataLoaded);
+                //               renderGraph(svg, force, graph, cmg, circleDataLoaded);
 
-                /**
-                 * Update to current graphData:
-                 * <ul>
-                 * <li>graph rendering</li>
-                 * <li>currentNodesListBox</li>
-                 * <li>currentEdgesListBox</li>
-                 * </ul>
-                 */
-                function updateToCurrentGraphData(currentGraphData) {
-                    renderGraph(svg, force, currentGraphData, cmg, circleDataLoaded);
-                    updateCurrentNodesListBox(currentGraphData);
-                    updateCurrentEdgesListBox(currentGraphData);
-                }
-
-                updateToCurrentGraphData(graph);
+                updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
 
                 deleteSelectedNodeButton.on("click", function() {
                     id = this.getAttribute("id");
@@ -352,7 +360,7 @@ d3.json(metaDataUrl, function(error, data) {
                             console.log('node to be deleted: ' + name);
                             graph.deleteNodeByName(name);
                         }
-                        updateToCurrentGraphData(graph);
+                        updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
                     } else {
                         console.log('no node selected for deletion');
                     }
@@ -371,7 +379,7 @@ d3.json(metaDataUrl, function(error, data) {
                             console.log('edge to be deleted: ' + val);
                             graph.deleteLinkByIndex(val);
                         }
-                        updateToCurrentGraphData(graph);
+                        updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
                     } else {
                         console.log('no edge selected for deletion');
                     }
@@ -403,7 +411,7 @@ d3.json(metaDataUrl, function(error, data) {
                         'group' : groups[0]
                     }));
 
-                    updateToCurrentGraphData(graph);
+                    updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
                 });
 
                 // graph as PID button
@@ -429,7 +437,7 @@ d3.json(metaDataUrl, function(error, data) {
                             'group' : group
                         }));
 
-                        updateToCurrentGraphData(graph);
+                        updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
                     });
 
                     addRandomConnectedNodeButton.style({
@@ -454,14 +462,10 @@ d3.json(metaDataUrl, function(error, data) {
                             }));
                         }
 
-                        updateToCurrentGraphData(graph);
+                        updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
                     });
 
                     testButton.style({
-                        display : 'inline'
-                    });
-
-                    testButton2.style({
                         display : 'inline'
                     });
                 }
@@ -517,7 +521,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         var linkDesc = d.source.name + ' ' + d.relation + ' ' + d.target.name;
         console.log('right click on link: ' + linkDesc + '(' + i + ')');
 
-        $(showDialogBox('edge', linkDesc + '(' + i + ')'));
+        $(showDialogBox('edge', graph, i));
 
         d3.event.preventDefault();
         d3.event.stopPropagation();
@@ -552,7 +556,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         var position = d3.mouse(this);
         console.log('right click on node: ' + d.name + '(' + i + ')');
 
-        $(showDialogBox('node', d.name + '(' + i + ')'));
+        $(showDialogBox('node', graph, i));
 
         d3.event.preventDefault();
         d3.event.stopPropagation();
@@ -693,6 +697,20 @@ function updateCurrentEdgesListBox(currentGraphData) {
 
         listbox.appendChild(optionElement);
     }
+}
+
+/**
+ * Update to current graphData:
+ * <ul>
+ * <li>graph rendering</li>
+ * <li>currentNodesListBox</li>
+ * <li>currentEdgesListBox</li>
+ * </ul>
+ */
+function updateToCurrentGraphData(svgElement, d3Force, currentGraphData, circleMapGenerator, circleDataLoaded) {
+    renderGraph(svgElement, d3Force, currentGraphData, circleMapGenerator, circleDataLoaded);
+    updateCurrentNodesListBox(currentGraphData);
+    updateCurrentEdgesListBox(currentGraphData);
 }
 
 // TODO static methods
