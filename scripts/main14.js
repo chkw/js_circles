@@ -80,12 +80,20 @@ $(function() {
             action : function() {
                 console.log('clicked new node');
             }
+        }, {
+            label : 'new edge',
+            // icon : 'icons/shopping-basket.png',
+            action : function() {
+                console.log('clicked new edge');
+            }
         }, null, // divider
         {
-            label : 'some other thing',
+            label : 'export to UCSC pathway format',
             // icon : 'icons/application-monitor.png',
             action : function() {
-                console.log('clicked some other thing');
+                console.log('clicked export to UCSC pathway format');
+                var pidString = graph.toPid();
+                alert(pidString);
             }
         }]
     });
