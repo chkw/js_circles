@@ -62,6 +62,13 @@ var addNodeDialogBox = d3.select('body').append('div').attr({
     display : 'none'
 });
 
+var addEdgeDialogBox = d3.select('body').append('div').attr({
+    id : 'addEdgeDialog',
+    title : ''
+}).style({
+    display : 'none'
+});
+
 // TODO test context menu
 d3.select('body').append('div').attr({
     id : 'mythingy'
@@ -82,18 +89,20 @@ $(function() {
     $('#circleMaps').contextPopup({
         title : '',
         items : [{
+            // addNodeDialog
             label : 'new node',
             // icon : 'icons/shopping-basket.png',
             action : function() {
                 console.log('clicked new node');
-                // TODO addNodeDialog
                 showAddNodeDialogBox(graph);
             }
         }, {
+            // addEdge
             label : 'new edge',
             // icon : 'icons/shopping-basket.png',
             action : function() {
                 console.log('clicked new edge');
+                showAddEdgeDialogBox(graph);
             }
         }, null, // divider
         {
@@ -232,6 +241,18 @@ var addRandomConnectedNodeButton = form.append("input").attr({
 }).style({
     display : 'none'
 });
+
+var showAddEdgeDialogBox = function(graph) {
+    var dialog = $("#addEdgeDialog");
+    dialog.removeAttr('title');
+    dialog.attr({
+        'style' : 'font-size: smaller'
+    });
+    dialog.append('p').text('There should be some controls for adding an edge here.');
+    dialog.dialog({
+        'title' : 'new edge',
+    });
+};
 
 var showAddNodeDialogBox = function(graph) {
     var dialog = $("#addNodeDialog");
