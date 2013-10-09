@@ -41,6 +41,10 @@ var nodeRadius = 20;
 var graphDataURL = "data/test_pid";
 graphDataURL = 'data/biopaxpid_75288_rdf_pid';
 
+var graph = new graphData();
+var cmg = null;
+var circleDataLoaded = true;
+
 // $("input[type=button]").button();
 
 // TODO dialogBox is a div
@@ -228,29 +232,43 @@ var showDialogBox = function(type, graph, index) {
     if (type.toUpperCase() === 'EDGE') {
         var data = graph.links[index];
         $("#dialog").append('p').text(data.source.name + ' ' + data.relation + ' ' + data.target.name);
+        $("#dialog").dialog({
+            'title' : type,
+            buttons : {
+                "delete" : function() {
+                    // TODO delete edge
+                    graph.deleteLinkByIndex(index);
+                    updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
+                    // updateToCurrentGraphData(graph);
+                    $(this).dialog("close");
+                },
+                "close" : function() {
+                    $(this).dialog("close");
+                    // }, //this just closes it - doesn't clean it up!!
+                    // "destroy" : function() {
+                    // $(this).dialog("destroy");
+                    // //this completely empties the dialog
+                    // //and returns it to its initial state
+                }
+            }
+        });
     } else if (type.toUpperCase() === 'NODE') {
         var data = graph.nodes[index];
         $("#dialog").append('p').text(data.name);
-    }
-    $("#dialog").dialog({
-        'title' : type,
-        buttons : {
-            "delete" : function() {
-                // TODO delete edge
-                graph.deleteLinkByIndex(index);
-                updateToCurrentGraphData(graph);
-                $(this).dialog("close");
-            },
-            "close" : function() {
-                $(this).dialog("close");
-            }, //this just closes it - doesn't clean it up!!
-            "destroy" : function() {
-                $(this).dialog("destroy");
-                //this completely empties the dialog
-                //and returns it to its initial state
+        $("#dialog").dialog({
+            'title' : type,
+            buttons : {
+                "close" : function() {
+                    $(this).dialog("close");
+                    // }, //this just closes it - doesn't clean it up!!
+                    // "destroy" : function() {
+                    // $(this).dialog("destroy");
+                    // //this completely empties the dialog
+                    // //and returns it to its initial state
+                }
             }
-        }
-    });
+        });
+    }
 };
 
 var closeDialogBox = function() {
@@ -289,7 +307,7 @@ function throbberOff() {
 
 // circleMap data
 d3.json(metaDataUrl, function(error, data) {
-    var circleDataLoaded = true;
+    // var circleDataLoaded = true;
     if (getQueryStringParameterByName('circles').toLowerCase() == 'false') {
         circleDataLoaded = false;
     }
@@ -327,7 +345,7 @@ d3.json(metaDataUrl, function(error, data) {
                     console.log("error getting graph data --> " + error);
                 }
 
-                var graph = new graphData();
+                // var graph = new graphData();
                 if (endsWith(graphDataURL.toUpperCase(), 'PID')) {
                     graph.readPid(data);
                 } else if (endsWith(graphDataURL.toUpperCase(), 'SIF')) {
@@ -337,7 +355,7 @@ d3.json(metaDataUrl, function(error, data) {
                 }
 
                 // prepare generator for creating SVG:g elements.
-                var cmg = null;
+                // var cmg = null;
                 if (circleDataLoaded) {
                     cmg = new circleMapGenerator(metaData, circleData, query);
                 }
