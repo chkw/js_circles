@@ -48,8 +48,15 @@ var circleDataLoaded = true;
 // $("input[type=button]").button();
 
 // TODO dialogBox is a div
-var dialogBox = d3.select('body').append('div').attr({
-    id : 'dialog',
+var elementDialogBox = d3.select('body').append('div').attr({
+    id : 'elementDialog',
+    title : ''
+}).style({
+    display : 'none'
+});
+
+var addNodeDialogBox = d3.select('body').append('div').attr({
+    id : 'addNodeDialog',
     title : ''
 }).style({
     display : 'none'
@@ -79,6 +86,8 @@ $(function() {
             // icon : 'icons/shopping-basket.png',
             action : function() {
                 console.log('clicked new node');
+                // TODO addNodeDialog
+                showAddNodeDialogBox(graph);
             }
         }, {
             label : 'new edge',
@@ -224,15 +233,30 @@ var addRandomConnectedNodeButton = form.append("input").attr({
     display : 'none'
 });
 
-var showDialogBox = function(type, graph, index) {
-    $("#dialog").removeAttr('title');
-    $("#dialog").empty();
+var showAddNodeDialogBox = function(graph) {
+    var dialog = $("#addNodeDialog");
+    dialog.removeAttr('title');
+    $("#newNodeNameTextBox").appendTo(dialog);
+    $('#newNodeTypeListBox').appendTo(dialog);
+    $('#addNodeButton').appendTo(dialog);
+    dialog.attr({
+        'style' : 'font-size: smaller'
+    });
+    dialog.dialog({
+        'title' : 'new node',
+    });
+};
+
+var showElementDialogBox = function(type, graph, index) {
+    var dialog = $("#elementDialog");
+    dialog.removeAttr('title');
+    dialog.empty();
     if (type.toUpperCase() === 'EDGE') {
         var data = graph.links[index];
-        $("#dialog").append('p').attr({
+        dialog.append('p').attr({
             'style' : 'font-size: smaller'
         }).text(data.source.name + ' ' + data.relation + ' ' + data.target.name);
-        $("#dialog").dialog({
+        dialog.dialog({
             'title' : type,
             buttons : {
                 "delete" : function() {
@@ -254,10 +278,10 @@ var showDialogBox = function(type, graph, index) {
         });
     } else if (type.toUpperCase() === 'NODE') {
         var data = graph.nodes[index];
-        $("#dialog").append('p').attr({
+        dialog.append('p').attr({
             'style' : 'font-size: smaller'
         }).text(data.name);
-        $("#dialog").dialog({
+        dialog.dialog({
             'title' : type,
             buttons : {
                 "delete" : function() {
@@ -518,7 +542,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         var linkDesc = d.source.name + ' ' + d.relation + ' ' + d.target.name;
         console.log('right click on link: ' + linkDesc + '(' + i + ')');
 
-        $(showDialogBox('edge', graph, i));
+        $(showElementDialogBox('edge', graph, i));
 
         d3.event.preventDefault();
         d3.event.stopPropagation();
@@ -553,7 +577,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         var position = d3.mouse(this);
         console.log('right click on node: ' + d.name + '(' + i + ')');
 
-        $(showDialogBox('node', graph, i));
+        $(showElementDialogBox('node', graph, i));
 
         d3.event.preventDefault();
         d3.event.stopPropagation();
