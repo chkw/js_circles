@@ -139,14 +139,8 @@ var currentNodesListBox = form.append('select').attr({
     class : 'deleteControl'
 }).on('change', function() {
     console.log('change');
-});
-
-var deleteSelectedNodeButton = form.append("input").attr({
-    id : "deleteSelectedNodeButton",
-    type : "button",
-    value : "delete selected NODE",
-    name : "deleteSelectedNodeButton",
-    class : "deleteControl"
+}).style({
+    display : 'none'
 });
 
 var currentEdgesListBox = form.append('select').attr({
@@ -155,14 +149,8 @@ var currentEdgesListBox = form.append('select').attr({
     class : 'deleteControl'
 }).on('change', function() {
     console.log('change');
-});
-
-var deleteSelectedEdgeButton = form.append("input").attr({
-    id : "deleteSelectedEdgeButton",
-    type : "button",
-    value : "delete selected EDGE",
-    name : "deleteSelectedEdgeButton",
-    class : "deleteControl"
+}).style({
+    display : 'none'
 });
 
 var newNodeNameTextBox = form.append("input").attr({
@@ -231,7 +219,9 @@ var showDialogBox = function(type, graph, index) {
     $("#dialog").empty();
     if (type.toUpperCase() === 'EDGE') {
         var data = graph.links[index];
-        $("#dialog").append('p').text(data.source.name + ' ' + data.relation + ' ' + data.target.name);
+        $("#dialog").append('p').attr({
+            'style' : 'font-size: smaller'
+        }).text(data.source.name + ' ' + data.relation + ' ' + data.target.name);
         $("#dialog").dialog({
             'title' : type,
             buttons : {
@@ -254,10 +244,19 @@ var showDialogBox = function(type, graph, index) {
         });
     } else if (type.toUpperCase() === 'NODE') {
         var data = graph.nodes[index];
-        $("#dialog").append('p').text(data.name);
+        $("#dialog").append('p').attr({
+            'style' : 'font-size: smaller'
+        }).text(data.name);
         $("#dialog").dialog({
             'title' : type,
             buttons : {
+                "delete" : function() {
+                    // TODO delete node
+                    graph.deleteNodeByName(data.name);
+                    updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
+                    // updateToCurrentGraphData(graph);
+                    $(this).dialog("close");
+                },
                 "close" : function() {
                     $(this).dialog("close");
                     // }, //this just closes it - doesn't clean it up!!
@@ -361,47 +360,7 @@ d3.json(metaDataUrl, function(error, data) {
                 }
 
                 // TODO render graph
-                //               renderGraph(svg, force, graph, cmg, circleDataLoaded);
-
                 updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
-
-                deleteSelectedNodeButton.on("click", function() {
-                    id = this.getAttribute("id");
-                    value = this.getAttribute("value");
-
-                    var currentNodesListBox = document.getElementById('currentNodesListBox');
-                    var selectedValues = getListBoxSelectedValues(currentNodesListBox);
-
-                    if (selectedValues.length >= 1) {
-                        for (var i in selectedValues) {
-                            var name = selectedValues[i];
-                            console.log('node to be deleted: ' + name);
-                            graph.deleteNodeByName(name);
-                        }
-                        updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
-                    } else {
-                        console.log('no node selected for deletion');
-                    }
-                });
-
-                deleteSelectedEdgeButton.on("click", function() {
-                    id = this.getAttribute("id");
-                    value = this.getAttribute("value");
-
-                    var listbox = document.getElementById('currentEdgesListBox');
-                    var selectedValues = getListBoxSelectedValues(listbox);
-
-                    if (selectedValues.length >= 1) {
-                        for (var i in selectedValues) {
-                            var val = selectedValues[i];
-                            console.log('edge to be deleted: ' + val);
-                            graph.deleteLinkByIndex(val);
-                        }
-                        updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
-                    } else {
-                        console.log('no edge selected for deletion');
-                    }
-                });
 
                 // entity types listbox
                 newNodeTypeListBox.each(function(d, i) {
@@ -443,6 +402,14 @@ d3.json(metaDataUrl, function(error, data) {
                 });
 
                 if (getQueryStringParameterByName('test').toLowerCase() == 'true') {
+                    currentNodesListBox.style({
+                        display : 'inline'
+                    });
+
+                    currentEdgesListBox.style({
+                        display : 'inline'
+                    });
+
                     addRandomNodeButton.style({
                         display : 'inline'
                     }).on("click", function() {
