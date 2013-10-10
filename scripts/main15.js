@@ -50,6 +50,15 @@ var clickedNodesArray = new Array();
 // $("input[type=button]").button();
 
 // TODO dialogBox is a div
+var pathwayDialogBox = d3.select('body').append('div').attr({
+    id : 'pathwayDialog',
+    title : ''
+}).style({
+    display : 'none'
+}).append('textarea').attr({
+    id : 'pathwayTextArea'
+});
+
 var elementDialogBox = d3.select('body').append('div').attr({
     id : 'elementDialog',
     title : ''
@@ -81,6 +90,28 @@ var svg = d3.select("body").append("svg").attr({
 
 // TODO context menu on svg area
 
+function showPathwayDialog() {
+    var dialog = $("#pathwayDialog");
+
+    dialog.attr({
+        'style' : 'font-size: 10px'
+    });
+    $('#pathwayTextArea').text(graph.toPid());
+    dialog.dialog({
+        'title' : 'pathway file',
+        buttons : {
+            "close" : function() {
+                $(this).dialog("close");
+                // }, //this just closes it - doesn't clean it up!!
+                // "destroy" : function() {
+                // $(this).dialog("destroy");
+                // //this completely empties the dialog
+                // //and returns it to its initial state
+            }
+        }
+    });
+}
+
 $(function() {
 
     $('#circleMaps').contextPopup({
@@ -107,8 +138,9 @@ $(function() {
             // icon : 'icons/application-monitor.png',
             action : function() {
                 console.log('clicked export to UCSC pathway format');
-                var pidString = graph.toPid();
-                alert(pidString);
+                showPathwayDialog();
+                // var pidString = graph.toPid();
+                // alert(pidString);
             }
         }]
     });
@@ -326,10 +358,12 @@ var testButton = form.append('input').attr({
     value : 'testButton',
     name : 'testButton',
     class : 'displayControl',
-    title : 'no function'
+    title : 'test'
 }).on('click', function() {
     // $(showDialogBox('my title', 'my text'));
     // closeDialogBox();
+    d3.select('#pathwayTextArea').text('text from testButton');
+    // $('#pathwayTextArea').val('text from testButton');
 });
 
 // TODO draw graph
@@ -809,6 +843,7 @@ function updateToCurrentGraphData(svgElement, d3Force, currentGraphData, circleM
     renderGraph(svgElement, d3Force, currentGraphData, circleMapGenerator, circleDataLoaded);
     updateCurrentNodesListBox(currentGraphData);
     updateCurrentEdgesListBox(currentGraphData);
+    d3.select('#pathwayTextArea').text(currentGraphData.toPid());
 }
 
 // TODO static methods
