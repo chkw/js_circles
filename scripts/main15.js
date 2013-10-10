@@ -45,6 +45,8 @@ var graph = new graphData();
 var cmg = null;
 var circleDataLoaded = true;
 
+var clickedNodesArray = new Array();
+
 // $("input[type=button]").button();
 
 // TODO dialogBox is a div
@@ -67,11 +69,6 @@ var addEdgeDialogBox = d3.select('body').append('div').attr({
     title : ''
 }).style({
     display : 'none'
-});
-
-// TODO test context menu
-d3.select('body').append('div').attr({
-    id : 'mythingy'
 });
 
 // TODO svg element that contains the graph
@@ -157,7 +154,9 @@ var force = d3.layout.force().size([svgWidth, svgHeight]).linkDistance(linkDista
 
 //TODO setup controls
 
-var form = d3.select("body").append("form");
+var form = d3.select("body").append("form").style({
+    display : 'none'
+});
 
 var currentNodesListBox = form.append('select').attr({
     id : 'currentNodesListBox',
@@ -175,8 +174,6 @@ var currentEdgesListBox = form.append('select').attr({
     class : 'deleteControl'
 }).on('change', function() {
     console.log('change');
-}).style({
-    display : 'none'
 });
 
 var newNodeNameTextBox = form.append("input").attr({
@@ -218,8 +215,6 @@ var exportToUcscFormatButton = form.append("input").attr({
     value : "export to UCSC pathway format",
     name : "exportToUcscFormatButton",
     class : 'displayControl'
-}).style({
-    display : 'none'
 });
 
 var addRandomNodeButton = form.append("input").attr({
@@ -228,8 +223,6 @@ var addRandomNodeButton = form.append("input").attr({
     value : "add random node",
     name : "addRandomNodeButton",
     class : 'addControl'
-}).style({
-    display : 'none'
 });
 
 var addRandomConnectedNodeButton = form.append("input").attr({
@@ -238,8 +231,6 @@ var addRandomConnectedNodeButton = form.append("input").attr({
     value : "add random connected node",
     name : "addConnectedButton",
     class : 'addControl'
-}).style({
-    display : 'none'
 });
 
 var showAddEdgeDialogBox = function(graph) {
@@ -257,9 +248,15 @@ var showAddEdgeDialogBox = function(graph) {
 var showAddNodeDialogBox = function(graph) {
     var dialog = $("#addNodeDialog");
     dialog.removeAttr('title');
-    $("#newNodeNameTextBox").appendTo(dialog);
-    $('#newNodeTypeListBox').appendTo(dialog);
-    $('#addNodeButton').appendTo(dialog);
+    $("#newNodeNameTextBox").appendTo(dialog).attr({
+        'style' : 'display:inline'
+    });
+    $('#newNodeTypeListBox').appendTo(dialog).attr({
+        'style' : 'display:inline'
+    });
+    $('#addNodeButton').appendTo(dialog).attr({
+        'style' : 'display:inline'
+    });
     dialog.attr({
         'style' : 'font-size: smaller'
     });
@@ -281,10 +278,9 @@ var showElementDialogBox = function(type, graph, index) {
             'title' : type,
             buttons : {
                 "delete" : function() {
-                    // TODO delete edge
+                    // delete edge
                     graph.deleteLinkByIndex(index);
                     updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
-                    // updateToCurrentGraphData(graph);
                     $(this).dialog("close");
                 },
                 "close" : function() {
@@ -306,10 +302,9 @@ var showElementDialogBox = function(type, graph, index) {
             'title' : type,
             buttons : {
                 "delete" : function() {
-                    // TODO delete node
+                    // delete node
                     graph.deleteNodeByName(data.name);
                     updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
-                    // updateToCurrentGraphData(graph);
                     $(this).dialog("close");
                 },
                 "close" : function() {
@@ -325,21 +320,16 @@ var showElementDialogBox = function(type, graph, index) {
     }
 };
 
-var closeDialogBox = function() {
-    $("#dialog").dialog('close');
-};
-
 var testButton = form.append('input').attr({
     id : 'testButton',
     type : 'button',
     value : 'testButton',
     name : 'testButton',
-    class : 'displayControl'
+    class : 'displayControl',
+    title : 'no function'
 }).on('click', function() {
     // $(showDialogBox('my title', 'my text'));
-    closeDialogBox();
-}).style({
-    display : 'none'
+    // closeDialogBox();
 });
 
 // TODO draw graph
@@ -447,6 +437,10 @@ d3.json(metaDataUrl, function(error, data) {
                 });
 
                 if (getQueryStringParameterByName('test').toLowerCase() == 'true') {
+                    form.style({
+                        display : 'inline'
+                    });
+
                     currentNodesListBox.style({
                         display : 'inline'
                     });
@@ -557,7 +551,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         return d.value;
     });
 
-    // TODO context menu for link
+    // context menu for link
     linkSelection.on("contextmenu", function(d, i) {
         var position = d3.mouse(this);
         var linkDesc = d.source.name + ' ' + d.relation + ' ' + d.target.name;
@@ -593,12 +587,27 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
     }
     nodeSelection.call(force.drag);
 
-    // TODO context menu for node
+    // context menu for node
     nodeSelection.on("contextmenu", function(d, i) {
         var position = d3.mouse(this);
         console.log('right click on node: ' + d.name + '(' + i + ')');
 
         $(showElementDialogBox('node', graph, i));
+
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+    });
+
+    // TODO node click
+    nodeSelection.on("click", function(d, i) {
+        var position = d3.mouse(this);
+        console.log('left click on node: ' + d.name + '(' + i + ')');
+
+        addClickedNode(i);
+        for (var i in clickedNodesArray) {
+            var idx = clickedNodesArray[i];
+            console.log(idx);
+        }
 
         d3.event.preventDefault();
         d3.event.stopPropagation();
@@ -618,24 +627,28 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
             var path = bottomRoundedRectPath(-20, -15, 40, 30, 10);
             newElement.setAttributeNS(null, 'd', path);
             newElement.setAttributeNS(null, 'opacity', opacityVal);
+            newElement.setAttributeNS(null, 'stroke', 'black');
             return newElement;
         } else if (macromoleculeTypes.indexOf(type) != -1) {
             var newElement = document.createElementNS(svgNamespaceUri, 'path');
             var path = allRoundedRectPath(-20, -15, 40, 30, 10);
             newElement.setAttributeNS(null, 'd', path);
             newElement.setAttributeNS(null, 'opacity', opacityVal);
+            newElement.setAttributeNS(null, 'stroke', 'black');
             return newElement;
         } else if (simpleChemicalTypes.indexOf(type) != -1) {
             // circle
             var newElement = document.createElementNS(svgNamespaceUri, 'circle');
             newElement.setAttributeNS(null, 'r', nodeRadius);
             newElement.setAttributeNS(null, 'opacity', opacityVal);
+            newElement.setAttributeNS(null, 'stroke', 'black');
             return newElement;
         } else if (complexTypes.indexOf(type) != -1) {
             var newElement = document.createElementNS(svgNamespaceUri, 'path');
             var path = allAngledRectPath(-50, -30, 100, 60);
             newElement.setAttributeNS(null, 'd', path);
             newElement.setAttributeNS(null, 'opacity', opacityVal);
+            newElement.setAttributeNS(null, 'stroke', 'black');
             return newElement;
         } else {
             // unspecified entity
@@ -645,6 +658,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
             newElement.setAttributeNS(null, 'rx', 1.5 * nodeRadius);
             newElement.setAttributeNS(null, 'ry', 0.75 * nodeRadius);
             newElement.setAttributeNS(null, 'opacity', opacityVal);
+            newElement.setAttributeNS(null, 'stroke', 'black');
             return newElement;
         }
     }).style("fill", function(d) {
@@ -742,6 +756,47 @@ function updateCurrentEdgesListBox(currentGraphData) {
 }
 
 /**
+ * clear the clickedNodesArray
+ */
+function clearClickedNodes() {
+    clickedNodesArray = new Array();
+}
+
+/**
+ * add specified index to clicked nodes array
+ */
+function addClickedNode(nodeIdx) {
+    // check if node already exists
+    var exists = false;
+    for (var i in clickedNodesArray) {
+        var idx = clickedNodesArray[i];
+        if (idx === nodeIdx) {
+            exists = true;
+            break;
+        }
+    }
+    if (!exists) {
+        // add node
+        clickedNodesArray.push(nodeIdx);
+    }
+    return clickedNodesArray;
+}
+
+/**
+ * remove specified index from clicked nodes array
+ */
+function removeClickedNode(nodeIdx) {
+    var what, a = arguments, L = a.length, ax;
+    while (L > 1 && clickedNodesArray.length) {
+        what = a[--L];
+        while (( ax = clickedNodesArray.indexOf(what)) !== -1) {
+            clickedNodesArray.splice(ax, 1);
+        }
+    }
+    return clickedNodesArray;
+}
+
+/**
  * Update to current graphData:
  * <ul>
  * <li>graph rendering</li>
@@ -750,6 +805,7 @@ function updateCurrentEdgesListBox(currentGraphData) {
  * </ul>
  */
 function updateToCurrentGraphData(svgElement, d3Force, currentGraphData, circleMapGenerator, circleDataLoaded) {
+    clearClickedNodes();
     renderGraph(svgElement, d3Force, currentGraphData, circleMapGenerator, circleDataLoaded);
     updateCurrentNodesListBox(currentGraphData);
     updateCurrentEdgesListBox(currentGraphData);
