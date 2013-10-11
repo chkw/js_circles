@@ -40,7 +40,7 @@ var graphDataURL = "data/test_pid";
 graphDataURL = 'data/biopaxpid_75288_rdf_pid';
 graphDataURL = 'data/biopaxpid_96010_xgmml_fix_pid';
 graphDataURL = 'data/pid_erg_small_pathway_v2_pid';
-graphDataURL = 'data/RB1_v1_pid';
+graphDataURL = 'data/RB1_v3_pid';
 
 var graph = new graphData();
 var cmg = null;
