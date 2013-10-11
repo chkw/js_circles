@@ -18,8 +18,6 @@ var selectableEntityTypes = ['unspecified entity', 'protein', 'gene', 'mRNA', 'm
 
 var throbberUrl = 'images/loading_16.gif';
 
-var svgWidth = 960, svgHeight = 500;
-
 // circleMap data
 var metaData = null;
 var metaDataUrl = "data/metaDataJson";
@@ -35,13 +33,14 @@ var linkDistance = 120;
 var linkStrength = 0.2;
 var friction = 0.8;
 var charge = -500;
-var gravity = 0.005;
+var gravity = 0.01;
 
 var nodeRadius = 20;
 var graphDataURL = "data/test_pid";
 graphDataURL = 'data/biopaxpid_75288_rdf_pid';
 graphDataURL = 'data/biopaxpid_96010_xgmml_fix_pid';
 graphDataURL = 'data/pid_erg_small_pathway_v2_pid';
+graphDataURL = 'data/RB1_v1_pid';
 
 var graph = new graphData();
 var cmg = null;
@@ -89,6 +88,11 @@ var svg = d3.select("body").append("svg").attr({
     'height' : '100%',
     'id' : 'circleMaps'
 });
+
+var bbox = document.getElementById('circleMaps').getBBox();
+// var svgWidth = bbox.width / 2, svgHeight = bbox.height / 2;
+console.log('bbox: ' + JSON.stringify(bbox));
+var svgWidth = $(window).width(), svgHeight = $(window).height();
 
 // TODO context menu on svg area
 
