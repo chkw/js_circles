@@ -102,6 +102,9 @@ function showPathwayDialog() {
     dialog.attr({
         'style' : 'font-size: 10px'
     });
+    $('#pathwayTextArea').attr({
+        'style' : 'width:100% ; height:20em'
+    });
     $('#pathwayTextArea').text(graph.toPid());
     dialog.dialog({
         'title' : 'pathway file',
