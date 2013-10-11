@@ -7,26 +7,26 @@ protein	RB1
 complex	CDKN1B_SKP2
 complex	CCNE1_CDK2
 protein	TFDP1
-protein	TFDP1
 protein	MSH6
 protein	SUV39H1
 protein	CCNE1
+protein	CDKN1A
+abstract	G1/S transition of mitotic cell cycle
 family	CDC45_CDC7_CDK1_MCM3_MCM4_MCM6_MCM7_ORC1_POLE_RPA1_WEE1
+protein	MDM2
 protein	NPAT
 complex	E2F1_HDAC1_RB1_RBBP4_RBBP7_RBP1_SAP30_SIN3A_TFDP2
-protein	RB1
 protein	E2F1
 protein	E2F3
-protein	TFDP1
-protein	RB1
+abstract	regulation of cyclin-dependent protein kinase activity
 protein	CDKN1B
 protein	RAF1
 complex	E2F3_HDAC1_RB1_RBP1_TFDP1
 family	RPA1_RPA2_RPA3
+abstract	RB-E2F complex
 protein	CDC25B
-protein	E2F3
-protein	E2F3
-protein	E2F1
+protein	TP53
+abstract	cell cycle checkpoint
 protein	SKP2
 complex	E2F2_HDAC1_RB1_RBP1_TFDP2
 complex	RB1_ZNF655
@@ -34,77 +34,56 @@ protein	PRKDC
 complex	E2F1_RB1_TFDP1
 family	POLA1_POLE2_PRIM1
 protein	RFC5
-protein	RB1
 complex	E2F3_RB1_TFDP1
 protein	RPA3
-protein	TFDP1
 protein	TTK
-protein	RB1
-protein	RB1
 protein	TYMS
 protein	TFDP2
 protein	FAF1
-protein	E2F3
 protein	CDK4
+abstract	DNA repair
 protein	RBBP7
 protein	CHEK1
 protein	RFC3
-protein	TFDP2
 protein	HMGB1
+protein	ABL1
 protein	RRM2
 protein	CDC25A
 protein	MCM6
-protein	E2F1
-protein	RB1
-protein	E2F3
+abstract	G2/M transition of mitotic cell cycle
 protein	E2F2
-protein	MDM2
 protein	SMC1A
-protein	RB1
 protein	CDK1
 protein	H2AFZ
 protein	TOP2A
 family	ANLN_DCK_FAF1_H2AFZ_HLTF_HMGB1_HMGB2_KIF4A_POLD3_RABIF_SMARCA2
-protein	TFDP1
 complex	E2F2_RB1_TFDP1
-protein	RBP1
-protein	RB1
+abstract	histone H3-K9 methylation
 protein	HDAC1
 protein	MCM7
 protein	POLE
 complex	ABL1_RB1
 protein	FANCG
-protein	TFDP1
-protein	TFDP1
-protein	CCNE1
 protein	ORC1
-protein	ABL1
 protein	PLK4
-protein	RBP1
 protein	MCM4
 protein	WEE1
 complex	CCND1_CDK4
-protein	SKP2
 complex	MCM7_RB1
-protein	RB1
 protein	CDC7
 protein	SMC3
 protein	KIF4A
 family	STMN1_TTK
-protein	CDK1
-protein	RB1
-protein	HDAC1
-protein	RB1
+abstract	JNK cascade
+abstract	M/G1 transition of mitotic cell cycle
 protein	HMGB2
+protein	CDT1
 complex	MDM2_RB1
-protein	E2F3
-protein	RBP1
-protein	E2F1
 protein	RRM1
 protein	RPA2
 protein	POLD3
-protein	HDAC1
-protein	E2F2
+abstract	DNA replication checkpoint
+abstract	DNA damage response, signal transduction resulting in induction of apoptosis
 protein	CCND1
 complex	RAF1_RB1
 complex	E2F1_HDAC1_RB1_RBP1_TFDP1
@@ -113,21 +92,14 @@ protein	SMC2
 family	CCDC6_CCNB1_CCND3_CCNE1_CCNE2_CDC25A_CDK1
 complex	E2F1_RB1_SUV39H1_TFDP1
 complex	E2F1_TFDP2
-protein	TFDP2
-protein	MDM2
+abstract	E2F-TFDP complex
 protein	ZNF655
-protein	RB1
 protein	BARD1
 protein	ANLN
 protein	DHFR
-protein	E2F2
-protein	RB1
-protein	CCND1
 family	CHEK1_FANCG_RFC3_RFC4_RFC5_SMC1A
-protein	E2F1
-protein	E2F1
 protein	CDC45
-protein	HDAC1
+abstract	mitotic spindle organization
 protein	RFC4
 complex	E2F1_HDAC1_RB1_RBP1_TFDP2
 protein	SIN3A
@@ -137,68 +109,42 @@ protein	DCK
 protein	CDK2
 protein	HLTF
 protein	RABIF
+abstract	DNA replication
 protein	CCNB2
-protein	MCM7
-protein	TFDP1
 complex	E2F1_TFDP1
+protein	MAPK13
 protein	CCND3
-protein	TFDP1
 complex	E2F2_TFDP2
-protein	TFDP2
-protein	TFDP1
-protein	RB1
-protein	E2F1
-protein	E2F1
 complex	E2F2_TFDP1
 protein	STMN1
 complex	E2F3_TFDP1
-protein	RBP1
 protein	MCM3
-protein	E2F1
 protein	SMARCA2
-protein	E2F2
 family	RRM1_TOP2A
-protein	TFDP1
 protein	RPA1
 protein	MYC
 protein	DNMT1
 protein	CCNA2
-protein	E2F1
 complex	E2F2_HDAC1_RB1_RBP1_TFDP1
-protein	E2F2
-protein	HDAC1
+abstract	MAP kinase activity
 family	DHFR_E2F3_RRM2_TFDP1_TYMS
 protein	CCDC6
-protein	HDAC1
 complex	RB1_SKP2
-protein	RBP1
 family	CDC25B_PLK4
-protein	RBP1
+abstract	growth factor activity
+abstract	mitotic cell cycle
 complex	E2F1_MDM2_TFDP1
-protein	HDAC1
-protein	TFDP1
 complex	CCND1_CDK6
-protein	RB1
-protein	RB1
-protein	TFDP2
-protein	HDAC1
-protein	TFDP2
 protein	RBBP4
 protein	CCNB1
 family	CCNA2_CCNB2
-protein	RPA1
 complex	E2F3_HDAC1_RB1_RBP1_TFDP2
-protein	RB1
 complex	PRMT2_RB1
-protein	TFDP2
 family	BARD1_MSH6_PRKDC_SMC2_SMC3
-protein	RB1
-protein	TFDP1
 complex	DNMT1_E2F1_HDAC1_RB1_RBP1_TFDP1
 complex	E2F3_TFDP2
 protein	PRIM1
 protein	PRMT2
-protein	RBP1
 POLE2	POLA1_POLE2_PRIM1	member>
 PRIM1	POLA1_POLE2_PRIM1	member>
 POLA1	POLA1_POLE2_PRIM1	member>
@@ -223,11 +169,11 @@ MCM3	CDC45_CDC7_CDK1_MCM3_MCM4_MCM6_MCM7_ORC1_POLE_RPA1_WEE1	member>
 E2F3_HDAC1_RB1_RBP1_TFDP2	RB-E2F complex	member>
 E2F2_RB1_TFDP1	RB-E2F complex	member>
 E2F3_RB1_TFDP1	RB-E2F complex	member>
+DNMT1_E2F1_HDAC1_RB1_RBP1_TFDP1	RB-E2F complex	member>
 E2F1_HDAC1_RB1_RBBP4_RBBP7_RBP1_SAP30_SIN3A_TFDP2	RB-E2F complex	member>
 E2F1_HDAC1_RB1_RBP1_TFDP1	RB-E2F complex	member>
 E2F3_HDAC1_RB1_RBP1_TFDP1	RB-E2F complex	member>
 E2F2_HDAC1_RB1_RBP1_TFDP1	RB-E2F complex	member>
-DNMT1_E2F1_HDAC1_RB1_RBP1_TFDP1	RB-E2F complex	member>
 E2F1_HDAC1_RB1_RBP1_TFDP2	RB-E2F complex	member>
 E2F2_HDAC1_RB1_RBP1_TFDP2	RB-E2F complex	member>
 E2F1_RB1_TFDP1	RB-E2F complex	member>
@@ -236,6 +182,8 @@ CCNA2	CCNA2_CCNB2	member>
 RPA2	RPA1_RPA2_RPA3	member>
 RPA1	RPA1_RPA2_RPA3	member>
 RPA3	RPA1_RPA2_RPA3	member>
+RRM1	RRM1_TOP2A	member>
+TOP2A	RRM1_TOP2A	member>
 PCNA	E2F1_NPAT_PCNA	member>
 E2F1	E2F1_NPAT_PCNA	member>
 NPAT	E2F1_NPAT_PCNA	member>
@@ -259,8 +207,6 @@ TTK	STMN1_TTK	member>
 STMN1	STMN1_TTK	member>
 PLK4	CDC25B_PLK4	member>
 CDC25B	CDC25B_PLK4	member>
-RRM1	RRM1_TOP2A	member>
-TOP2A	RRM1_TOP2A	member>
 FAF1	ANLN_DCK_FAF1_H2AFZ_HLTF_HMGB1_HMGB2_KIF4A_POLD3_RABIF_SMARCA2	member>
 ANLN	ANLN_DCK_FAF1_H2AFZ_HLTF_HMGB1_HMGB2_KIF4A_POLD3_RABIF_SMARCA2	member>
 POLD3	ANLN_DCK_FAF1_H2AFZ_HLTF_HMGB1_HMGB2_KIF4A_POLD3_RABIF_SMARCA2	member>
@@ -303,7 +249,6 @@ E2F-TFDP complex	CCDC6_CCNB1_CCND3_CCNE1_CCNE2_CDC25A_CDK1	-t>
 E2F-TFDP complex	CDT1	-t>
 E2F-TFDP complex	CDC25B_PLK4	-t>
 E2F-TFDP complex	CCNA2_CCNB2	-t>
-E2F-TFDP complex	ANLN_DCK_FAF1_H2AFZ_HLTF_HMGB1_HMGB2_KIF4A_POLD3_RABIF_SMARCA2	-t>
 E2F-TFDP complex	RRM1_TOP2A	-t>
 E2F-TFDP complex	DHFR_E2F3_RRM2_TFDP1_TYMS	-t>
 E2F-TFDP complex	BARD1_MSH6_PRKDC_SMC2_SMC3	-t>
@@ -311,6 +256,7 @@ E2F-TFDP complex	CHEK1_FANCG_RFC3_RFC4_RFC5_SMC1A	-t>
 E2F-TFDP complex	STMN1_TTK	-t>
 E2F-TFDP complex	E2F1	-t>
 E2F-TFDP complex	CDC45_CDC7_CDK1_MCM3_MCM4_MCM6_MCM7_ORC1_POLE_RPA1_WEE1	-t>
+E2F-TFDP complex	ANLN_DCK_FAF1_H2AFZ_HLTF_HMGB1_HMGB2_KIF4A_POLD3_RABIF_SMARCA2	-t>
 TP53	MDM2	-t>
 TP53	CDKN1A	-t>
 POLA1_POLE2_PRIM1	M/G1 transition of mitotic cell cycle	-ap>
@@ -349,6 +295,8 @@ TFDP2	E2F1_HDAC1_RB1_RBBP4_RBBP7_RBP1_SAP30_SIN3A_TFDP2	component>
 E2F1	E2F1_HDAC1_RB1_RBBP4_RBBP7_RBP1_SAP30_SIN3A_TFDP2	component>
 SAP30	E2F1_HDAC1_RB1_RBBP4_RBBP7_RBP1_SAP30_SIN3A_TFDP2	component>
 RB1	E2F1_HDAC1_RB1_RBBP4_RBBP7_RBP1_SAP30_SIN3A_TFDP2	component>
+ABL1	ABL1_RB1	component>
+RB1	ABL1_RB1	component>
 TFDP1	E2F3_TFDP1	component>
 E2F3	E2F3_TFDP1	component>
 TFDP2	E2F3_TFDP2	component>
@@ -415,23 +363,21 @@ RBP1	E2F2_HDAC1_RB1_RBP1_TFDP2	component>
 TFDP2	E2F2_HDAC1_RB1_RBP1_TFDP2	component>
 MDM2	MDM2_RB1	component>
 RB1	MDM2_RB1	component>
+RB1	RB1_SKP2	component>
+SKP2	RB1_SKP2	component>
+CDKN1B	CDKN1B_SKP2	component>
+SKP2	CDKN1B_SKP2	component>
 RBP1	DNMT1_E2F1_HDAC1_RB1_RBP1_TFDP1	component>
 HDAC1	DNMT1_E2F1_HDAC1_RB1_RBP1_TFDP1	component>
 TFDP1	DNMT1_E2F1_HDAC1_RB1_RBP1_TFDP1	component>
 E2F1	DNMT1_E2F1_HDAC1_RB1_RBP1_TFDP1	component>
 RB1	DNMT1_E2F1_HDAC1_RB1_RBP1_TFDP1	component>
 DNMT1	DNMT1_E2F1_HDAC1_RB1_RBP1_TFDP1	component>
-CDKN1B	CDKN1B_SKP2	component>
-SKP2	CDKN1B_SKP2	component>
-RB1	RB1_SKP2	component>
-SKP2	RB1_SKP2	component>
 ZNF655	RB1_ZNF655	component>
 RB1	RB1_ZNF655	component>
 RB1	RAF1_RB1	component>
 RAF1	RAF1_RB1	component>
 RB1	MCM7_RB1	component>
 MCM7	MCM7_RB1	component>
-ABL1	ABL1_RB1	component>
-RB1	ABL1_RB1	component>
 MYC	CCNE1_CDK2	-a>
 RB1	MCM7_RB1	-a>
