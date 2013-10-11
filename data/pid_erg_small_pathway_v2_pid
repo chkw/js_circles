@@ -1,0 +1,178 @@
+protein	ADAM19
+protein	ADRB2
+protein	AR
+protein	CACNA1D
+protein	CCL2
+protein	CDH1
+protein	CRISP3
+protein	CYTL2
+protein	DAB2IP
+protein	DNA-PKc
+protein	ERG
+protein	EZH2
+protein	FKBP5
+protein	FOS
+protein	FZD4
+protein	FZD7
+protein	HPGD
+protein	IL-8
+protein	IL1R2
+protein	HAT1
+protein	JUN
+protein	KCNS3
+protein	KLK2
+protein	KLK3
+protein	KLK4
+protein	KRSP1
+protein	Ku-70
+protein	Ku-80
+protein	LAMC2
+protein	MMP3
+protein	MMP9
+protein	MYC
+protein	NDRG1
+protein	NFkB
+protein	NKX3-1
+protein	OPN
+protein	PAR1
+protein	PARP1
+protein	PIM1
+protein	PLA1A
+protein	PLAU
+protein	PSMD7
+protein	PSMD14
+protein	SETDB1
+protein	SLC43A1
+protein	SLC45A3
+protein	SNCA
+protein	SOCS2
+protein	SPINT1
+protein	TFF3
+protein	TRADD
+protein	TLR4
+protein	TMPRSS2
+protein	TNFRSF1A
+protein	UBC
+protein	WNT11
+protein	WNT2
+protein	WNT9A
+protein	ZBTB16
+protein	ZEB1
+protein	ZEB2
+protein	HDAC1
+protein	HDAC2
+protein	TMPRSS11D
+protein	UCHL5
+protein	USP14
+protein	USP20
+protein	ETV1
+protein	ETV4
+protein	FLI1
+family	ETS_fusion_family
+ERG	ETS_fusion_family	member>
+ETV1	ETS_fusion_family	member>
+ETV4	ETS_fusion_family	member>
+FLI1	ETS_fusion_family	member>
+family	HDAC
+HDAC1	HDAC	member>
+HDAC2	HDAC	member>
+complex	tERG
+ETS_fusion_family	AR	-t|
+AR	tERG	-t|
+AR	KLK2	-t>
+tERG	KLK2	-t|
+AR	KLK3	-t>
+tERG	KLK3	-t|
+AR	KLK4	-t>
+tERG	KLK4	-t|
+AR	SLC45A3	-t>
+tERG	SLC45A3	-t|
+AR	SLC43A1	-t>
+tERG	SLC43A1	-t|
+AR	FKBP5	-t>
+tERG	FKBP5	-t|
+AR	KRSP1	-t>
+tERG	KRSP1	-t|
+AR	TMPRSS2	-t>
+tERG	TMPRSS2	-t|
+tERG	PLAU	-t>
+tERG	MMP3	-t>
+tERG	MMP9	-t>
+tERG	ADAM19	-t>
+tERG	ERG	-t>
+tERG	ZEB1	-t>
+tERG	IL1R2	-t>
+IL1R2	ZEB2	-t>
+tERG	SPINT1	-t>
+SPINT1	ZEB2	-t>
+ZEB1	CDH1	-t|
+ZEB2	CDH1	-t|
+tERG	CDH1	-t|
+tERG	WNT11	-t>
+tERG	WNT2	-t>
+tERG	WNT9A	-t>
+tERG	FZD4	-t>
+tERG	FZD7	-t>
+tERG	CACNA1D	-t>
+tERG	KCNS3	-t>
+tERG	PLA1A	-t>
+tERG	LAMC2	-t>
+tERG	KRSP1	-t|
+tERG	ZBTB16	-t|
+tERG	CYTL2	-t|
+tERG	NDRG1	-t|
+tERG	EZH2	-t>
+EZH2	NKX3-1	-t>
+tERG	NKX3-1	-t|
+NKX3-1	tERG	-t|
+EZH2	NKX3-1	-t>
+tERG	ADRB2	-t|
+EZH2	ADRB2	-t|
+tERG	DAB2IP	-t|
+EZH2	DAB2IP	-t|
+tERG	SNCA	-t|
+EZH2	SNCA	-t|
+tERG	SOCS2	-t|
+EZH2	CDH1	-t|
+tERG	TFF3	-t>
+tERG	OPN	-t>
+tERG	PIM1	-t>
+tERG	MYC	-t>
+tERG	HPGD	-t>
+tERG	CRISP3	-t>
+tERG	IL-8	-a|
+tERG	NFkB	-a>
+NFkB	PAR1	-t>
+NFkB	CCL2	-t>
+NFkB	FOS	-t>
+NFkB	TLR4	-t>
+NFkB	TLR4	-t>
+complex	ERG/PARP1/DNA-PKc/Ku70/Ku80_complex
+PARP1	ERG/PARP1/DNA-PKc/Ku70/Ku80_complex	component>
+DNA-PKc	ERG/PARP1/DNA-PKc/Ku70/Ku80_complex	component>
+Ku-70	ERG/PARP1/DNA-PKc/Ku70/Ku80_complex	component>
+Ku-80	ERG/PARP1/DNA-PKc/Ku70/Ku80_complex	component>
+SETDB1	ERG/PARP1/DNA-PKc/Ku70/Ku80_complex	component>
+ERG	ERG/PARP1/DNA-PKc/Ku70/Ku80_complex	component>
+complex	tERG/AR_complex
+AR	tERG/AR_complex	component>
+ERG	tERG/AR_complex	component>
+complex	ERG/TNFRSF1A/TRADD_complex
+TNFRSF1A	ERG/TNFRSF1A/TRADD_complex	component>
+TRADD	ERG/TNFRSF1A/TRADD_complex	component>
+ERG	ERG/TNFRSF1A/TRADD_complex	component>
+complex	ERG/FOS/JUN_complex
+FOS	ERG/FOS/JUN_complex	component>
+JUN	ERG/FOS/JUN_complex	component>
+ERG	ERG/FOS/JUN_complex	component>
+HDAC1	tERG	component>
+HDAC2	tERG	component>
+HDAC	tERG	-a>
+HAT1	tERG	-a|
+HAT1	tERG	component>
+UCHL5	tERG	component>
+USP14	tERG	component>
+USP20	tERG	component>
+PSMD7	tERG	component>
+PSMD14	tERG	component>
+UBC	tERG	component>

@@ -35,11 +35,13 @@ var linkDistance = 120;
 var linkStrength = 0.2;
 var friction = 0.8;
 var charge = -500;
-var gravity = 0.01;
+var gravity = 0.005;
 
 var nodeRadius = 20;
 var graphDataURL = "data/test_pid";
 graphDataURL = 'data/biopaxpid_75288_rdf_pid';
+graphDataURL = 'data/biopaxpid_96010_xgmml_fix_pid';
+graphDataURL = 'data/pid_erg_small_pathway_v2_pid';
 
 var graph = new graphData();
 var cmg = null;
@@ -575,7 +577,9 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
 
     // links
     var svgLinkLayer = svg.select('#linkLayer');
-    var linkSelection = svgLinkLayer.selectAll(".link").data(graph.links).enter().append("line").attr({
+    var linkSelection = svgLinkLayer.selectAll(".link").data(graph.links).enter().append("line").attr('id', function(d, i) {
+        return 'link' + i;
+    }).attr({
         class : "link"
     }).style("stroke", function(d) {
         return color(d.relation);
@@ -583,6 +587,17 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
 
     linkSelection.style("stroke-width", function(d) {
         return d.value;
+    });
+
+    // mouse events for links - thicken on mouseover
+    linkSelection.on('mouseover', function(d, i) {
+        // mouseover event for link
+        var linkElement = document.getElementById('link' + i);
+        linkElement.setAttributeNS(null, 'style', 'stroke-width:' + (d.value * 3) + ' ; stroke:' + color(d.relation));
+    }).on('mouseout', function(d, i) {
+        // mouseout event for link
+        var linkElement = document.getElementById('link' + i);
+        linkElement.setAttributeNS(null, 'style', 'stroke-width:' + d.value + ' ; stroke:' + color(d.relation));
     });
 
     // context menu for link

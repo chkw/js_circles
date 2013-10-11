@@ -1,0 +1,26 @@
+complex	Activated IKK Complex
+PhysicalEntity	Activated TAK complexes
+SmallMolecule	Adenosine 5'-diphosphate
+SmallMolecule	Adenosine 5'-triphosphate
+protein	CHUK
+protein	IKBKB
+protein	IKBKG
+complex	Inhibitor of KappaB kinase (IKK) Complex
+complex	NFkB Complex
+protein	Nuclear factor NF-kappa-B
+protein	RELA
+Inhibitor of KappaB kinase (IKK) Complex	Adenosine 5'-diphosphate	-a>
+Inhibitor of KappaB kinase (IKK) Complex	Activated IKK Complex	-a>
+CHUK	Inhibitor of KappaB kinase (IKK) Complex	component>
+CHUK	Activated IKK Complex	component>
+IKBKB	Inhibitor of KappaB kinase (IKK) Complex	component>
+IKBKB	Activated IKK Complex	component>
+Adenosine 5'-triphosphate	Adenosine 5'-diphosphate	-a>
+Adenosine 5'-triphosphate	Activated IKK Complex	-a>
+NFkB Complex	NFkB Complex	-a>
+IKBKG	Inhibitor of KappaB kinase (IKK) Complex	component>
+IKBKG	Activated IKK Complex	component>
+Activated TAK complexes	Adenosine 5'-diphosphate	ACTIVATION
+Nuclear factor NF-kappa-B	NFkB Complex	component>
+RELA	NFkB Complex	component>
+Activated IKK Complex	Adenosine 5'-diphosphate	ACTIVATION
