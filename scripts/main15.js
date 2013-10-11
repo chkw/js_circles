@@ -621,6 +621,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         return "node " + d.name + ' ' + d.group;
     });
     if (circleDataLoaded) {
+        // mouse events for circleMap nodes
         nodeSelection.each(function(d) {
             // add attribute to the node data
             var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
@@ -636,6 +637,19 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
             var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
             var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
             circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
+        });
+    } else {
+        // mouse events for sbgn nodes
+        nodeSelection.on('mouseover', function(d, i) {
+            // mouseover event for node
+            var nodeElement = document.getElementsByClassName("node " + d.name + ' ' + d.group);
+            var nodeSbgnElement = nodeElement[0].getElementsByClassName('sbgn');
+            nodeSbgnElement[0].setAttributeNS(null, 'style', 'stroke-width:4;fill:' + color(d.group));
+        }).on('mouseout', function(d, i) {
+            // mouseout event for node
+            var nodeElement = document.getElementsByClassName("node " + d.name + ' ' + d.group);
+            var nodeSbgnElement = nodeElement[0].getElementsByClassName('sbgn');
+            nodeSbgnElement[0].setAttributeNS(null, 'style', 'stroke-width:1;fill:' + color(d.group));
         });
     }
     nodeSelection.call(force.drag);
@@ -677,6 +691,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
             return stagedElement;
         } else if (nucleicAcidFeatureTypes.indexOf(type) != -1) {
             var newElement = document.createElementNS(svgNamespaceUri, 'path');
+            newElement.setAttributeNS(null, 'class', 'sbgn');
             var path = bottomRoundedRectPath(-20, -15, 40, 30, 10);
             newElement.setAttributeNS(null, 'd', path);
             newElement.setAttributeNS(null, 'opacity', opacityVal);
@@ -684,6 +699,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
             return newElement;
         } else if (macromoleculeTypes.indexOf(type) != -1) {
             var newElement = document.createElementNS(svgNamespaceUri, 'path');
+            newElement.setAttributeNS(null, 'class', 'sbgn');
             var path = allRoundedRectPath(-20, -15, 40, 30, 10);
             newElement.setAttributeNS(null, 'd', path);
             newElement.setAttributeNS(null, 'opacity', opacityVal);
@@ -692,12 +708,14 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         } else if (simpleChemicalTypes.indexOf(type) != -1) {
             // circle
             var newElement = document.createElementNS(svgNamespaceUri, 'circle');
+            newElement.setAttributeNS(null, 'class', 'sbgn');
             newElement.setAttributeNS(null, 'r', nodeRadius);
             newElement.setAttributeNS(null, 'opacity', opacityVal);
             newElement.setAttributeNS(null, 'stroke', 'black');
             return newElement;
         } else if (complexTypes.indexOf(type) != -1) {
             var newElement = document.createElementNS(svgNamespaceUri, 'path');
+            newElement.setAttributeNS(null, 'class', 'sbgn');
             var path = allAngledRectPath(-50, -30, 100, 60);
             newElement.setAttributeNS(null, 'd', path);
             newElement.setAttributeNS(null, 'opacity', opacityVal);
@@ -706,6 +724,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         } else {
             // unspecified entity
             var newElement = document.createElementNS(svgNamespaceUri, 'ellipse');
+            newElement.setAttributeNS(null, 'class', 'sbgn');
             newElement.setAttributeNS(null, 'cx', 0);
             newElement.setAttributeNS(null, 'cy', 0);
             newElement.setAttributeNS(null, 'rx', 1.5 * nodeRadius);
