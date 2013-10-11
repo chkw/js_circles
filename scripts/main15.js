@@ -335,7 +335,7 @@ var showElementDialogBox = function(type, graph, index) {
         var data = graph.nodes[index];
         dialog.append('p').attr({
             'style' : 'font-size: smaller'
-        }).text(data.name);
+        }).text(data.name + ': ' + data.group);
         dialog.dialog({
             'title' : type,
             buttons : {
