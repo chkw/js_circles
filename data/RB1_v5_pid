@@ -1,0 +1,386 @@
+protein	SAP30
+protein	POLA1
+protein	RBP1
+protein	PCNA
+protein	POLE2
+protein	RB1
+complex	CDKN1B/SKP2_(complex)
+complex	CCNE1/CDK2_(complex)
+protein	TFDP1
+protein	MSH6
+protein	SUV39H1
+protein	CCNE1
+protein	CDKN1A
+abstract	G1/S_transition_of_mitotic_cell_cycle_(abstract)
+family	CDC45/CDC7/CDK1/MCM3/MCM4/MCM6/MCM7/ORC1/POLE/RPA1/WEE1_(family)
+protein	MDM2
+protein	NPAT
+complex	E2F1/HDAC1/RB1/RBBP4/RBBP7/RBP1/SAP30/SIN3A/TFDP2_(complex)
+protein	E2F1
+protein	E2F3
+abstract	regulation_of_cyclin-dependent_protein_kinase_activity_(abstract)
+protein	CDKN1B
+protein	RAF1
+complex	E2F3/HDAC1/RB1/RBP1/TFDP1_(complex)
+family	RPA1/RPA2/RPA3_(family)
+family	RB-E2F_complex_(family)
+protein	CDC25B
+protein	TP53
+abstract	cell_cycle_checkpoint_(abstract)
+protein	SKP2
+complex	E2F2/HDAC1/RB1/RBP1/TFDP2_(complex)
+complex	RB1/ZNF655_(complex)
+protein	PRKDC
+complex	E2F1/RB1/TFDP1_(complex)
+family	POLA1/POLE2/PRIM1_(family)
+protein	RFC5
+complex	E2F3/RB1/TFDP1_(complex)
+protein	RPA3
+protein	TTK
+protein	TYMS
+protein	TFDP2
+protein	FAF1
+protein	CDK4
+abstract	DNA_repair_(abstract)
+protein	RBBP7
+protein	CHEK1
+abstract	G1/S_transition_of_mitotic_cell_cycle_(abstract)
+protein	RFC3
+protein	HMGB1
+protein	ABL1
+protein	RRM2
+protein	CDC25A
+protein	MCM6
+abstract	G2/M_transition_of_mitotic_cell_cycle_(abstract)
+protein	E2F2
+protein	SMC1A
+protein	CDK1
+protein	H2AFZ
+protein	TOP2A
+family	ANLN/DCK/FAF1/H2AFZ/HLTF/HMGB1/HMGB2/KIF4A/POLD3/RABIF/SMARCA2_(family)
+complex	E2F2/RB1/TFDP1_(complex)
+abstract	histone_H3-K9_methylation_(abstract)
+protein	HDAC1
+protein	MCM7
+protein	POLE
+complex	ABL1/RB1_(complex)
+protein	FANCG
+protein	ORC1
+protein	PLK4
+protein	MCM4
+protein	WEE1
+complex	CCND1/CDK4_(complex)
+complex	MCM7/RB1_(complex)
+protein	CDC7
+protein	SMC3
+protein	KIF4A
+family	STMN1/TTK_(family)
+abstract	JNK_cascade_(abstract)
+abstract	M/G1_transition_of_mitotic_cell_cycle_(abstract)
+protein	HMGB2
+protein	CDT1
+complex	MDM2/RB1_(complex)
+protein	RRM1
+protein	RPA2
+protein	POLD3
+abstract	DNA_replication_checkpoint_(abstract)
+abstract	DNA_damage_response__signal_transduction_resulting_in_induction_of_apoptosis_(abstract)
+protein	CCND1
+complex	RAF1/RB1_(complex)
+complex	E2F1/HDAC1/RB1/RBP1/TFDP1_(complex)
+family	MYC_(family)
+protein	SMC2
+family	CCDC6/CCNB1/CCND3/CCNE1/CCNE2/CDC25A/CDK1_(family)
+complex	E2F1/RB1/SUV39H1/TFDP1_(complex)
+complex	E2F1/TFDP2_(complex)
+family	E2F-TFDP_complex_(family)
+protein	ZNF655
+protein	BARD1
+protein	ANLN
+protein	DHFR
+family	CHEK1/FANCG/RFC3/RFC4/RFC5/SMC1A_(family)
+abstract	regulation_of_cyclin-dependent_protein_kinase_activity_(abstract)
+protein	CDC45
+abstract	mitotic_spindle_organization_(abstract)
+protein	RFC4
+complex	E2F1/HDAC1/RB1/RBP1/TFDP2_(complex)
+protein	SIN3A
+protein	CDK6
+protein	CCNE2
+protein	DCK
+protein	CDK2
+protein	HLTF
+protein	RABIF
+abstract	DNA_replication_(abstract)
+protein	CCNB2
+complex	E2F1/TFDP1_(complex)
+protein	MAPK13
+protein	CCND3
+complex	E2F2/TFDP2_(complex)
+complex	E2F2/TFDP1_(complex)
+protein	STMN1
+complex	E2F3/TFDP1_(complex)
+protein	MCM3
+protein	SMARCA2
+family	RRM1/TOP2A_(family)
+abstract	G1/S_transition_of_mitotic_cell_cycle_(abstract)
+protein	RPA1
+protein	MYC
+protein	DNMT1
+protein	CCNA2
+complex	E2F2/HDAC1/RB1/RBP1/TFDP1_(complex)
+abstract	MAP_kinase_activity_(abstract)
+family	DHFR/E2F3/RRM2/TFDP1/TYMS_(family)
+protein	CCDC6
+complex	RB1/SKP2_(complex)
+family	CDC25B/PLK4_(family)
+abstract	growth_factor_activity_(abstract)
+abstract	mitotic_cell_cycle_(abstract)
+complex	E2F1/MDM2/TFDP1_(complex)
+complex	CCND1/CDK6_(complex)
+protein	RBBP4
+protein	CCNB1
+family	CCNA2/CCNB2_(family)
+complex	E2F3/HDAC1/RB1/RBP1/TFDP2_(complex)
+complex	PRMT2/RB1_(complex)
+family	BARD1/MSH6/PRKDC/SMC2/SMC3_(family)
+complex	DNMT1/E2F1/HDAC1/RB1/RBP1/TFDP1_(complex)
+complex	E2F3/TFDP2_(complex)
+protein	PRIM1
+protein	PRMT2
+CDC25B	CDC25B/PLK4_(family)	member>
+PLK4	CDC25B/PLK4_(family)	member>
+CCNA2	CCNA2/CCNB2_(family)	member>
+CCNB2	CCNA2/CCNB2_(family)	member>
+CDK1	CCDC6/CCNB1/CCND3/CCNE1/CCNE2/CDC25A/CDK1_(family)	member>
+CCNE2	CCDC6/CCNB1/CCND3/CCNE1/CCNE2/CDC25A/CDK1_(family)	member>
+CCDC6	CCDC6/CCNB1/CCND3/CCNE1/CCNE2/CDC25A/CDK1_(family)	member>
+CDC25A	CCDC6/CCNB1/CCND3/CCNE1/CCNE2/CDC25A/CDK1_(family)	member>
+CCNE1	CCDC6/CCNB1/CCND3/CCNE1/CCNE2/CDC25A/CDK1_(family)	member>
+CCNB1	CCDC6/CCNB1/CCND3/CCNE1/CCNE2/CDC25A/CDK1_(family)	member>
+CCND3	CCDC6/CCNB1/CCND3/CCNE1/CCNE2/CDC25A/CDK1_(family)	member>
+E2F2/HDAC1/RB1/RBP1/TFDP2_(complex)	RB-E2F_complex_(family)	member>
+E2F3/HDAC1/RB1/RBP1/TFDP2_(complex)	RB-E2F_complex_(family)	member>
+E2F2/RB1/TFDP1_(complex)	RB-E2F_complex_(family)	member>
+E2F3/RB1/TFDP1_(complex)	RB-E2F_complex_(family)	member>
+E2F1/HDAC1/RB1/RBBP4/RBBP7/RBP1/SAP30/SIN3A/TFDP2_(complex)	RB-E2F_complex_(family)	member>
+E2F1/HDAC1/RB1/RBP1/TFDP1_(complex)	RB-E2F_complex_(family)	member>
+E2F3/HDAC1/RB1/RBP1/TFDP1_(complex)	RB-E2F_complex_(family)	member>
+E2F2/HDAC1/RB1/RBP1/TFDP1_(complex)	RB-E2F_complex_(family)	member>
+E2F1/HDAC1/RB1/RBP1/TFDP2_(complex)	RB-E2F_complex_(family)	member>
+E2F1/RB1/TFDP1_(complex)	RB-E2F_complex_(family)	member>
+DNMT1/E2F1/HDAC1/RB1/RBP1/TFDP1_(complex)	RB-E2F_complex_(family)	member>
+RPA3	RPA1/RPA2/RPA3_(family)	member>
+RPA2	RPA1/RPA2/RPA3_(family)	member>
+RPA1	RPA1/RPA2/RPA3_(family)	member>
+PCNA	E2F1/NPAT/PCNA	member>
+E2F1	E2F1/NPAT/PCNA	member>
+NPAT	E2F1/NPAT/PCNA	member>
+TYMS	DHFR/E2F3/RRM2/TFDP1/TYMS_(family)	member>
+TFDP1	DHFR/E2F3/RRM2/TFDP1/TYMS_(family)	member>
+DHFR	DHFR/E2F3/RRM2/TFDP1/TYMS_(family)	member>
+RRM2	DHFR/E2F3/RRM2/TFDP1/TYMS_(family)	member>
+E2F3	DHFR/E2F3/RRM2/TFDP1/TYMS_(family)	member>
+MYC	MYC_(family)	member>
+SMC2	BARD1/MSH6/PRKDC/SMC2/SMC3_(family)	member>
+MSH6	BARD1/MSH6/PRKDC/SMC2/SMC3_(family)	member>
+SMC3	BARD1/MSH6/PRKDC/SMC2/SMC3_(family)	member>
+BARD1	BARD1/MSH6/PRKDC/SMC2/SMC3_(family)	member>
+PRKDC	BARD1/MSH6/PRKDC/SMC2/SMC3_(family)	member>
+MCM3	CDC45/CDC7/CDK1/MCM3/MCM4/MCM6/MCM7/ORC1/POLE/RPA1/WEE1_(family)	member>
+WEE1	CDC45/CDC7/CDK1/MCM3/MCM4/MCM6/MCM7/ORC1/POLE/RPA1/WEE1_(family)	member>
+CDK1	CDC45/CDC7/CDK1/MCM3/MCM4/MCM6/MCM7/ORC1/POLE/RPA1/WEE1_(family)	member>
+MCM6	CDC45/CDC7/CDK1/MCM3/MCM4/MCM6/MCM7/ORC1/POLE/RPA1/WEE1_(family)	member>
+MCM4	CDC45/CDC7/CDK1/MCM3/MCM4/MCM6/MCM7/ORC1/POLE/RPA1/WEE1_(family)	member>
+MCM7	CDC45/CDC7/CDK1/MCM3/MCM4/MCM6/MCM7/ORC1/POLE/RPA1/WEE1_(family)	member>
+POLE	CDC45/CDC7/CDK1/MCM3/MCM4/MCM6/MCM7/ORC1/POLE/RPA1/WEE1_(family)	member>
+RPA1	CDC45/CDC7/CDK1/MCM3/MCM4/MCM6/MCM7/ORC1/POLE/RPA1/WEE1_(family)	member>
+CDC7	CDC45/CDC7/CDK1/MCM3/MCM4/MCM6/MCM7/ORC1/POLE/RPA1/WEE1_(family)	member>
+CDC45	CDC45/CDC7/CDK1/MCM3/MCM4/MCM6/MCM7/ORC1/POLE/RPA1/WEE1_(family)	member>
+ORC1	CDC45/CDC7/CDK1/MCM3/MCM4/MCM6/MCM7/ORC1/POLE/RPA1/WEE1_(family)	member>
+RFC5	CHEK1/FANCG/RFC3/RFC4/RFC5/SMC1A_(family)	member>
+RFC3	CHEK1/FANCG/RFC3/RFC4/RFC5/SMC1A_(family)	member>
+CHEK1	CHEK1/FANCG/RFC3/RFC4/RFC5/SMC1A_(family)	member>
+RFC4	CHEK1/FANCG/RFC3/RFC4/RFC5/SMC1A_(family)	member>
+SMC1A	CHEK1/FANCG/RFC3/RFC4/RFC5/SMC1A_(family)	member>
+FANCG	CHEK1/FANCG/RFC3/RFC4/RFC5/SMC1A_(family)	member>
+TTK	STMN1/TTK_(family)	member>
+STMN1	STMN1/TTK_(family)	member>
+POLD3	ANLN/DCK/FAF1/H2AFZ/HLTF/HMGB1/HMGB2/KIF4A/POLD3/RABIF/SMARCA2_(family)	member>
+ANLN	ANLN/DCK/FAF1/H2AFZ/HLTF/HMGB1/HMGB2/KIF4A/POLD3/RABIF/SMARCA2_(family)	member>
+H2AFZ	ANLN/DCK/FAF1/H2AFZ/HLTF/HMGB1/HMGB2/KIF4A/POLD3/RABIF/SMARCA2_(family)	member>
+HMGB1	ANLN/DCK/FAF1/H2AFZ/HLTF/HMGB1/HMGB2/KIF4A/POLD3/RABIF/SMARCA2_(family)	member>
+SMARCA2	ANLN/DCK/FAF1/H2AFZ/HLTF/HMGB1/HMGB2/KIF4A/POLD3/RABIF/SMARCA2_(family)	member>
+DCK	ANLN/DCK/FAF1/H2AFZ/HLTF/HMGB1/HMGB2/KIF4A/POLD3/RABIF/SMARCA2_(family)	member>
+HMGB2	ANLN/DCK/FAF1/H2AFZ/HLTF/HMGB1/HMGB2/KIF4A/POLD3/RABIF/SMARCA2_(family)	member>
+KIF4A	ANLN/DCK/FAF1/H2AFZ/HLTF/HMGB1/HMGB2/KIF4A/POLD3/RABIF/SMARCA2_(family)	member>
+RABIF	ANLN/DCK/FAF1/H2AFZ/HLTF/HMGB1/HMGB2/KIF4A/POLD3/RABIF/SMARCA2_(family)	member>
+FAF1	ANLN/DCK/FAF1/H2AFZ/HLTF/HMGB1/HMGB2/KIF4A/POLD3/RABIF/SMARCA2_(family)	member>
+HLTF	ANLN/DCK/FAF1/H2AFZ/HLTF/HMGB1/HMGB2/KIF4A/POLD3/RABIF/SMARCA2_(family)	member>
+RRM1	RRM1/TOP2A_(family)	member>
+TOP2A	RRM1/TOP2A_(family)	member>
+PRIM1	POLA1/POLE2/PRIM1_(family)	member>
+POLE2	POLA1/POLE2/PRIM1_(family)	member>
+POLA1	POLA1/POLE2/PRIM1_(family)	member>
+E2F3/TFDP2_(complex)	E2F-TFDP_complex_(family)	member>
+E2F1/TFDP1_(complex)	E2F-TFDP_complex_(family)	member>
+E2F2/TFDP1_(complex)	E2F-TFDP_complex_(family)	member>
+E2F1/TFDP2_(complex)	E2F-TFDP_complex_(family)	member>
+E2F2/TFDP2_(complex)	E2F-TFDP_complex_(family)	member>
+E2F1/MDM2/TFDP1_(complex)	E2F-TFDP_complex_(family)	member>
+E2F3/TFDP1_(complex)	E2F-TFDP_complex_(family)	member>
+MDM2/RB1_(complex)	RB-E2F_complex_(family)	-ap|
+RB-E2F_complex_(family)	E2F-TFDP_complex_(family)	-ap|
+PRMT2/RB1_(complex)	G1/S_transition_of_mitotic_cell_cycle_(abstract)	-ap|
+ABL1/RB1_(complex)	RB-E2F_complex_(family)	-ap|
+RB1/ZNF655_(complex)	JNK_cascade_(abstract)	-ap|
+RAF1/RB1_(complex)	RB-E2F_complex_(family)	-ap|
+TP53	G1/S_transition_of_mitotic_cell_cycle_(abstract)	-ap|
+CCND1/CDK6_(complex)	RB1	-a|
+CCNE1/CDK2_(complex)	RB1	-a|
+MAPK13	RB1	-a|
+RB1/SKP2_(complex)	CDKN1B/SKP2_(complex)	-a|
+CDKN1A	CCNE1/CDK2_(complex)	-a|
+CDKN1B/SKP2_(complex)	CDKN1B	-a|
+ABL1/RB1_(complex)	ABL1	-a|
+CCND1/CDK4_(complex)	RB1	-a|
+MDM2	TP53	-a|
+CDKN1B	CCNE1/CDK2_(complex)	-a|
+MCM7/RB1_(complex)	RPA1/RPA2/RPA3_(family)	-a|
+E2F-TFDP_complex_(family)	CDC25B/PLK4_(family)	-t>
+E2F-TFDP_complex_(family)	CCNA2/CCNB2_(family)	-t>
+E2F-TFDP_complex_(family)	CCDC6/CCNB1/CCND3/CCNE1/CCNE2/CDC25A/CDK1_(family)	-t>
+E2F-TFDP_complex_(family)	CDT1	-t>
+E2F-TFDP_complex_(family)	DHFR/E2F3/RRM2/TFDP1/TYMS_(family)	-t>
+E2F-TFDP_complex_(family)	BARD1/MSH6/PRKDC/SMC2/SMC3_(family)	-t>
+E2F-TFDP_complex_(family)	ANLN/DCK/FAF1/H2AFZ/HLTF/HMGB1/HMGB2/KIF4A/POLD3/RABIF/SMARCA2_(family)	-t>
+E2F-TFDP_complex_(family)	CHEK1/FANCG/RFC3/RFC4/RFC5/SMC1A_(family)	-t>
+E2F-TFDP_complex_(family)	STMN1/TTK_(family)	-t>
+E2F-TFDP_complex_(family)	CDC45/CDC7/CDK1/MCM3/MCM4/MCM6/MCM7/ORC1/POLE/RPA1/WEE1_(family)	-t>
+E2F-TFDP_complex_(family)	E2F1	-t>
+E2F-TFDP_complex_(family)	RRM1/TOP2A_(family)	-t>
+E2F-TFDP_complex_(family)	POLA1/POLE2/PRIM1_(family)	-t>
+TP53	CDKN1A	-t>
+TP53	MDM2	-t>
+CDC25B/PLK4_(family)	G2/M_transition_of_mitotic_cell_cycle_(abstract)	-ap>
+CCNA2/CCNB2_(family)	regulation_of_cyclin-dependent_protein_kinase_activity_(abstract)	-ap>
+CCNA2/CCNB2_(family)	G2/M_transition_of_mitotic_cell_cycle_(abstract)	-ap>
+CCDC6/CCNB1/CCND3/CCNE1/CCNE2/CDC25A/CDK1_(family)	G1/S_transition_of_mitotic_cell_cycle_(abstract)	-ap>
+CCDC6/CCNB1/CCND3/CCNE1/CCNE2/CDC25A/CDK1_(family)	regulation_of_cyclin-dependent_protein_kinase_activity_(abstract)	-ap>
+CDT1	DNA_replication_checkpoint_(abstract)	-ap>
+CDT1	G1/S_transition_of_mitotic_cell_cycle_(abstract)	-ap>
+PRMT2/RB1_(complex)	RB-E2F_complex_(family)	-ap>
+MAP_kinase_activity_(abstract)	CCND1/CDK6_(complex)	-ap>
+MAP_kinase_activity_(abstract)	CCND1/CDK4_(complex)	-ap>
+DHFR/E2F3/RRM2/TFDP1/TYMS_(family)	G1/S_transition_of_mitotic_cell_cycle_(abstract)	-ap>
+DHFR/E2F3/RRM2/TFDP1/TYMS_(family)	mitotic_cell_cycle_(abstract)	-ap>
+growth_factor_activity_(abstract)	MAP_kinase_activity_(abstract)	-ap>
+BARD1/MSH6/PRKDC/SMC2/SMC3_(family)	DNA_repair_(abstract)	-ap>
+CHEK1/FANCG/RFC3/RFC4/RFC5/SMC1A_(family)	cell_cycle_checkpoint_(abstract)	-ap>
+STMN1/TTK_(family)	mitotic_spindle_organization_(abstract)	-ap>
+JNK_cascade_(abstract)	DNA_damage_response__signal_transduction_resulting_in_induction_of_apoptosis_(abstract)	-ap>
+CDC45/CDC7/CDK1/MCM3/MCM4/MCM6/MCM7/ORC1/POLE/RPA1/WEE1_(family)	G1/S_transition_of_mitotic_cell_cycle_(abstract)	-ap>
+CDC45/CDC7/CDK1/MCM3/MCM4/MCM6/MCM7/ORC1/POLE/RPA1/WEE1_(family)	cell_cycle_checkpoint_(abstract)	-ap>
+E2F1/RB1/SUV39H1/TFDP1_(complex)	histone_H3-K9_methylation_(abstract)	-ap>
+RRM1/TOP2A_(family)	DNA_replication_(abstract)	-ap>
+E2F1	G1/S_transition_of_mitotic_cell_cycle_(abstract)	-ap>
+POLA1/POLE2/PRIM1_(family)	G1/S_transition_of_mitotic_cell_cycle_(abstract)	-ap>
+POLA1/POLE2/PRIM1_(family)	M/G1_transition_of_mitotic_cell_cycle_(abstract)	-ap>
+RB1	RB-E2F_complex_(family)	-ap>
+CCND1	CCND1/CDK6_(complex)	component>
+CDK6	CCND1/CDK6_(complex)	component>
+E2F2	E2F2/RB1/TFDP1_(complex)	component>
+RB1	E2F2/RB1/TFDP1_(complex)	component>
+TFDP1	E2F2/RB1/TFDP1_(complex)	component>
+E2F3	E2F3/RB1/TFDP1_(complex)	component>
+RB1	E2F3/RB1/TFDP1_(complex)	component>
+TFDP1	E2F3/RB1/TFDP1_(complex)	component>
+E2F1	E2F1/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+TFDP1	E2F1/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+RB1	E2F1/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+HDAC1	E2F1/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+RBP1	E2F1/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+SKP2	CDKN1B/SKP2_(complex)	component>
+CDKN1B	CDKN1B/SKP2_(complex)	component>
+RBP1	E2F3/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+TFDP1	E2F3/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+RB1	E2F3/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+HDAC1	E2F3/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+E2F3	E2F3/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+HDAC1	E2F2/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+E2F2	E2F2/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+RBP1	E2F2/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+TFDP1	E2F2/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+RB1	E2F2/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+RBP1	E2F1/HDAC1/RB1/RBP1/TFDP2_(complex)	component>
+TFDP2	E2F1/HDAC1/RB1/RBP1/TFDP2_(complex)	component>
+RB1	E2F1/HDAC1/RB1/RBP1/TFDP2_(complex)	component>
+HDAC1	E2F1/HDAC1/RB1/RBP1/TFDP2_(complex)	component>
+E2F1	E2F1/HDAC1/RB1/RBP1/TFDP2_(complex)	component>
+TFDP2	E2F2/HDAC1/RB1/RBP1/TFDP2_(complex)	component>
+RB1	E2F2/HDAC1/RB1/RBP1/TFDP2_(complex)	component>
+HDAC1	E2F2/HDAC1/RB1/RBP1/TFDP2_(complex)	component>
+E2F2	E2F2/HDAC1/RB1/RBP1/TFDP2_(complex)	component>
+RBP1	E2F2/HDAC1/RB1/RBP1/TFDP2_(complex)	component>
+HDAC1	E2F3/HDAC1/RB1/RBP1/TFDP2_(complex)	component>
+E2F3	E2F3/HDAC1/RB1/RBP1/TFDP2_(complex)	component>
+RBP1	E2F3/HDAC1/RB1/RBP1/TFDP2_(complex)	component>
+TFDP2	E2F3/HDAC1/RB1/RBP1/TFDP2_(complex)	component>
+RB1	E2F3/HDAC1/RB1/RBP1/TFDP2_(complex)	component>
+RB1	RB1/SKP2_(complex)	component>
+SKP2	RB1/SKP2_(complex)	component>
+SIN3A	E2F1/HDAC1/RB1/RBBP4/RBBP7/RBP1/SAP30/SIN3A/TFDP2_(complex)	component>
+RBBP7	E2F1/HDAC1/RB1/RBBP4/RBBP7/RBP1/SAP30/SIN3A/TFDP2_(complex)	component>
+RBP1	E2F1/HDAC1/RB1/RBBP4/RBBP7/RBP1/SAP30/SIN3A/TFDP2_(complex)	component>
+HDAC1	E2F1/HDAC1/RB1/RBBP4/RBBP7/RBP1/SAP30/SIN3A/TFDP2_(complex)	component>
+TFDP2	E2F1/HDAC1/RB1/RBBP4/RBBP7/RBP1/SAP30/SIN3A/TFDP2_(complex)	component>
+SAP30	E2F1/HDAC1/RB1/RBBP4/RBBP7/RBP1/SAP30/SIN3A/TFDP2_(complex)	component>
+E2F1	E2F1/HDAC1/RB1/RBBP4/RBBP7/RBP1/SAP30/SIN3A/TFDP2_(complex)	component>
+RBBP4	E2F1/HDAC1/RB1/RBBP4/RBBP7/RBP1/SAP30/SIN3A/TFDP2_(complex)	component>
+RB1	E2F1/HDAC1/RB1/RBBP4/RBBP7/RBP1/SAP30/SIN3A/TFDP2_(complex)	component>
+ABL1	ABL1/RB1_(complex)	component>
+RB1	ABL1/RB1_(complex)	component>
+ZNF655	RB1/ZNF655_(complex)	component>
+RB1	RB1/ZNF655_(complex)	component>
+RAF1	RAF1/RB1_(complex)	component>
+RB1	RAF1/RB1_(complex)	component>
+MCM7	MCM7/RB1_(complex)	component>
+RB1	MCM7/RB1_(complex)	component>
+CDK2	CCNE1/CDK2_(complex)	component>
+CCNE1	CCNE1/CDK2_(complex)	component>
+MDM2	MDM2/RB1_(complex)	component>
+RB1	MDM2/RB1_(complex)	component>
+TFDP1	E2F3/TFDP1_(complex)	component>
+E2F3	E2F3/TFDP1_(complex)	component>
+E2F3	E2F3/TFDP2_(complex)	component>
+TFDP2	E2F3/TFDP2_(complex)	component>
+TFDP1	E2F1/TFDP1_(complex)	component>
+E2F1	E2F1/TFDP1_(complex)	component>
+RB1	PRMT2/RB1_(complex)	component>
+PRMT2	PRMT2/RB1_(complex)	component>
+TFDP1	E2F2/TFDP1_(complex)	component>
+E2F2	E2F2/TFDP1_(complex)	component>
+E2F1	E2F1/TFDP2_(complex)	component>
+TFDP2	E2F1/TFDP2_(complex)	component>
+E2F2	E2F2/TFDP2_(complex)	component>
+TFDP2	E2F2/TFDP2_(complex)	component>
+DNMT1	DNMT1/E2F1/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+RBP1	DNMT1/E2F1/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+HDAC1	DNMT1/E2F1/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+TFDP1	DNMT1/E2F1/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+E2F1	DNMT1/E2F1/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+RB1	DNMT1/E2F1/HDAC1/RB1/RBP1/TFDP1_(complex)	component>
+MDM2	E2F1/MDM2/TFDP1_(complex)	component>
+E2F1	E2F1/MDM2/TFDP1_(complex)	component>
+TFDP1	E2F1/MDM2/TFDP1_(complex)	component>
+RB1	E2F1/RB1/SUV39H1/TFDP1_(complex)	component>
+SUV39H1	E2F1/RB1/SUV39H1/TFDP1_(complex)	component>
+E2F1	E2F1/RB1/SUV39H1/TFDP1_(complex)	component>
+TFDP1	E2F1/RB1/SUV39H1/TFDP1_(complex)	component>
+TFDP1	E2F1/RB1/TFDP1_(complex)	component>
+E2F1	E2F1/RB1/TFDP1_(complex)	component>
+RB1	E2F1/RB1/TFDP1_(complex)	component>
+CDK4	CCND1/CDK4_(complex)	component>
+CCND1	CCND1/CDK4_(complex)	component>
+MYC_(family)	CCNE1/CDK2_(complex)	-a>
+RB1	MCM7/RB1_(complex)	-a>
