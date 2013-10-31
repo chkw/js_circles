@@ -188,7 +188,7 @@ svg.append('g').attr({
 });
 
 // for d3 color mapping.
-var color = d3.scale.category20();
+var colorMapper = d3.scale.category20();
 
 // for d3 layout and rendering
 var force = d3.layout.force().size([svgWidth, svgHeight]).linkDistance(linkDistance).linkStrength(linkStrength).friction(friction).gravity(gravity);
@@ -196,7 +196,8 @@ var force = d3.layout.force().size([svgWidth, svgHeight]).linkDistance(linkDista
 //TODO setup controls
 
 var form = d3.select("body").append("form").style({
-    display : 'none'
+    display : 'none',
+    'id' : 'mainForm'
 });
 
 var currentNodesListBox = form.append('select').attr({
@@ -274,15 +275,51 @@ var addRandomConnectedNodeButton = form.append("input").attr({
     class : 'addControl'
 });
 
+var addEdgeForm = d3.select("body").append("form").style({
+    display : 'none'
+}).attr({
+    'id' : 'addEdgeForm'
+}); {// setup node selection mode controls
+    addEdgeForm.append('p').text('node selection mode:');
+    addEdgeForm.append("input").attr({
+        id : "nodeClickModeRadio_source",
+        type : "radio",
+        value : "sources",
+        name : "nodeClickMode",
+        class : 'addControl',
+        title : 'select sources'
+    });
+
+    addEdgeForm.append('label').text('select sources');
+
+    addEdgeForm.append('br');
+
+    addEdgeForm.append("input").attr({
+        id : "nodeClickModeRadio_target",
+        type : "radio",
+        value : "targets",
+        name : "nodeClickMode",
+        class : 'addControl',
+        title : 'select targets'
+    });
+
+    addEdgeForm.append('label').text('select targets');
+}
+
 var showAddEdgeDialogBox = function(graph) {
     var dialog = $("#addEdgeDialog");
     dialog.removeAttr('title');
     dialog.attr({
         'style' : 'font-size: smaller'
     });
-    dialog.append('p').text('There should be some controls for adding an edge here.');
     dialog.dialog({
         'title' : 'new edge',
+    });
+    $('#addEdgeForm').appendTo(dialog).attr({
+        'style' : 'display:inline'
+    });
+    $('#nodeClickModeRadio_source').attr({
+        'checked' : true
     });
 };
 
@@ -371,9 +408,28 @@ var testButton = form.append('input').attr({
 }).on('click', function() {
     // $(showDialogBox('my title', 'my text'));
     // closeDialogBox();
-    d3.select('#pathwayTextArea').text('text from testButton');
-    // $('#pathwayTextArea').val('text from testButton');
+    //d3.select('#pathwayTextArea').text('text from testButton');
+    //$('#pathwayTextArea').val('text from the testButton');
+    console.log('mode:' + getNodeClickMode());
 });
+
+/**
+ * get the node click mode:
+ * <ul>
+ * <li>none</li>
+ * <li>source</li>
+ * <li>target</li>
+ * </ul>
+ */
+function getNodeClickMode() {
+    var mode = 'none';
+    if (document.getElementById('nodeClickModeRadio_source').checked) {
+        mode = 'source';
+    } else if (document.getElementById('nodeClickModeRadio_target').checked) {
+        mode = 'target';
+    }
+    return mode;
+}
 
 // TODO draw graph
 
@@ -589,7 +645,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
     }).attr({
         class : "link"
     }).style("stroke", function(d) {
-        return color(d.relation);
+        return colorMapper(d.relation);
     });
 
     linkSelection.style("stroke-width", function(d) {
@@ -600,11 +656,11 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
     linkSelection.on('mouseover', function(d, i) {
         // mouseover event for link
         var linkElement = document.getElementById('link' + i);
-        linkElement.setAttributeNS(null, 'style', 'stroke-width:' + (d.value * 3) + ' ; stroke:' + color(d.relation));
+        linkElement.setAttributeNS(null, 'style', 'stroke-width:' + (d.value * 3) + ' ; stroke:' + colorMapper(d.relation));
     }).on('mouseout', function(d, i) {
         // mouseout event for link
         var linkElement = document.getElementById('link' + i);
-        linkElement.setAttributeNS(null, 'style', 'stroke-width:' + d.value + ' ; stroke:' + color(d.relation));
+        linkElement.setAttributeNS(null, 'style', 'stroke-width:' + d.value + ' ; stroke:' + colorMapper(d.relation));
     });
 
     // context menu for link
@@ -647,12 +703,12 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
             // mouseover event for node
             var nodeElement = document.getElementsByClassName("node " + d.name + ' ' + d.group);
             var nodeSbgnElement = nodeElement[0].getElementsByClassName('sbgn');
-            nodeSbgnElement[0].setAttributeNS(null, 'style', 'stroke-width:4;fill:' + color(d.group));
+            nodeSbgnElement[0].setAttributeNS(null, 'style', 'stroke-width:4;fill:' + colorMapper(d.group));
         }).on('mouseout', function(d, i) {
             // mouseout event for node
             var nodeElement = document.getElementsByClassName("node " + d.name + ' ' + d.group);
             var nodeSbgnElement = nodeElement[0].getElementsByClassName('sbgn');
-            nodeSbgnElement[0].setAttributeNS(null, 'style', 'stroke-width:1;fill:' + color(d.group));
+            nodeSbgnElement[0].setAttributeNS(null, 'style', 'stroke-width:1;fill:' + colorMapper(d.group));
         });
     }
     nodeSelection.call(force.drag);
@@ -737,7 +793,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
             return newElement;
         }
     }).style("fill", function(d) {
-        return color(d.group);
+        return colorMapper(d.group);
     });
 
     nodeSelection.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(function(d) {
