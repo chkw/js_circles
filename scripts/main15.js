@@ -279,7 +279,8 @@ var addEdgeForm = d3.select("body").append("form").style({
     display : 'none'
 }).attr({
     'id' : 'addEdgeForm'
-}); {// setup node selection mode controls
+});
+{// setup node selection mode controls
     addEdgeForm.append('p').text('node selection mode:');
     addEdgeForm.append("input").attr({
         id : "nodeClickModeRadio_source",
@@ -291,7 +292,6 @@ var addEdgeForm = d3.select("body").append("form").style({
     });
 
     addEdgeForm.append('label').text('select sources');
-
     addEdgeForm.append('br');
 
     addEdgeForm.append("input").attr({
@@ -304,6 +304,11 @@ var addEdgeForm = d3.select("body").append("form").style({
     });
 
     addEdgeForm.append('label').text('select targets');
+    addEdgeForm.append('br');
+
+    addEdgeForm.append('div').attr({
+        id : 'clickedNodesDiv'
+    });
 }
 
 var showAddEdgeDialogBox = function(graph) {
@@ -729,11 +734,15 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         var position = d3.mouse(this);
         console.log('left click on node: ' + d.name + '(' + i + ')');
 
-        addClickedNode(i);
+        console.log('click mode: ' + getNodeClickMode());
+
+        addClickedNodeToList(i);
         for (var i in clickedNodesArray) {
             var idx = clickedNodesArray[i];
             console.log(idx);
         }
+
+        d3.select('#clickedNodesDiv').text(JSON.stringify(clickedNodesArray));
 
         d3.event.preventDefault();
         d3.event.stopPropagation();
@@ -896,7 +905,7 @@ function clearClickedNodes() {
 /**
  * add specified index to clicked nodes array
  */
-function addClickedNode(nodeIdx) {
+function addClickedNodeToList(nodeIdx) {
     // check if node already exists
     var exists = false;
     for (var i in clickedNodesArray) {
