@@ -16,6 +16,8 @@ var complexTypes = ['complex'];
 
 var selectableEntityTypes = ['unspecified entity', 'protein', 'gene', 'mRNA', 'miRNA', 'nucleic acid feature', 'small molecule', 'perturbing agent', 'complex'];
 
+var edgeTypeOptions = ['stop adding edges', '-a>', '-a|', '-t>', '-t|', 'component>', 'member>'];
+
 var throbberUrl = 'images/loading_16.gif';
 
 // circleMap data
@@ -279,8 +281,7 @@ var addEdgeForm = d3.select("body").append("form").style({
     display : 'none'
 }).attr({
     'id' : 'addEdgeForm'
-});
-{// setup node selection mode controls
+}); {// setup node selection mode controls
     addEdgeForm.append('p').text('node selection mode:');
     addEdgeForm.append("input").attr({
         id : "nodeClickModeRadio_source",
@@ -304,6 +305,19 @@ var addEdgeForm = d3.select("body").append("form").style({
     });
 
     addEdgeForm.append('label').text('select targets');
+    addEdgeForm.append('br');
+
+    // TODO select box for edge type
+    addEdgeForm.append('select').attr({
+        'id' : 'edgeTypeSelect'
+    });
+    for (var i in edgeTypeOptions) {
+        var edgeTypeOption = edgeTypeOptions[i];
+        d3.select('#edgeTypeSelect').append('option').attr({
+            'val' : edgeTypeOption
+        }).text(edgeTypeOption);
+    }
+
     addEdgeForm.append('br');
 
     addEdgeForm.append('div').attr({
