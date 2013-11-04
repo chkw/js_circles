@@ -281,35 +281,19 @@ var addEdgeForm = d3.select("body").append("form").style({
     display : 'none'
 }).attr({
     'id' : 'addEdgeForm'
-}); {// setup node selection mode controls
-    addEdgeForm.append('p').text('node selection mode:');
-    addEdgeForm.append("input").attr({
-        id : "nodeClickModeRadio_source",
-        type : "radio",
-        value : "sources",
-        name : "nodeClickMode",
-        class : 'addControl',
-        title : 'select sources'
-    });
+});
+{// setup node selection mode controls
+    addEdgeForm.append('p').text('edge type:');
 
-    addEdgeForm.append('label').text('select sources');
-    addEdgeForm.append('br');
-
-    addEdgeForm.append("input").attr({
-        id : "nodeClickModeRadio_target",
-        type : "radio",
-        value : "targets",
-        name : "nodeClickMode",
-        class : 'addControl',
-        title : 'select targets'
-    });
-
-    addEdgeForm.append('label').text('select targets');
-    addEdgeForm.append('br');
-
-    // TODO select box for edge type
+    // TODO build select box for edge type
     addEdgeForm.append('select').attr({
         'id' : 'edgeTypeSelect'
+    }).on('change', function() {
+        var newEdgeType = document.getElementById('edgeTypeSelect').value;
+        if (newEdgeType == edgeTypeOptions[0]) {
+            clickedNodesArray.length = 0;
+        }
+        console.log('selected edge type: ' + newEdgeType);
     });
     for (var i in edgeTypeOptions) {
         var edgeTypeOption = edgeTypeOptions[i];
@@ -336,9 +320,6 @@ var showAddEdgeDialogBox = function(graph) {
     });
     $('#addEdgeForm').appendTo(dialog).attr({
         'style' : 'display:inline'
-    });
-    $('#nodeClickModeRadio_source').attr({
-        'checked' : true
     });
 };
 
@@ -433,19 +414,13 @@ var testButton = form.append('input').attr({
 });
 
 /**
- * get the node click mode:
- * <ul>
- * <li>none</li>
- * <li>source</li>
- * <li>target</li>
- * </ul>
+ * get the node click mode, which is selected from the possible types of edges to create
  */
 function getNodeClickMode() {
     var mode = 'none';
-    if (document.getElementById('nodeClickModeRadio_source').checked) {
-        mode = 'source';
-    } else if (document.getElementById('nodeClickModeRadio_target').checked) {
-        mode = 'target';
+    var edgeTypeValue = document.getElementById('edgeTypeSelect').value;
+    if (edgeTypeValue != null) {
+        mode = edgeTypeValue;
     }
     return mode;
 }
@@ -743,7 +718,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         d3.event.stopPropagation();
     });
 
-    // TODO node click
+    // node click
     nodeSelection.on("click", function(d, i) {
         var position = d3.mouse(this);
         console.log('left click on node: ' + d.name + '(' + i + ')');
@@ -757,6 +732,12 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         }
 
         d3.select('#clickedNodesDiv').text(JSON.stringify(clickedNodesArray));
+
+        // TODO create new edge
+        if (getNodeClickMode() != edgeTypeOptions[0] && clickedNodesArray.length == 2) {
+            console.log('new edge: ' + clickedNodesArray[0] + ' ' + getNodeClickMode() + ' ' + clickedNodesArray[1]);
+            clearClickedNodes();
+        }
 
         d3.event.preventDefault();
         d3.event.stopPropagation();
@@ -917,7 +898,7 @@ function clearClickedNodes() {
 }
 
 /**
- * add specified index to clicked nodes array
+ * add specified index to clicked nodes array.  Keeps only last 2 items.
  */
 function addClickedNodeToList(nodeIdx) {
     // check if node already exists
@@ -932,6 +913,12 @@ function addClickedNodeToList(nodeIdx) {
     if (!exists) {
         // add node
         clickedNodesArray.push(nodeIdx);
+
+        // trim array to maximum 2 elements
+        if (clickedNodesArray.length > 2) {
+            // keep only last 2 elements
+            clickedNodesArray = clickedNodesArray.slice(-2);
+        }
     }
     return clickedNodesArray;
 }
