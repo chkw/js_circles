@@ -59,7 +59,8 @@ var pathwayDialogBox = d3.select('body').append('div').attr({
 }).style({
     display : 'none'
 }).append('textarea').attr({
-    id : 'pathwayTextArea'
+    id : 'pathwayTextArea',
+    'readonly' : 'readonly'
 });
 
 var elementDialogBox = d3.select('body').append('div').attr({
@@ -281,8 +282,7 @@ var addEdgeForm = d3.select("body").append("form").style({
     display : 'none'
 }).attr({
     'id' : 'addEdgeForm'
-});
-{// setup node selection mode controls
+}); {// setup node selection mode controls
     addEdgeForm.append('p').text('edge type:');
 
     // TODO build select box for edge type
@@ -304,8 +304,20 @@ var addEdgeForm = d3.select("body").append("form").style({
 
     addEdgeForm.append('br');
 
-    addEdgeForm.append('div').attr({
+    var clickedNodesDiv = addEdgeForm.append('div').attr({
         id : 'clickedNodesDiv'
+    });
+
+    clickedNodesDiv.append('label').text('source');
+    clickedNodesDiv.append('textarea').attr({
+        'id' : 'sourceTextArea',
+        'readonly' : 'readonly'
+    });
+    clickedNodesDiv.append('br');
+    clickedNodesDiv.append('label').text('target');
+    clickedNodesDiv.append('textarea').attr({
+        'id' : 'targetTextArea',
+        'readonly' : 'readonly'
     });
 }
 
@@ -718,7 +730,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         d3.event.stopPropagation();
     });
 
-    // node click
+    // TODO node click
     nodeSelection.on("click", function(d, i) {
         var position = d3.mouse(this);
         console.log('left click on node: ' + d.name + '(' + i + ')');
@@ -731,13 +743,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
             console.log(idx);
         }
 
-        d3.select('#clickedNodesDiv').text(JSON.stringify(clickedNodesArray));
-
-        // TODO create new edge
-        if (getNodeClickMode() != edgeTypeOptions[0] && clickedNodesArray.length == 2) {
-            console.log('new edge: ' + clickedNodesArray[0] + ' ' + getNodeClickMode() + ' ' + clickedNodesArray[1]);
-            clearClickedNodes();
-        }
+        updateNewEdgeDialog();
 
         d3.event.preventDefault();
         d3.event.stopPropagation();
@@ -887,6 +893,20 @@ function updateCurrentEdgesListBox(currentGraphData) {
         optionElement.innerHTML = value;
 
         listbox.appendChild(optionElement);
+    }
+}
+
+// TODO updateNewEdgeDialog
+function updateNewEdgeDialog() {
+    var div = document.getElementById('clickedNodesDiv');
+    for (var i in clickedNodesArray.slice(-2)) {
+        var nodeIdx = clickedNodesArray[i];
+        var nodeRole = (i == 0) ? 'source' : 'target';
+        if (nodeRole == 'source') {
+            d3.select('#clickedNodesDiv').select('#sourceTextArea').text(nodeIdx);
+        } else if (nodeRole == 'target') {
+            d3.select('#clickedNodesDiv').select('#targetTextArea').text(nodeIdx);
+        }
     }
 }
 
