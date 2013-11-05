@@ -282,7 +282,8 @@ var addEdgeForm = d3.select("body").append("form").style({
     display : 'none'
 }).attr({
     'id' : 'addEdgeForm'
-}); {// setup node selection mode controls
+});
+{// setup node selection mode controls
     addEdgeForm.append('p').text('edge type:');
 
     // TODO build select box for edge type
@@ -318,6 +319,21 @@ var addEdgeForm = d3.select("body").append("form").style({
     clickedNodesDiv.append('textarea').attr({
         'id' : 'targetTextArea',
         'readonly' : 'readonly'
+    });
+    clickedNodesDiv.append('br');
+
+    // TODO add edge button
+    clickedNodesDiv.append("input").attr({
+        id : "addEdgeButton",
+        type : "button",
+        value : "add new edge",
+        name : "addEdgeButton",
+        class : 'addControl'
+    }).on('click', function() {
+        var sourceIdx = clickedNodesArray[0];
+        var targetIdx = clickedNodesArray[1];
+        var relation = document.getElementById('edgeTypeSelect').value;
+        console.log(sourceIdx + ' ' + relation + ' ' + targetIdx);
     });
 }
 
