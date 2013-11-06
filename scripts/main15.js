@@ -282,8 +282,7 @@ var addEdgeForm = d3.select("body").append("form").style({
     display : 'none'
 }).attr({
     'id' : 'addEdgeForm'
-});
-{// setup node selection mode controls
+}); {// setup node selection mode controls
     addEdgeForm.append('p').text('edge type:');
 
     // TODO build select box for edge type
@@ -341,6 +340,8 @@ var addEdgeForm = d3.select("body").append("form").style({
                 'targetIdx' : targetIdx,
                 'relation' : relation
             }));
+            clearClickedNodes();
+            resetNewEdgeDialog();
             updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
         }
 
@@ -922,10 +923,19 @@ function updateCurrentEdgesListBox(currentGraphData) {
     }
 }
 
+/**
+ * Clear the text from the text areas in the new edge dialog box.
+ */
+function resetNewEdgeDialog() {
+    d3.select('#clickedNodesDiv').select('#sourceTextArea').text('');
+    d3.select('#clickedNodesDiv').select('#targetTextArea').text('');
+}
+
 // TODO updateNewEdgeDialog
 function updateNewEdgeDialog() {
-    for (var i in clickedNodesArray.slice(-2)) {
-        var nodeData = graph['nodes'][i];
+    var slice = clickedNodesArray.slice(-2);
+    for (var i in slice) {
+        var nodeData = graph['nodes'][slice[i]];
         var newText = nodeData.name + ': ' + nodeData.group;
         var textAreaId = (i == 0) ? 'sourceTextArea' : 'targetTextArea';
         d3.select('#clickedNodesDiv').select('#' + textAreaId).text(newText);
