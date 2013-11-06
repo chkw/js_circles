@@ -282,7 +282,8 @@ var addEdgeForm = d3.select("body").append("form").style({
     display : 'none'
 }).attr({
     'id' : 'addEdgeForm'
-}); {// setup node selection mode controls
+});
+{// setup node selection mode controls
     addEdgeForm.append('p').text('edge type:');
 
     // TODO build select box for edge type
@@ -292,6 +293,7 @@ var addEdgeForm = d3.select("body").append("form").style({
         var newEdgeType = document.getElementById('edgeTypeSelect').value;
         if (newEdgeType == edgeTypeOptions[0]) {
             clickedNodesArray.length = 0;
+            resetNewEdgeDialog();
         }
         console.log('selected edge type: ' + newEdgeType);
     });
@@ -327,7 +329,8 @@ var addEdgeForm = d3.select("body").append("form").style({
         type : "button",
         value : "add new edge",
         name : "addEdgeButton",
-        class : 'addControl'
+        class : 'addControl',
+        'disabled' : 'disabled'
     }).on('click', function() {
         var sourceIdx = clickedNodesArray[0];
         var targetIdx = clickedNodesArray[1];
@@ -762,15 +765,21 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         var position = d3.mouse(this);
         console.log('left click on node: ' + d.name + '(' + i + ')');
 
-        console.log('click mode: ' + getNodeClickMode());
+        var nodeClickMode = getNodeClickMode();
 
-        addClickedNodeToList(i);
-        for (var i in clickedNodesArray) {
-            var idx = clickedNodesArray[i];
-            console.log(idx);
+        console.log('click mode: ' + nodeClickMode);
+
+        if (nodeClickMode == 'none' || nodeClickMode == edgeTypeOptions[0]) {
+            console.log('ignore click event');
+        } else {
+            addClickedNodeToList(i);
+            for (var i in clickedNodesArray) {
+                var idx = clickedNodesArray[i];
+                console.log(idx);
+            }
+
+            updateNewEdgeDialog();
         }
-
-        updateNewEdgeDialog();
 
         d3.event.preventDefault();
         d3.event.stopPropagation();
@@ -929,9 +938,14 @@ function updateCurrentEdgesListBox(currentGraphData) {
 function resetNewEdgeDialog() {
     d3.select('#clickedNodesDiv').select('#sourceTextArea').text('');
     d3.select('#clickedNodesDiv').select('#targetTextArea').text('');
+    d3.select('#addEdgeButton').attr({
+        'disabled' : 'disabled'
+    });
 }
 
-// TODO updateNewEdgeDialog
+/**
+ * fill in the text area with source node and target node for new edge.
+ */
 function updateNewEdgeDialog() {
     var slice = clickedNodesArray.slice(-2);
     for (var i in slice) {
@@ -939,6 +953,17 @@ function updateNewEdgeDialog() {
         var newText = nodeData.name + ': ' + nodeData.group;
         var textAreaId = (i == 0) ? 'sourceTextArea' : 'targetTextArea';
         d3.select('#clickedNodesDiv').select('#' + textAreaId).text(newText);
+    }
+
+    // make button (in)active
+    if (slice.length == 2) {
+        d3.select('#addEdgeButton').attr({
+            'disabled' : null
+        });
+    } else {
+        d3.select('#addEdgeButton').attr({
+            'disabled' : 'disabled'
+        });
     }
 }
 
