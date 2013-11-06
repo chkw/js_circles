@@ -282,7 +282,8 @@ var addEdgeForm = d3.select("body").append("form").style({
     display : 'none'
 }).attr({
     'id' : 'addEdgeForm'
-}); {// setup node selection mode controls
+});
+{// setup node selection mode controls
     addEdgeForm.append('p').text('edge type:');
 
     // TODO build select box for edge type
@@ -334,15 +335,14 @@ var addEdgeForm = d3.select("body").append("form").style({
         var relation = document.getElementById('edgeTypeSelect').value;
         console.log(sourceIdx + ' ' + relation + ' ' + targetIdx);
 
-        if ((sourceIdx != targetIdx) && (relation != edgeTypeOptions[0])) {
+        if ((sourceIdx != targetIdx) && (relation != edgeTypeOptions[0]) && (clickedNodesArray.slice(-2).length == 2)) {
             graph.addLink(new linkData({
                 'sourceIdx' : sourceIdx,
                 'targetIdx' : targetIdx,
                 'relation' : relation
             }));
+            updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
         }
-
-        updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
 
     });
 }
@@ -924,16 +924,11 @@ function updateCurrentEdgesListBox(currentGraphData) {
 
 // TODO updateNewEdgeDialog
 function updateNewEdgeDialog() {
-    var div = document.getElementById('clickedNodesDiv');
     for (var i in clickedNodesArray.slice(-2)) {
-        var nodeIdx = clickedNodesArray[i];
         var nodeData = graph['nodes'][i];
-        var nodeRole = (i == 0) ? 'source' : 'target';
-        if (nodeRole == 'source') {
-            d3.select('#clickedNodesDiv').select('#sourceTextArea').text(nodeData.name);
-        } else if (nodeRole == 'target') {
-            d3.select('#clickedNodesDiv').select('#targetTextArea').text(nodeData.name);
-        }
+        var newText = nodeData.name + ': ' + nodeData.group;
+        var textAreaId = (i == 0) ? 'sourceTextArea' : 'targetTextArea';
+        d3.select('#clickedNodesDiv').select('#' + textAreaId).text(newText);
     }
 }
 
