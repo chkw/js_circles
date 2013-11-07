@@ -16,7 +16,8 @@ var complexTypes = ['complex'];
 
 var selectableEntityTypes = ['unspecified entity', 'protein', 'gene', 'mRNA', 'miRNA', 'nucleic acid feature', 'small molecule', 'perturbing agent', 'complex'];
 
-var edgeTypeOptions = ['stop adding edges', '-a>', '-a|', '-t>', '-t|', 'component>', 'member>'];
+var edgeTypeOptions = ['stop adding edges', 'positive regulation', 'negative regulation', 'activate transcription', 'inhibit transcription', 'component of', 'member of'];
+var edgeTypeSymbols = ['stop adding edges', '-a>', '-a|', '-t>', '-t|', 'component>', 'member>'];
 
 var throbberUrl = 'images/loading_16.gif';
 
@@ -282,8 +283,7 @@ var addEdgeForm = d3.select("body").append("form").style({
     display : 'none'
 }).attr({
     'id' : 'addEdgeForm'
-});
-{// setup node selection mode controls
+}); {// setup node selection mode controls
     addEdgeForm.append('p').text('edge type:');
 
     // TODO build select box for edge type
@@ -299,8 +299,9 @@ var addEdgeForm = d3.select("body").append("form").style({
     });
     for (var i in edgeTypeOptions) {
         var edgeTypeOption = edgeTypeOptions[i];
+        var edgeTypeSymbol = edgeTypeSymbols[i];
         d3.select('#edgeTypeSelect').append('option').attr({
-            'val' : edgeTypeOption
+            'value' : edgeTypeSymbol
         }).text(edgeTypeOption);
     }
 
