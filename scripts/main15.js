@@ -206,7 +206,7 @@ var form = d3.select("body").append("form").style({
 var currentNodesListBox = form.append('select').attr({
     id : 'currentNodesListBox',
     name : 'currentNodesListBox',
-    class : 'deleteControl'
+    'class' : 'deleteControl'
 }).on('change', function() {
     console.log('change');
 }).style({
@@ -216,7 +216,7 @@ var currentNodesListBox = form.append('select').attr({
 var currentEdgesListBox = form.append('select').attr({
     id : 'currentEdgesListBox',
     name : 'currentEdgesListBox',
-    class : 'deleteControl'
+    'class' : 'deleteControl'
 }).on('change', function() {
     console.log('change');
 });
@@ -227,7 +227,7 @@ var newNodeNameTextBox = form.append("input").attr({
     value : "name of new node",
     name : "newNodeNameTextBox",
     title : 'name of new node',
-    class : 'addControl'
+    'class' : 'addControl'
 }).on('keypress', function() {
     // http://stackoverflow.com/questions/15261447/how-do-i-capture-keystroke-events-in-d3-js
     console.log('keypress');
@@ -241,7 +241,7 @@ var newNodeNameTextBox = form.append("input").attr({
 var newNodeTypeListBox = form.append('select').attr({
     id : 'newNodeTypeListBox',
     name : 'newNodeTypeListBox',
-    class : 'addControl'
+    'class' : 'addControl'
 }).on('change', function() {
     console.log('change');
 });
@@ -251,7 +251,7 @@ var newNodeButton = form.append("input").attr({
     type : "button",
     value : "add a new node",
     name : "addNodeButton",
-    class : 'addControl'
+    'class' : 'addControl'
 });
 
 var exportToUcscFormatButton = form.append("input").attr({
@@ -259,7 +259,7 @@ var exportToUcscFormatButton = form.append("input").attr({
     type : "button",
     value : "export to UCSC pathway format",
     name : "exportToUcscFormatButton",
-    class : 'displayControl'
+    'class' : 'displayControl'
 });
 
 var addRandomNodeButton = form.append("input").attr({
@@ -267,7 +267,7 @@ var addRandomNodeButton = form.append("input").attr({
     type : "button",
     value : "add random node",
     name : "addRandomNodeButton",
-    class : 'addControl'
+    'class' : 'addControl'
 });
 
 var addRandomConnectedNodeButton = form.append("input").attr({
@@ -275,7 +275,7 @@ var addRandomConnectedNodeButton = form.append("input").attr({
     type : "button",
     value : "add random connected node",
     name : "addConnectedButton",
-    class : 'addControl'
+    'class' : 'addControl'
 });
 
 var addEdgeForm = d3.select("body").append("form").style({
@@ -329,7 +329,7 @@ var addEdgeForm = d3.select("body").append("form").style({
         type : "button",
         value : "add new edge",
         name : "addEdgeButton",
-        class : 'addControl',
+        'class' : 'addControl',
         'disabled' : 'disabled'
     }).on('click', function() {
         var sourceIdx = clickedNodesArray[0];
@@ -358,7 +358,7 @@ var showAddEdgeDialogBox = function(graph) {
         'style' : 'font-size: smaller'
     });
     dialog.dialog({
-        'title' : 'new edge',
+        'title' : 'new edge'
     });
     $('#addEdgeForm').appendTo(dialog).attr({
         'style' : 'display:inline'
@@ -381,7 +381,7 @@ var showAddNodeDialogBox = function(graph) {
         'style' : 'font-size: smaller'
     });
     dialog.dialog({
-        'title' : 'new node',
+        'title' : 'new node'
     });
 };
 
@@ -445,7 +445,7 @@ var testButton = form.append('input').attr({
     type : 'button',
     value : 'testButton',
     name : 'testButton',
-    class : 'displayControl',
+    'class' : 'displayControl',
     title : 'test'
 }).on('click', function() {
     // $(showDialogBox('my title', 'my text'));
@@ -679,7 +679,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
     var linkSelection = svgLinkLayer.selectAll(".link").data(graph.links).enter().append("line").attr('id', function(d, i) {
         return 'link' + i;
     }).attr({
-        class : "link"
+        'class' : "link"
     }).style("stroke", function(d) {
         return colorMapper(d.relation);
     });
