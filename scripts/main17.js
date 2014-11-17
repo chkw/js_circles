@@ -87,23 +87,16 @@ var addEdgeDialogBox = d3.select('body').append('div').attr({
 
 // TODO svg element that contains the graph
 
-var fullWidth = document.documentElement.clientWidth;
-var fullHeight = document.documentElement.clientHeight;
+var windowWidth = window.innerWidth;
+var windowHeight = window.innerHeight;
 
 var svg = d3.select("body").append("svg").attr({
-
-    // 'width' : '100%',
-    // 'height' : '100%',
-
-    'width' : fullWidth,
-    'height' : fullHeight,
+    'width' : windowWidth,
+    'height' : windowHeight,
     'id' : 'circleMaps'
 });
 
-var bbox = document.getElementById('circleMaps').getBBox();
-// var svgWidth = bbox.width / 2, svgHeight = bbox.height / 2;
-console.log('bbox: ' + JSON.stringify(bbox));
-var svgWidth = $(window).width(), svgHeight = $(window).height();
+var svgWidth = svg.attr('width'), svgHeight = svg.attr('height');
 
 // TODO context menu on svg area
 
@@ -166,30 +159,6 @@ $(function() {
     });
 
 });
-
-// svg.on("contextmenu", function(d, i) {
-// d3.event.preventDefault();
-// d3.event.stopPropagation();
-// var position = d3.mouse(this);
-//
-// console.log('right click on blank svg');
-// });
-
-// for zoom/pan
-// var svg = d3.select("body").append("svg").attr({
-// 'width' : svgWidth,
-// 'height' : svgHeight,
-// 'id' : 'circleMaps'
-// }).append('g').call(d3.behavior.zoom().scaleExtent([0.2, 8]).on("zoom", zoom)).append('g');
-//
-// svg.append("rect").attr("class", "overlay").attr("width", svgWidth).attr("height", svgHeight);
-//
-// function zoom() {
-// var tr = d3.event.translate;
-// var scale = d3.event.scale;
-// console.log('zooming\ttranslate: ' + tr + '\tscale: ' + scale);
-// svg.attr("transform", "translate(" + tr + ")scale(" + scale + ")");
-// }
 
 svg.append('g').attr({
     id : 'linkLayer'
@@ -290,8 +259,7 @@ var addEdgeForm = d3.select("body").append("form").style({
     display : 'none'
 }).attr({
     'id' : 'addEdgeForm'
-});
-{// setup node selection mode controls
+}); {// setup node selection mode controls
     addEdgeForm.append('p').text('edge type:');
 
     // TODO build select box for edge type
@@ -522,6 +490,7 @@ d3.json(metaDataUrl, function(error, data) {
             query = data;
             if (query != null && typeof query === 'object') {
                 console.log("number of query --> " + Object.keys(query).length);
+                console.log('query', prettyJson(query));
             } else {
                 circleDataLoaded = false;
                 console.log("could not load data from " + queryUrl);

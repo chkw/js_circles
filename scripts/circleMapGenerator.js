@@ -1,10 +1,20 @@
 /**
+ * circleMapGenerator.js
+ * ChrisW
+ *
+ * Draw CircleMaps in SVG elements.
+ * Requires:
+ * 1) static.js
+ * 2) OD_eventData.js
+ * 3) D3.js
+ */
+
+/**
  * @param metaDataObj
  * @param dataObj
  * @param queryDataObj
  */
 function circleMapGenerator(metaDataObj, dataObj, queryDataObj) {
-    var svgNamespaceUri = 'http://www.w3.org/2000/svg';
 
     this.metaData = metaDataObj;
     this.data = dataObj;
@@ -150,35 +160,6 @@ function circleMapGenerator(metaDataObj, dataObj, queryDataObj) {
     };
 
     this.sortedSamples = this.getSortedSamples(this.getQueryFeatures().slice(0, 1), this.getDatasetNames());
-
-    /**
-     * convert an rgb component to hex value
-     * @param {Object} c
-     */
-    function rgbComponentToHex(c) {
-        var hex = c.toString(16);
-        return hex.length == 1 ? "0" + hex : hex;
-    }
-
-    /**
-     * convert rgb color code to hex
-     * @param {Object} r
-     * @param {Object} g
-     * @param {Object} b
-     */
-    function rgbToHex(r, g, b) {
-        return "#" + rgbComponentToHex(r) + rgbComponentToHex(g) + rgbComponentToHex(b);
-    }
-
-    /**
-     * linear interpolation
-     * @param {Object} percent
-     * @param {Object} minVal
-     * @param {Object} maxVal
-     */
-    function linearInterpolation(percent, minVal, maxVal) {
-        return ((maxVal - minVal) * percent) + minVal;
-    }
 
     /**
      * get a color for a score
