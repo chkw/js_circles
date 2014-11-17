@@ -1,230 +1,236 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>index.html</title>
-        <meta charset="utf-8">
-    </head>
-    <body>
-        <a name='top'></a><small><a href='#bottom'>go to bottom</a></small>
-        <dl>
-            <dt>
-                <a href='test.html' target='_test'>test.html</a>
-            </dt>
-            <dd>
-                Draw multi-ring, sorted CircleMaps on the client using D3 arc.
-            </dd>
-            <dt>
-                <a href='test1b.html' target='_test'>test1b.html</a>
-            </dt>
-            <dd>
-                CircleMaps without jQuery.
-            </dd>
-            <dt>
-                <a href='test1c.html' target='_test'>test1c.html</a>
-            </dt>
-            <dd>
-                Load CircleMap data and network data in the same webpage.
-            </dd>
-            <dt>
-                <a href='test2.html' target='_test'>test2.html</a>
-            </dt>
-            <dd>
-                Simple interactive graph with D3 force layout.
-            </dd>
-            <dt>
-                <a href='test3.html' target='_test'>test3.html</a>
-            </dt>
-            <dd>
-                Adding and removing random nodes from simple graph.
-            </dd>
-            <dt>
-                <a href='test4.html' target='_test'>test4.html</a>
-            </dt>
-            <dd>
-                Adding randomly linked node to simple graph.
-            </dd>
-            <dt>
-                <a href='test5.html' target='_test'>test5.html</a>
-            </dt>
-            <dd>
-                Adding and deleteing nodes/edges correctly from simple graph.  Was previously assigning class "node" or "link" to the wrong element.  Correct way is to assign the class to the outermost element of the node or link.
-            </dd>
-            <dt>
-                <a href='test6.html' target='_test'>test6.html</a>
-            </dt>
-            <dd>
-                Use data from a pathway file (PID) to draw graph.  Graph data is stored in in a graphData object.
-            </dd>
-            <dt>
-                <a href='test7.html' target='_test'>test7.html</a>
-            </dt>
-            <dd>
-                Use data from a pathway file (SIF) to draw graph.
-            </dd>
-            <dt>
-                <a href='test8.html' target='_test'>test8.html</a>
-            </dt>
-            <dd>
-                Use different node shape depending on some node attribute.
-            </dd>
-            <dt>
-                <a href='test9.html' target='_test'>test9.html</a>
-            </dt>
-            <dd>
-                Use CircleMap images for nodes.
-            </dd>
-            <dt>
-                <a href='test10.html' target='_test'>test10.html</a>
-            </dt>
-            <dd>
-                <ul>
-                    <li>
-                        Fix adding and deleting of nodes when using CircleMap nodes.
-                    </li>
-                    <li>
-                        Mouseover/mouseout changes size of circlemap nodes.
-                    </li>
-                    <li>
-                        Add control to delete a displayed node and its edges.
-                    </li>
-                </ul>
-            </dd>
-            <dt>
-                <a href='test11.html' target='_test'>test11.html</a>
-            </dt>
-            <dd>
-                <ul>
-                    <li>
-                        Added control to add a node, <del>but there is some strange behavior when adding node with same name multiple times.</del> Also, when re-adding a previously existing node that also has an edge, the link is not re-added automatically.
-                    </li>
-                    <li>
-                        Added button to view current graph as PID in alert window.
-                    </li>
-                    <li>
-                        Added some SBGN shapes
-                        <ul>
-                            <li>
-                                circle (simple chemical)
-                            </li>
-                            <li>
-                                ellipse (unspecified entity)
-                            </li>
-                            <li>
-                                rectangle with bottom rounded corners (nucleic acid feature)
-                            </li>
-                            <li>
-                                rectangle with all rounded corners (perturbing agent)
-                            </li>
-                            <li>
-                                large rectangle with angled corners (complex)
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </dd>
-            <dt>
-                <a href='test12.html?test=true&circles=false' target='_test'>test12.html?test=true&circles=false</a>
-            </dt>
-            <dd>
-                <li>
-                    Reduced opacity for SBGN nodes.
-                </li>
-                <li>
-                    Link color determined by relation.
-                </li>
-                <li>
-                    (possible bug with writing PID file where the entity has identical name, but different entity type)
-                </li>
-                <li>
-                    Updated force layout parameters to make a better graph for viewing.  Reducing the gravity value helps prevent the graph from collapsing in on itself.
-                </li>
-                <li>
-                    Control for deleting edge.
-                </li>
-                <li>
-                    test button for trying out jqueryUI dialog box.
-                </li>
-                <li>
-                    capture right click mouse events on main svg area, nodes, and links.
-                </li>
-                <li>
-                    Lots of code refactoring.
-                </li>
-            </dd>
-            <dt>
-                <a href='test13.html?test=true&circles=false' target='_test'>test13.html?test=true&circles=false</a>
-            </dt>
-            <dd>
-                <li>
-                    Testing context menus.
-                </li>
-            </dd>
-            <dt>
-                <a href='test14.html?test=true&circles=false' target='_test'>test14.html?test=true&circles=false</a>
-            </dt>
-            <dd>
-                <li>
-                    Some controls moved into dialog boxes triggered by context menus:
-                    <ul>
-                        <li>
-                            delete edge
-                        </li>
-                        <li>
-                            delete node
-                        </li>
-                        <li>
-                            new node
-                        </li>
-                        <li>
-                            export to UCSC pathway file
-                        </li>
-                        <li>
-                            place holder controls for adding new edge
-                        </li>
-                    </ul>
-                </li>
-            </dd>
-            <dt>
-                <a href='test15.html?test=true&circles=false' target='_test'>test15.html?test=true&circles=false</a>
-            </dt>
-            <dd>
-                Set stroke:black for SBGN nodes.
-            </dd>
-            <dd>
-                Node clicks append a non-redundant list of clicked-node indices.
-            </dd>
-            <dd>
-                incomplete - show current pathway in a dialog box.
-            </dd>
-            <dd>
-                Edge thicken on mouseover.
-            </dd>
-            <dd>
-                Node border thicken on mouseover.
-            </dd>
-            <dd>
-                Sizing improvement to pathway export textarea.
-            </dd>
-            <dd>
-                (need to escape space characters in node names that are used as element class names.)
-            </dd>
-            <dd>
-                adding new edge mostly works
-            </dd>
-            <dt>
-                <a href='test16.html?test=true&circles=false' target='_test'>test16.html?test=true&circles=false</a>
-            </dt>
-            <dd>
-                (from last version: need to escape space characters in node names that are used as element class names.)
-            </dd>
-            <dd>
-                (workflow for adding complex with components)
-            </dd>
-            <dd>
-                (workflow for adding family with members)
-            </dd>
-        </dl>
+	<head>
+		<title>index.html</title>
+		<meta charset="utf-8">
+	</head>
+	<body>
+		<a name='top'></a><small><a href='#bottom'>go to bottom</a></small>
+		<dl>
+			<dt>
+				<a href='test.html' target='_test'>test.html</a>
+			</dt>
+			<dd>
+				Draw multi-ring, sorted CircleMaps on the client using D3 arc.
+			</dd>
+			<dt>
+				<a href='test1b.html' target='_test'>test1b.html</a>
+			</dt>
+			<dd>
+				CircleMaps without jQuery.
+			</dd>
+			<dt>
+				<a href='test1c.html' target='_test'>test1c.html</a>
+			</dt>
+			<dd>
+				Load CircleMap data and network data in the same webpage.
+			</dd>
+			<dt>
+				<a href='test2.html' target='_test'>test2.html</a>
+			</dt>
+			<dd>
+				Simple interactive graph with D3 force layout.
+			</dd>
+			<dt>
+				<a href='test3.html' target='_test'>test3.html</a>
+			</dt>
+			<dd>
+				Adding and removing random nodes from simple graph.
+			</dd>
+			<dt>
+				<a href='test4.html' target='_test'>test4.html</a>
+			</dt>
+			<dd>
+				Adding randomly linked node to simple graph.
+			</dd>
+			<dt>
+				<a href='test5.html' target='_test'>test5.html</a>
+			</dt>
+			<dd>
+				Adding and deleteing nodes/edges correctly from simple graph.  Was previously assigning class "node" or "link" to the wrong element.  Correct way is to assign the class to the outermost element of the node or link.
+			</dd>
+			<dt>
+				<a href='test6.html' target='_test'>test6.html</a>
+			</dt>
+			<dd>
+				Use data from a pathway file (PID) to draw graph.  Graph data is stored in in a graphData object.
+			</dd>
+			<dt>
+				<a href='test7.html' target='_test'>test7.html</a>
+			</dt>
+			<dd>
+				Use data from a pathway file (SIF) to draw graph.
+			</dd>
+			<dt>
+				<a href='test8.html' target='_test'>test8.html</a>
+			</dt>
+			<dd>
+				Use different node shape depending on some node attribute.
+			</dd>
+			<dt>
+				<a href='test9.html' target='_test'>test9.html</a>
+			</dt>
+			<dd>
+				Use CircleMap images for nodes.
+			</dd>
+			<dt>
+				<a href='test10.html' target='_test'>test10.html</a>
+			</dt>
+			<dd>
+				<ul>
+					<li>
+						Fix adding and deleting of nodes when using CircleMap nodes.
+					</li>
+					<li>
+						Mouseover/mouseout changes size of circlemap nodes.
+					</li>
+					<li>
+						Add control to delete a displayed node and its edges.
+					</li>
+				</ul>
+			</dd>
+			<dt>
+				<a href='test11.html' target='_test'>test11.html</a>
+			</dt>
+			<dd>
+				<ul>
+					<li>
+						Added control to add a node, <del>but there is some strange behavior when adding node with same name multiple times.</del> Also, when re-adding a previously existing node that also has an edge, the link is not re-added automatically.
+					</li>
+					<li>
+						Added button to view current graph as PID in alert window.
+					</li>
+					<li>
+						Added some SBGN shapes
+						<ul>
+							<li>
+								circle (simple chemical)
+							</li>
+							<li>
+								ellipse (unspecified entity)
+							</li>
+							<li>
+								rectangle with bottom rounded corners (nucleic acid feature)
+							</li>
+							<li>
+								rectangle with all rounded corners (perturbing agent)
+							</li>
+							<li>
+								large rectangle with angled corners (complex)
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</dd>
+			<dt>
+				<a href='test12.html?test=true&circles=false' target='_test'>test12.html?test=true&circles=false</a>
+			</dt>
+			<dd>
+				<li>
+					Reduced opacity for SBGN nodes.
+				</li>
+				<li>
+					Link color determined by relation.
+				</li>
+				<li>
+					(possible bug with writing PID file where the entity has identical name, but different entity type)
+				</li>
+				<li>
+					Updated force layout parameters to make a better graph for viewing.  Reducing the gravity value helps prevent the graph from collapsing in on itself.
+				</li>
+				<li>
+					Control for deleting edge.
+				</li>
+				<li>
+					test button for trying out jqueryUI dialog box.
+				</li>
+				<li>
+					capture right click mouse events on main svg area, nodes, and links.
+				</li>
+				<li>
+					Lots of code refactoring.
+				</li>
+			</dd>
+			<dt>
+				<a href='test13.html?test=true&circles=false' target='_test'>test13.html?test=true&circles=false</a>
+			</dt>
+			<dd>
+				<li>
+					Testing context menus.
+				</li>
+			</dd>
+			<dt>
+				<a href='test14.html?test=true&circles=false' target='_test'>test14.html?test=true&circles=false</a>
+			</dt>
+			<dd>
+				<li>
+					Some controls moved into dialog boxes triggered by context menus:
+					<ul>
+						<li>
+							delete edge
+						</li>
+						<li>
+							delete node
+						</li>
+						<li>
+							new node
+						</li>
+						<li>
+							export to UCSC pathway file
+						</li>
+						<li>
+							place holder controls for adding new edge
+						</li>
+					</ul>
+				</li>
+			</dd>
+			<dt>
+				<a href='test15.html?test=true&circles=false' target='_test'>test15.html?test=true&circles=false</a>
+			</dt>
+			<dd>
+				Set stroke:black for SBGN nodes.
+			</dd>
+			<dd>
+				Node clicks append a non-redundant list of clicked-node indices.
+			</dd>
+			<dd>
+				incomplete - show current pathway in a dialog box.
+			</dd>
+			<dd>
+				Edge thicken on mouseover.
+			</dd>
+			<dd>
+				Node border thicken on mouseover.
+			</dd>
+			<dd>
+				Sizing improvement to pathway export textarea.
+			</dd>
+			<dd>
+				(need to escape space characters in node names that are used as element class names.)
+			</dd>
+			<dd>
+				adding new edge mostly works
+			</dd>
+			<dt>
+				<a href='test16.html?test=true&circles=false' target='_test'>test16.html?test=true&circles=false</a>
+			</dt>
+			<dd>
+				(from last version: need to escape space characters in node names that are used as element class names.)
+			</dd>
+			<dd>
+				(workflow for adding complex with components)
+			</dd>
+			<dd>
+				(workflow for adding family with members)
+			</dd>
+			<dt>
+				<a href='test17.html?test=true&circles=false' target='_test'>test17.html?test=true&circles=false</a>
+			</dt>
+			<dd>
+				(converting to meteor plugin)
+			</dd>
+		</dl>
 
-        <a name='bottom'></a><small><a href='#top'>go to top</a></small>
-    </body>
+		<a name='bottom'></a><small><a href='#top'>go to top</a></small>
+	</body>
 </html>
