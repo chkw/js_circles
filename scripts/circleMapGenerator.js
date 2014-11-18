@@ -9,6 +9,127 @@
  * 3) D3.js
  */
 
+// TODO new constructor should take parameters: OD_eventData, queryData
+function circleMapGenerator_2(eventData, queryData) {
+    this.eventAlbum = eventData;
+    this.query = queryData;
+
+    /**
+     * get a color for a score
+     * @param {Object} score
+     * @param {Object} cohortMin
+     * @param {Object} cohortMax
+     */
+    function getHexColor(score, cohortMin, cohortMax) {
+        var isPositive = (score >= 0) ? true : false;
+
+        var maxR = 255;
+        var maxG = 0;
+        var maxB = 0;
+
+        var minR = 255;
+        var minG = 255;
+        var minB = 255;
+
+        var normalizedScore = (score / cohortMax);
+
+        if (!isPositive) {
+            maxR = 0;
+            maxG = 0;
+            maxB = 255;
+
+            minR = 255;
+            minG = 255;
+            minB = 255;
+
+            normalizedScore = (score / cohortMin);
+        }
+
+        var newR = linearInterpolation(normalizedScore, minR, maxR);
+        var newG = linearInterpolation(normalizedScore, minG, maxG);
+        var newB = linearInterpolation(normalizedScore, minB, maxB);
+
+        var hexColor = rgbToHex(Math.floor(newR), Math.floor(newG), Math.floor(newB));
+
+        return hexColor;
+    }
+
+    /**
+     * create an svg arc via d3.js
+     * @param {Object} innerRadius
+     * @param {Object} outerRadius
+     * @param {Object} startDegrees
+     * @param {Object} endDegrees
+     */
+    function createD3Arc(innerRadius, outerRadius, startDegrees, endDegrees) {
+        var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius).startAngle(startDegrees * (Math.PI / 180)).endAngle(endDegrees * (Math.PI / 180));
+        return arc;
+    }
+
+    /**
+     * draw a CircleMap via d3.js
+     * @param {Object} feature
+     * @param {Object} d3SvgTagElement
+     */
+    this.drawCircleMap = function(feature, d3SvgTagElement) {
+        var fullRadius = 100;
+
+        var numDatasets = Object.keys(this.data).length;
+
+        // +1 for the center
+        var ringThickness = fullRadius / (numDatasets + 1);
+        var innerRadius = ringThickness;
+
+        var degreeIncrements = 360 / this.sortedSamples.length;
+
+        // arc paths will be added to this SVG group
+        var circleMapSvgElement = d3SvgTagElement.append('svg').attr({
+            id : 'circleMapSvg' + feature,
+            'class' : 'circleMapSvg',
+            name : feature
+        });
+        var circleMapGroup = circleMapSvgElement.append('g').attr({
+            'class' : 'circleMapG'
+        });
+
+        // iterate over rings
+
+        var datasetNames = Object.keys(this.data);
+        for (var i in datasetNames) {
+            var dataName = datasetNames[i];
+            var ringData = this.getRingData(dataName, feature);
+            if (ringData == null) {
+                // draw a grey ring for no data.
+                var arc = createD3Arc(innerRadius, innerRadius + ringThickness, 0, 360);
+                circleMapGroup.append("path").attr("d", arc).attr("fill", "grey");
+            } else {
+                var startDegrees = 0;
+                this.sortedSamples.forEach(function(val, idx, arr) {
+                    var sampleName = val;
+                    var hexColor = "grey";
+                    if ( sampleName in ringData) {
+                        var score = ringData[sampleName];
+                        hexColor = getHexColor(score, dataName);
+                    }
+
+                    var arc = createD3Arc(innerRadius, innerRadius + ringThickness, startDegrees, startDegrees + degreeIncrements);
+                    circleMapGroup.append("path").attr("d", arc).attr("fill", hexColor);
+
+                    // clockwise from 12 o clock
+                    startDegrees = startDegrees + degreeIncrements;
+                });
+            }
+
+            innerRadius = innerRadius + ringThickness;
+        };
+
+        // add a label
+        // circleMapGroup.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(feature);
+
+        return circleMapSvgElement;
+    };
+};
+
 /**
  * @param metaDataObj
  * @param dataObj

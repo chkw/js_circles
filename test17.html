@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>test16.html</title>
+		<title>test17.html</title>
 		<meta charset="utf-8">
 		<link rel="stylesheet" href="css/main17.css" type="text/css" />
 
@@ -14,8 +14,12 @@
 
 		<script src="scripts/d3.v3.js"></script>
 		<script src="scripts/static.js"></script>
-		<script src="scripts/circleMapGenerator.js"></script>
+		<script src="scripts/OD_eventData.js"></script>
 		<script src="scripts/graphData.js"></script>
+		<script src="scripts/medbook_data_load.js"></script>
+		<script src="scripts/circleMapGenerator.js"></script>
+		<script src='data/clinicalData.js'></script>
+		<script src='data/expressionData.js'></script>
 		<noscript>
 			<div align="center">
 				<p style="color:black;background-color:red;font-size:18pt">
@@ -25,6 +29,37 @@
 		</noscript>
 	</head>
 	<body>
-		<script src="scripts/main17.js"></script>
+		<div id='graphDiv'>
+			Network graph goes here.
+		</div>
+		<script>
+            // hard coded data
+            clinicalData = aaa;
+            expressionData = bbb;
+
+            eventAlbum = new OD_eventAlbum();
+            mongoExpressionData(expressionData, eventAlbum);
+            mongoClinicalData(clinicalData, eventAlbum);
+
+            // circlemap settings
+            queryData = {
+                "sampleGroupSummarySwitch" : false,
+                "ignoreMissingSamples" : false,
+                "features" : ["ACOT9", "ADM", "AGR2", "ANG", "APOH", "ATP2C2", "BANK1", "CACHD1", "CEACAM1", "CXCL2", "DHODH", "ERP27", "F2RL1", "F5", "FGF9", "FXYD3", "GABRB3", "GPRIN2", "GRIN3A", "GYG2", "HK2", "HSH2D", "INO80C", "IPCEF1", "IRAK2", "KCNJ6", "KIT", "KLK3", "MAFK", "NQO1", "OPHN1", "PEG10", "PFKFB4", "PPARG", "PRR5", "REEP6", "RUNX1T1", "SELL", "SERTAD1", "SLC30A4", "SPINK1", "ST8SIA4", "TEAD2", "TMPRSS2"],
+                "ringsList" : ["expression data"],
+                "orderFeature" : "PEG10",
+                "sortingRing" : "expression data",
+                "ringMergeSwitch" : false
+            };
+
+            cmg = new circleMapGenerator_2(eventAlbum, queryData);
+
+            // pathway
+            graphDataURL = "data/random_sif.tab";
+            graph = new graphData();
+            graph.readSif(getResponse(graphDataURL));
+
+		</script>
+		<!-- <script src="scripts/main17.js"></script> -->
 	</body>
 </html>

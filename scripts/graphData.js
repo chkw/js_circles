@@ -1,4 +1,11 @@
 /**
+ * graphData.js
+ * ChrisW
+ *
+ * objects to use for drawing network graphs in D3.js.
+ */
+
+/**
  * Data to specify a node.
  */
 function nodeData(data) {

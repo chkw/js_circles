@@ -490,7 +490,6 @@ d3.json(metaDataUrl, function(error, data) {
             query = data;
             if (query != null && typeof query === 'object') {
                 console.log("number of query --> " + Object.keys(query).length);
-                console.log('query', prettyJson(query));
             } else {
                 circleDataLoaded = false;
                 console.log("could not load data from " + queryUrl);
@@ -1006,111 +1005,4 @@ function updateToCurrentGraphData(svgElement, d3Force, currentGraphData, circleM
     updateCurrentNodesListBox(currentGraphData);
     updateCurrentEdgesListBox(currentGraphData);
     d3.select('#pathwayTextArea').text(currentGraphData.toPid());
-}
-
-// TODO static methods
-
-/**
- * Check if str ends with suffix.
- * @param {Object} str
- * @param {Object} suffix
- */
-function endsWith(str, suffix) {
-    return str.indexOf(suffix, str.length - suffix.length) !== -1;
-}
-
-/**
- * get the selected values of a list box control.
- */
-function getListBoxSelectedValues(listboxElement) {
-    var selectedValues = new Array();
-    for (var i = 0; i < listboxElement.length; i++) {
-        var option = listboxElement[i];
-        if (option.selected) {
-            selectedValues.push(option.value);
-        }
-    }
-    return selectedValues;
-}
-
-/**
- * Returns path data for a rectangle with rounded bottom corners.
- * The top-left corner is (x,y).
- * @param {Object} x
- * @param {Object} y
- * @param {Object} width
- * @param {Object} height
- * @param {Object} radius
- */
-function bottomRoundedRectPath(x, y, width, height, radius) {
-    var pathString = '';
-    pathString += "M" + x + "," + y;
-    pathString += "h" + (width);
-    pathString += "v" + (height - radius);
-    pathString += "a" + radius + "," + radius + " 0 0 1 " + (-1 * radius) + "," + (radius);
-    pathString += "h" + (-1 * (width - 2 * radius));
-    pathString += "a" + radius + "," + radius + " 0 0 1 " + (-1 * radius) + "," + (-1 * radius);
-    pathString += "v" + (-1 * (height - radius));
-    pathString += 'z';
-    return pathString;
-}
-
-/**
- * Returns path data for a rectangle with all rounded corners.
- * The top-left corner is (x,y).
- * @param {Object} x
- * @param {Object} y
- * @param {Object} width
- * @param {Object} height
- * @param {Object} radius
- */
-function allRoundedRectPath(x, y, width, height, radius) {
-    var pathString = '';
-    pathString += "M" + (x) + "," + (y + radius);
-    pathString += "a" + (radius) + "," + (radius) + " 0 0 1 " + (radius) + "," + (-1 * radius);
-    pathString += "h" + (width - 2 * radius);
-    pathString += "a" + radius + "," + radius + " 0 0 1 " + (radius) + "," + (radius);
-    pathString += "v" + (height - 2 * radius);
-    pathString += "a" + radius + "," + radius + " 0 0 1 " + (-1 * radius) + "," + (radius);
-    pathString += "h" + (-1 * (width - 2 * radius));
-    pathString += "a" + radius + "," + radius + " 0 0 1 " + (-1 * radius) + "," + (-1 * radius);
-    pathString += "v" + (-1 * (height - 2 * radius));
-    pathString += 'z';
-    return pathString;
-}
-
-/**
- * Returns path data for a rectangle with angled corners.
- * The top-left corner is (x,y).
- * @param {Object} x
- * @param {Object} y
- * @param {Object} width
- * @param {Object} height
- */
-function allAngledRectPath(x, y, width, height) {
-    // calculated from longer side
-    var pad = (width > height) ? width / 8 : height / 8;
-    var pathString = '';
-    pathString += "M" + (x + pad) + "," + (y);
-    pathString += "h" + (width - 2 * pad);
-    pathString += 'l' + pad + ',' + pad;
-    pathString += "v" + (height - 2 * pad);
-    pathString += 'l' + (-1 * pad) + ',' + (pad);
-    pathString += "h" + (-1 * (width - 2 * pad));
-    pathString += 'l' + (-1 * pad) + ',' + (-1 * pad);
-    pathString += "v" + (-1 * (height - 2 * pad));
-    pathString += 'z';
-    return pathString;
-}
-
-/**
- * Get the value of a parameter from the query string.  If parameter has not value or does not exist, return <code>null</code>.
- * From <a href='http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values'>here</a>.
- * @param {Object} name
- */
-function getQueryStringParameterByName(name) {
-    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
-    var results = regex.exec(location.search);
-    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
