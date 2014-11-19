@@ -516,9 +516,9 @@ d3.json(metaDataUrl, function(error, data) {
                 // prepare generator for creating SVG:g elements.
                 // var cmg = null;
                 if (circleDataLoaded) {
-                    // cmg = new circleMapGenerator(metaData, circleData, query);
-                    cmg = cmg2;
+                    cmg = new circleMapGenerator(metaData, circleData, query);
                 }
+                cmg = cmg2;
 
                 // TODO render graph
                 updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
