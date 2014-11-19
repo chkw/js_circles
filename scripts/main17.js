@@ -44,6 +44,7 @@ graphDataURL = 'data/biopaxpid_75288_rdf_pid';
 graphDataURL = 'data/biopaxpid_96010_xgmml_fix_pid';
 graphDataURL = 'data/pid_erg_small_pathway_v2_pid';
 graphDataURL = 'data/RB1_v5_pid';
+graphDataURL = 'data/random_sif.tab';
 
 var graph = new graphData();
 var cmg = null;
@@ -502,18 +503,21 @@ d3.json(metaDataUrl, function(error, data) {
                 }
 
                 // var graph = new graphData();
-                if (endsWith(graphDataURL.toUpperCase(), 'PID')) {
-                    graph.readPid(data);
-                } else if (endsWith(graphDataURL.toUpperCase(), 'SIF')) {
-                    graph.readSif(data);
-                } else {
-                    graph.readTab(data);
-                }
+                // if (endsWith(graphDataURL.toUpperCase(), 'PID')) {
+                // graph.readPid(data);
+                // } else if (endsWith(graphDataURL.toUpperCase(), 'SIF')) {
+                // graph.readSif(data);
+                // } else {
+                // graph.readTab(data);
+                // }
+
+                graph.readSif(data);
 
                 // prepare generator for creating SVG:g elements.
                 // var cmg = null;
                 if (circleDataLoaded) {
-                    cmg = new circleMapGenerator(metaData, circleData, query);
+                    // cmg = new circleMapGenerator(metaData, circleData, query);
+                    cmg = cmg2;
                 }
 
                 // TODO render graph
@@ -774,7 +778,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         } else if (nucleicAcidFeatureTypes.indexOf(type) != -1) {
             var newElement = document.createElementNS(svgNamespaceUri, 'path');
             newElement.setAttributeNS(null, 'class', 'sbgn');
-            var path = bottomRoundedRectPath(-20, -15, 40, 30, 10);
+            var path = bottomRoundedRectSvgPath(-20, -15, 40, 30, 10);
             newElement.setAttributeNS(null, 'd', path);
             newElement.setAttributeNS(null, 'opacity', opacityVal);
             newElement.setAttributeNS(null, 'stroke', 'black');
@@ -782,7 +786,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         } else if (macromoleculeTypes.indexOf(type) != -1) {
             var newElement = document.createElementNS(svgNamespaceUri, 'path');
             newElement.setAttributeNS(null, 'class', 'sbgn');
-            var path = allRoundedRectPath(-20, -15, 40, 30, 10);
+            var path = allRoundedRectSvgPath(-20, -15, 40, 30, 10);
             newElement.setAttributeNS(null, 'd', path);
             newElement.setAttributeNS(null, 'opacity', opacityVal);
             newElement.setAttributeNS(null, 'stroke', 'black');
@@ -798,7 +802,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         } else if (complexTypes.indexOf(type) != -1) {
             var newElement = document.createElementNS(svgNamespaceUri, 'path');
             newElement.setAttributeNS(null, 'class', 'sbgn');
-            var path = allAngledRectPath(-50, -30, 100, 60);
+            var path = allAngledRectSvgPath(-50, -30, 100, 60);
             newElement.setAttributeNS(null, 'd', path);
             newElement.setAttributeNS(null, 'opacity', opacityVal);
             newElement.setAttributeNS(null, 'stroke', 'black');

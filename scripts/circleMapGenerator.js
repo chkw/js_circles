@@ -10,9 +10,70 @@
  */
 
 // TODO new constructor should take parameters: OD_eventData, queryData
-function circleMapGenerator_2(eventData, queryData) {
-    this.eventAlbum = eventData;
-    this.query = queryData;
+function circleMapGenerator_2(eventAlbum, queryData) {
+    this.eventAlbum = eventAlbum.fillInMissingSamples();
+    this.queryData = queryData;
+
+    /**
+     * Get the query features... these should match up with eventIDs in the eventAlbum
+     */
+    this.getQueryFeatures = function() {
+        if ("features" in this.queryData) {
+            return this.queryData["features"];
+        } else {
+            return new Array();
+        }
+    };
+
+    /**
+     * get the names of data sets from the eventAlbum, grouped by datatype
+     */
+    this.getDatasetNames = function() {
+        return this.eventAlbum.getEventIdsByType();
+    };
+
+    /**
+     * log the object attributes to console
+     */
+    this.logData = function() {
+        console.log(this);
+    };
+
+    /**
+     * get all sampleIDs from the eventAlbum
+     */
+    this.getSampleNames = function() {
+        return this.eventAlbum.getAllSampleIds();
+    };
+
+    /**
+     * get the data for a ring.  The return object are sample values keyed on sampleId.
+     * @param {Object} eventId
+     * @param {Object} feature
+     */
+    this.getRingData = function(eventId, feature) {
+        var id = eventId;
+        var eventObj = this.eventAlbum.getEvent(id);
+
+        // event not found
+        if (eventObj == null) {
+            return null;
+        } else {
+            var result = eventObj.data;
+        }
+    };
+
+    /**
+     * Get a sorted list of sampleIds
+     */
+    this.getSortedSamples = function(sortingSteps) {
+        console.log(prettyJson(sortingSteps));
+        var sortedSampleIds = this.eventAlbum.multisortSamples(sortingSteps);
+        return sortedSampleIds;
+    };
+
+    // get sorted samples
+    this.sortedSamples = this.getSortedSamples(new sortingSteps().addStep(this.getQueryFeatures()[0]));
 
     /**
      * get a color for a score
@@ -74,7 +135,8 @@ function circleMapGenerator_2(eventData, queryData) {
     this.drawCircleMap = function(feature, d3SvgTagElement) {
         var fullRadius = 100;
 
-        var numDatasets = Object.keys(this.data).length;
+        var expressionEventIds = this.eventAlbum.getEventIdsByType()['expression data'];
+        var numDatasets = expressionEventIds.length;
 
         // +1 for the center
         var ringThickness = fullRadius / (numDatasets + 1);
@@ -94,7 +156,7 @@ function circleMapGenerator_2(eventData, queryData) {
 
         // iterate over rings
 
-        var datasetNames = Object.keys(this.data);
+        var datasetNames = expressionEventIds;
         for (var i in datasetNames) {
             var dataName = datasetNames[i];
             var ringData = this.getRingData(dataName, feature);
@@ -191,7 +253,8 @@ function circleMapGenerator(metaDataObj, dataObj, queryDataObj) {
     this.getRingData = function(dataName, feature) {
         if ( dataName in this.data) {
             if ( feature in this.data[dataName]) {
-                return this.data[dataName][feature];
+                var result = this.data[dataName][feature];
+                return result;
             } else {
                 return null;
             }

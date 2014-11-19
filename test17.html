@@ -45,14 +45,14 @@
             queryData = {
                 "sampleGroupSummarySwitch" : false,
                 "ignoreMissingSamples" : false,
-                "features" : ["ACOT9", "ADM", "AGR2", "ANG", "APOH", "ATP2C2", "BANK1", "CACHD1", "CEACAM1", "CXCL2", "DHODH", "ERP27", "F2RL1", "F5", "FGF9", "FXYD3", "GABRB3", "GPRIN2", "GRIN3A", "GYG2", "HK2", "HSH2D", "INO80C", "IPCEF1", "IRAK2", "KCNJ6", "KIT", "KLK3", "MAFK", "NQO1", "OPHN1", "PEG10", "PFKFB4", "PPARG", "PRR5", "REEP6", "RUNX1T1", "SELL", "SERTAD1", "SLC30A4", "SPINK1", "ST8SIA4", "TEAD2", "TMPRSS2"],
+                "features" : ["PEG10_mRNA", "PFKFB4_mRNA", "PPARG_mRNA", "PRR5_mRNA", "REEP6_mRNA", "RUNX1T1_mRNA", "SELL_mRNA", "SERTAD1_mRNA", "SLC30A4_mRNA", "SPINK1_mRNA", "ST8SIA4_mRNA", "TEAD2_mRNA", "TMPRSS2_mRNA"],
                 "ringsList" : ["expression data"],
                 "orderFeature" : "PEG10",
                 "sortingRing" : "expression data",
                 "ringMergeSwitch" : false
             };
 
-            cmg = new circleMapGenerator_2(eventAlbum, queryData);
+            cmg2 = new circleMapGenerator_2(eventAlbum, queryData);
 
             // pathway
             graphDataURL = "data/random_sif.tab";
@@ -60,6 +60,6 @@
             graph.readSif(getResponse(graphDataURL));
 
 		</script>
-		<!-- <script src="scripts/main17.js"></script> -->
+		<script src="scripts/main17.js"></script>
 	</body>
 </html>
