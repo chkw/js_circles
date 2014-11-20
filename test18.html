@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>test18.html</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="css/main18.css" type="text/css" />
+
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+		<script src="http://code.jquery.com/jquery-1.10.1.js"></script>
+		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+		<script src="scripts/jquery.contextmenu.js"></script>
+		<link rel="stylesheet" href="css/jquery.contextmenu.css">
+
+		<script src="scripts/d3.v3.js"></script>
+		<script src="scripts/static.js"></script>
+		<script src="scripts/jstat.min.js"></script>
+		<script src="scripts/OD_eventData.js"></script>
+		<script src="scripts/graphData.js"></script>
+		<script src="scripts/medbook_data_load.js"></script>
+		<script src="scripts/circleMapGenerator.js"></script>
+		<script src='data/clinicalData.js'></script>
+		<script src='data/expressionData.js'></script>
+		<noscript>
+			<div align="center">
+				<p style="color:black;background-color:red;font-size:18pt">
+					This website requires JavaScript.  Please turn on JavaScript and then <a href="">try it again</a>.
+				</p>
+			</div>
+		</noscript>
+	</head>
+	<body>
+		<div id='graphDiv'>
+			Network graph goes here.
+		</div>
+		<script>
+            // hard coded data
+            clinicalData = aaa;
+            expressionData = bbb;
+
+            eventAlbum = new OD_eventAlbum();
+            mongoExpressionData(expressionData, eventAlbum);
+            mongoClinicalData(clinicalData, eventAlbum);
+
+            // circlemap settings
+            queryData = {
+                "sampleGroupSummarySwitch" : false,
+                "ignoreMissingSamples" : false,
+                "features" : ["PEG10_mRNA", "PFKFB4_mRNA", "PPARG_mRNA", "PRR5_mRNA", "REEP6_mRNA", "RUNX1T1_mRNA", "SELL_mRNA", "SERTAD1_mRNA", "SLC30A4_mRNA", "SPINK1_mRNA", "ST8SIA4_mRNA", "TEAD2_mRNA", "TMPRSS2_mRNA"],
+                "ringsList" : ["expression data"],
+                "orderFeature" : "PEG10",
+                "sortingRing" : "expression data",
+                "ringMergeSwitch" : false
+            };
+
+            cmg2 = new circleMapGenerator_2(eventAlbum, queryData);
+
+            // pathway
+            graphDataURL = "data/random_sif.tab";
+            graph = new graphData();
+            graph.readSif(getResponse(graphDataURL));
+
+		</script>
+		<script src="scripts/main18.js"></script>
+	</body>
+</html>
