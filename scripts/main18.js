@@ -7,17 +7,17 @@ var htmlUri = 'http://www.w3.org/1999/xhtml';
 var svgNamespaceUri = 'http://www.w3.org/2000/svg';
 var xlinkUri = 'http://www.w3.org/1999/xlink';
 
-var macromoleculeTypes = ['macromolecule', 'protein', 'gene', 'mrna', 'mirna', 'shrna', 'dna', 'transcription factor'];
-var nucleicAcidFeatureTypes = ['nucleic acid feature', 'promoter'];
-var unspecifiedEntityTypes = ['unspecified entity', 'family', 'abstract'];
-var simpleChemicalTypes = ['simple chemical', 'small molecule'];
-var perturbingAgentTypes = ['perturbing agent'];
-var complexTypes = ['complex'];
-
-var selectableEntityTypes = ['unspecified entity', 'protein', 'gene', 'mRNA', 'miRNA', 'nucleic acid feature', 'small molecule', 'perturbing agent', 'complex'];
-
-var edgeTypeOptions = ['stop adding edges', 'positive regulation', 'negative regulation', 'activate transcription', 'inhibit transcription', 'component of', 'member of'];
-var edgeTypeSymbols = ['stop adding edges', '-a>', '-a|', '-t>', '-t|', 'component>', 'member>'];
+var sbgn_config = {
+    'macromoleculeTypes' : ['macromolecule', 'protein', 'gene', 'mrna', 'mirna', 'shrna', 'dna', 'transcription factor'],
+    'nucleicAcidFeatureTypes' : ['nucleic acid feature', 'promoter'],
+    'unspecifiedEntityTypes' : ['unspecified entity', 'family', 'abstract'],
+    'simpleChemicalTypes' : ['simple chemical', 'small molecule'],
+    'perturbingAgentTypes' : ['perturbing agent'],
+    'complexTypes' : ['complex'],
+    'selectableEntityTypes' : ['unspecified entity', 'protein', 'gene', 'mRNA', 'miRNA', 'nucleic acid feature', 'small molecule', 'perturbing agent', 'complex'],
+    'edgeTypeOptions' : ['stop adding edges', 'positive regulation', 'negative regulation', 'activate transcription', 'inhibit transcription', 'component of', 'member of'],
+    'edgeTypeSymbols' : ['stop adding edges', '-a>', '-a|', '-t>', '-t|', 'component>', 'member>']
+};
 
 var throbberUrl = 'images/loading_16.gif';
 
@@ -31,14 +31,16 @@ var circleDataUrl = "data/dataJson";
 var query = null;
 var queryUrl = "data/queryJson";
 
-// vars for d3.layout.force
-var linkDistance = 120;
-var linkStrength = 0.2;
-var friction = 0.8;
-var charge = -500;
-var gravity = 0.01;
+var d3_config = {
+    // vars for d3.layout.force
+    'linkDistance' : 120,
+    'linkStrength' : 0.2,
+    'friction' : 0.8,
+    'charge' : -500,
+    'gravity' : 0.01,
+    'nodeRadius' : 20
+};
 
-var nodeRadius = 20;
 var graphDataURL = "data/test_pid";
 graphDataURL = 'data/biopaxpid_75288_rdf_pid';
 graphDataURL = 'data/biopaxpid_96010_xgmml_fix_pid';
@@ -51,8 +53,6 @@ var cmg = null;
 var circleDataLoaded = true;
 
 var clickedNodesArray = new Array();
-
-// $("input[type=button]").button();
 
 // TODO dialogBox is a div
 var pathwayDialogBox = d3.select('body').append('div').attr({
@@ -172,7 +172,7 @@ svg.append('g').attr({
 var colorMapper = d3.scale.category20();
 
 // for d3 layout and rendering
-var force = d3.layout.force().size([svgWidth, svgHeight]).linkDistance(linkDistance).linkStrength(linkStrength).friction(friction).gravity(gravity);
+var force = d3.layout.force().size([svgWidth, svgHeight]).linkDistance(d3_config['linkDistance']).linkStrength(d3_config['linkStrength']).friction(d3_config['friction']).gravity(d3_config['gravity']);
 
 //TODO setup controls
 
@@ -260,7 +260,8 @@ var addEdgeForm = d3.select("body").append("form").style({
     display : 'none'
 }).attr({
     'id' : 'addEdgeForm'
-}); {// setup node selection mode controls
+});
+{// setup node selection mode controls
     addEdgeForm.append('p').text('edge type:');
 
     // TODO build select box for edge type
@@ -268,15 +269,15 @@ var addEdgeForm = d3.select("body").append("form").style({
         'id' : 'edgeTypeSelect'
     }).on('change', function() {
         var newEdgeType = document.getElementById('edgeTypeSelect').value;
-        if (newEdgeType == edgeTypeOptions[0]) {
+        if (newEdgeType == sbgn_config['edgeTypeOptions'][0]) {
             clickedNodesArray.length = 0;
             resetNewEdgeDialog();
         }
         console.log('selected edge type: ' + newEdgeType);
     });
-    for (var i in edgeTypeOptions) {
-        var edgeTypeOption = edgeTypeOptions[i];
-        var edgeTypeSymbol = edgeTypeSymbols[i];
+    for (var i in sbgn_config['edgeTypeOptions']) {
+        var edgeTypeOption = sbgn_config['edgeTypeOptions'][i];
+        var edgeTypeSymbol = sbgn_config['edgeTypeOptions'][i];
         d3.select('#edgeTypeSelect').append('option').attr({
             'value' : edgeTypeSymbol
         }).text(edgeTypeOption);
@@ -315,7 +316,7 @@ var addEdgeForm = d3.select("body").append("form").style({
         var relation = document.getElementById('edgeTypeSelect').value;
         console.log(sourceIdx + ' ' + relation + ' ' + targetIdx);
 
-        if ((sourceIdx != targetIdx) && (relation != edgeTypeOptions[0]) && (clickedNodesArray.slice(-2).length == 2)) {
+        if ((sourceIdx != targetIdx) && (relation != sbgn_config['edgeTypeOptions'][0]) && (clickedNodesArray.slice(-2).length == 2)) {
             graph.addLink(new linkData({
                 'sourceIdx' : sourceIdx,
                 'targetIdx' : targetIdx,
@@ -525,8 +526,8 @@ d3.json(metaDataUrl, function(error, data) {
 
                 // entity types listbox
                 newNodeTypeListBox.each(function(d, i) {
-                    for (var i in selectableEntityTypes) {
-                        var entityType = selectableEntityTypes[i];
+                    for (var i in sbgn_config['selectableEntityTypes']) {
+                        var entityType = sbgn_config['selectableEntityTypes'][i];
                         var optionElement = document.createElementNS(htmlUri, 'option');
                         optionElement.setAttributeNS(null, 'value', entityType);
                         optionElement.innerHTML = entityType;
@@ -750,7 +751,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
 
         console.log('click mode: ' + nodeClickMode);
 
-        if (nodeClickMode == 'none' || nodeClickMode == edgeTypeOptions[0]) {
+        if (nodeClickMode == 'none' || nodeClickMode == sbgn_config['edgeTypeOptions'][0]) {
             console.log('ignore click event');
         } else {
             addClickedNodeToList(i);
@@ -775,7 +776,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
             // circleMap
             var stagedElement = document.getElementById('circleMapSvg' + nodeName);
             return stagedElement;
-        } else if (nucleicAcidFeatureTypes.indexOf(type) != -1) {
+        } else if (sbgn_config['nucleicAcidFeatureTypes'].indexOf(type) != -1) {
             var newElement = document.createElementNS(svgNamespaceUri, 'path');
             newElement.setAttributeNS(null, 'class', 'sbgn');
             var path = bottomRoundedRectSvgPath(-20, -15, 40, 30, 10);
@@ -783,7 +784,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
             newElement.setAttributeNS(null, 'opacity', opacityVal);
             newElement.setAttributeNS(null, 'stroke', 'black');
             return newElement;
-        } else if (macromoleculeTypes.indexOf(type) != -1) {
+        } else if (sbgn_config['macromoleculeTypes'].indexOf(type) != -1) {
             var newElement = document.createElementNS(svgNamespaceUri, 'path');
             newElement.setAttributeNS(null, 'class', 'sbgn');
             var path = allRoundedRectSvgPath(-20, -15, 40, 30, 10);
@@ -791,7 +792,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
             newElement.setAttributeNS(null, 'opacity', opacityVal);
             newElement.setAttributeNS(null, 'stroke', 'black');
             return newElement;
-        } else if (simpleChemicalTypes.indexOf(type) != -1) {
+        } else if (sbgn_config['simpleChemicalTypes'].indexOf(type) != -1) {
             // circle
             var newElement = document.createElementNS(svgNamespaceUri, 'circle');
             newElement.setAttributeNS(null, 'class', 'sbgn');
@@ -799,7 +800,7 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
             newElement.setAttributeNS(null, 'opacity', opacityVal);
             newElement.setAttributeNS(null, 'stroke', 'black');
             return newElement;
-        } else if (complexTypes.indexOf(type) != -1) {
+        } else if (sbgn_config['complexTypes'].indexOf(type) != -1) {
             var newElement = document.createElementNS(svgNamespaceUri, 'path');
             newElement.setAttributeNS(null, 'class', 'sbgn');
             var path = allAngledRectSvgPath(-50, -30, 100, 60);
@@ -813,8 +814,8 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
             newElement.setAttributeNS(null, 'class', 'sbgn');
             newElement.setAttributeNS(null, 'cx', 0);
             newElement.setAttributeNS(null, 'cy', 0);
-            newElement.setAttributeNS(null, 'rx', 1.5 * nodeRadius);
-            newElement.setAttributeNS(null, 'ry', 0.75 * nodeRadius);
+            newElement.setAttributeNS(null, 'rx', 1.5 * d3_config['nodeRadius']);
+            newElement.setAttributeNS(null, 'ry', 0.75 * d3_config['nodeRadius']);
             newElement.setAttributeNS(null, 'opacity', opacityVal);
             newElement.setAttributeNS(null, 'stroke', 'black');
             return newElement;
