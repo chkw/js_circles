@@ -214,71 +214,91 @@ childElem.onchange = function() {
 childElem.style['display'] = 'none';
 var currentEdgesListBox = d3.select(childElem);
 
-// TODO continue here
-
-var newNodeNameTextBox = form.append("input").attr({
-    id : "newNodeNameTextBox",
-    type : "text",
-    value : "name of new node",
-    name : "newNodeNameTextBox",
-    title : 'name of new node',
+childElem = document.createElement('input');
+formElem.appendChild(childElem);
+setElemAttributes(childElem, {
+    'id' : "newNodeNameTextBox",
+    'type' : "text",
+    'value' : "name of new node",
+    'name' : "newNodeNameTextBox",
+    'title' : 'name of new node',
     'class' : 'addControl'
-}).on('keypress', function() {
+});
+childElem.onkeypress = function() {
     // http://stackoverflow.com/questions/15261447/how-do-i-capture-keystroke-events-in-d3-js
     console.log('keypress');
-    var keyCode = d3.event.keyCode;
+    var keyCode = event.keyCode;
+    console.log('keyCode:' + keyCode);
     if (keyCode == 13) {
         // prevent page from reloading on return key (13)
-        d3.event.preventDefault();
+        event.preventDefault();
     }
-});
+};
+var newNodeNameTextBox = d3.select(childElem);
 
-var newNodeTypeListBox = form.append('select').attr({
-    id : 'newNodeTypeListBox',
-    name : 'newNodeTypeListBox',
+childElem = document.createElement('select');
+formElem.appendChild(childElem);
+setElemAttributes(childElem, {
+    'id' : 'newNodeTypeListBox',
+    'name' : 'newNodeTypeListBox',
     'class' : 'addControl'
-}).on('change', function() {
+});
+childElem.onchange = function() {
     console.log('change');
-});
+};
+var newNodeTypeListBox = d3.select(childElem);
 
-var newNodeButton = form.append("input").attr({
-    id : "addNodeButton",
-    type : "button",
-    value : "add a new node",
-    name : "addNodeButton",
+childElem = document.createElement('input');
+formElem.appendChild(childElem);
+setElemAttributes(childElem, {
+    'id' : "addNodeButton",
+    'type' : "button",
+    'value' : "add a new node",
+    'name' : "addNodeButton",
     'class' : 'addControl'
 });
+var newNodeButton = d3.select(childElem);
 
-var exportToUcscFormatButton = form.append("input").attr({
-    id : "exportToUcscFormatButton",
-    type : "button",
-    value : "export to UCSC pathway format",
-    name : "exportToUcscFormatButton",
+childElem = document.createElement('input');
+formElem.appendChild(childElem);
+setElemAttributes(childElem, {
+    'id' : "exportToUcscFormatButton",
+    'type' : "button",
+    'value' : "export to UCSC pathway format",
+    'name' : "exportToUcscFormatButton",
     'class' : 'displayControl'
 });
+var exportToUcscFormatButton = d3.select(childElem);
 
-var addRandomNodeButton = form.append("input").attr({
-    id : "addRandomNodeButton",
-    type : "button",
-    value : "add random node",
-    name : "addRandomNodeButton",
+childElem = document.createElement('input');
+formElem.appendChild(childElem);
+setElemAttributes(childElem, {
+    'id' : "addRandomNodeButton",
+    'type' : "button",
+    'value' : "add random node",
+    'name' : "addRandomNodeButton",
     'class' : 'addControl'
 });
+var addRandomNodeButton = d3.select(childElem);
 
-var addRandomConnectedNodeButton = form.append("input").attr({
-    id : "addConnectedButton",
-    type : "button",
-    value : "add random connected node",
-    name : "addConnectedButton",
+childElem = document.createElement('input');
+formElem.appendChild(childElem);
+setElemAttributes(childElem, {
+    'id' : "addConnectedButton",
+    'type' : "button",
+    'value' : "add random connected node",
+    'name' : "addConnectedButton",
     'class' : 'addControl'
 });
+var addRandomConnectedNodeButton = d3.select(childElem);
+
+// TODO continue here
 
 var addEdgeForm = d3.select("body").append("form").style({
     display : 'none'
 }).attr({
     'id' : 'addEdgeForm'
-});
-{// setup node selection mode controls
+}); {// setup node selection mode controls
     addEdgeForm.append('p').text('edge type:');
 
     // TODO build select box for edge type
