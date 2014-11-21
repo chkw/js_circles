@@ -54,37 +54,39 @@ var circleDataLoaded = true;
 
 var clickedNodesArray = new Array();
 
-// TODO dialogBox is a div
-var pathwayDialogBox = d3.select('body').append('div').attr({
-    id : 'pathwayDialog',
-    title : ''
-}).style({
-    display : 'none'
-}).append('textarea').attr({
-    id : 'pathwayTextArea',
-    'readonly' : 'readonly'
-});
+createDialogBoxDivs = function() {
+    // TODO dialogBox is a div
+    var bodyElem = document.getElementsByTagName('body')[0];
+    var divElem = null;
 
-var elementDialogBox = d3.select('body').append('div').attr({
-    id : 'elementDialog',
-    title : ''
-}).style({
-    display : 'none'
-});
+    divElem = createDivElement('pathwayDialog');
+    divElem.setAttributeNS(null, 'title', '');
+    divElem.style['display'] = 'none';
+    bodyElem.appendChild(divElem);
 
-var addNodeDialogBox = d3.select('body').append('div').attr({
-    id : 'addNodeDialog',
-    title : ''
-}).style({
-    display : 'none'
-});
+    var textAreaElem = document.createElement('textarea');
+    textAreaElem.setAttributeNS(null, 'id', 'pathwayTextArea');
+    textAreaElem.setAttributeNS(null, 'readonly', 'readonly');
 
-var addEdgeDialogBox = d3.select('body').append('div').attr({
-    id : 'addEdgeDialog',
-    title : ''
-}).style({
-    display : 'none'
-});
+    divElem.appendChild(textAreaElem);
+
+    divElem = createDivElement('elementDialog');
+    divElem.setAttributeNS(null, 'title', '');
+    divElem.style['display'] = 'none';
+    bodyElem.appendChild(divElem);
+
+    divElem = createDivElement('elementDialog');
+    divElem.setAttributeNS(null, 'id', 'addNodeDialog');
+    divElem.style['display'] = 'none';
+    bodyElem.appendChild(divElem);
+
+    divElem = createDivElement('elementDialog');
+    divElem.setAttributeNS(null, 'id', 'addEdgeDialog');
+    divElem.style['display'] = 'none';
+    bodyElem.appendChild(divElem);
+};
+
+createDialogBoxDivs();
 
 // TODO svg element that contains the graph
 
@@ -102,7 +104,16 @@ var svgWidth = svg.attr('width'), svgHeight = svg.attr('height');
 // TODO context menu on svg area
 
 function showPathwayDialog() {
-    var dialog = $("#pathwayDialog");
+    // var dialog = $("#pathwayDialog");
+    var dialogElem = document.getElementById('pathwayDialog');
+    dialogElem.style['font-size'] = '10px';
+
+    var textAreaElem = document.getElementById('pathwayTextArea');
+    textAreaElem.style['width'] = '100%';
+    textAreaElem.style['height'] = '20em';
+    textAreaElem.setAttributeNS(null, 'text', graph.toPid());
+
+    // TODO continue from here
 
     dialog.attr({
         'style' : 'font-size: 10px'
