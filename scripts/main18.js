@@ -3,6 +3,8 @@
 // blueprints and rexster https://github.com/tinkerpop/blueprints/wiki
 // context menu: http://joewalnes.com/2011/07/22/a-simple-good-looking-context-menu-for-jquery/
 // context menu: https://github.com/arnklint/jquery-contextMenu
+
+// uses https://github.com/joewalnes/jquery-simple-context-menu
 var htmlUri = 'http://www.w3.org/1999/xhtml';
 var svgNamespaceUri = 'http://www.w3.org/2000/svg';
 var xlinkUri = 'http://www.w3.org/1999/xlink';
@@ -104,7 +106,6 @@ var svgWidth = svg.attr('width'), svgHeight = svg.attr('height');
 // TODO context menu on svg area
 
 function showPathwayDialog() {
-    // var dialog = $("#pathwayDialog");
     var dialogElem = document.getElementById('pathwayDialog');
     dialogElem.style['font-size'] = '10px';
 
@@ -113,16 +114,7 @@ function showPathwayDialog() {
     textAreaElem.style['height'] = '20em';
     textAreaElem.setAttributeNS(null, 'text', graph.toPid());
 
-    // TODO continue from here
-
-    dialog.attr({
-        'style' : 'font-size: 10px'
-    });
-    $('#pathwayTextArea').attr({
-        'style' : 'width:100% ; height:20em'
-    });
-    $('#pathwayTextArea').text(graph.toPid());
-    dialog.dialog({
+    $(dialogElem).dialog({
         'title' : 'pathway file',
         buttons : {
             "close" : function() {
@@ -137,39 +129,36 @@ function showPathwayDialog() {
     });
 }
 
-$(function() {
-
-    $('#circleMaps').contextPopup({
-        title : '',
-        items : [{
-            // addNodeDialog
-            label : 'new node',
-            // icon : 'icons/shopping-basket.png',
-            action : function() {
-                console.log('clicked new node');
-                showAddNodeDialogBox(graph);
-            }
-        }, {
-            // addEdge
-            label : 'new edge',
-            // icon : 'icons/shopping-basket.png',
-            action : function() {
-                console.log('clicked new edge');
-                showAddEdgeDialogBox(graph);
-            }
-        }, null, // divider
-        {
-            label : 'export to UCSC pathway format',
-            // icon : 'icons/application-monitor.png',
-            action : function() {
-                console.log('clicked export to UCSC pathway format');
-                showPathwayDialog();
-                // var pidString = graph.toPid();
-                // alert(pidString);
-            }
-        }]
-    });
-
+// uses https://github.com/joewalnes/jquery-simple-context-menu
+$(document.getElementById('circleMaps')).contextPopup({
+    title : '',
+    items : [{
+        // addNodeDialog
+        label : 'new node',
+        // icon : 'icons/shopping-basket.png',
+        action : function() {
+            console.log('clicked new node');
+            showAddNodeDialogBox(graph);
+        }
+    }, {
+        // addEdge
+        label : 'new edge',
+        // icon : 'icons/shopping-basket.png',
+        action : function() {
+            console.log('clicked new edge');
+            showAddEdgeDialogBox(graph);
+        }
+    }, null, // divider
+    {
+        label : 'export to UCSC pathway format',
+        // icon : 'icons/application-monitor.png',
+        action : function() {
+            console.log('clicked export to UCSC pathway format');
+            showPathwayDialog();
+            // var pidString = graph.toPid();
+            // alert(pidString);
+        }
+    }]
 });
 
 svg.append('g').attr({
@@ -187,10 +176,13 @@ var force = d3.layout.force().size([svgWidth, svgHeight]).linkDistance(d3_config
 
 //TODO setup controls
 
-var form = d3.select("body").append("form").style({
-    display : 'none',
-    'id' : 'mainForm'
-});
+var formElem = document.createElement('form');
+formElem.setAttributeNS(null, 'id', 'mainForm');
+formElem.style['display'] = 'none';
+document.getElementsByTagName('body')[0].appendChild(formElem);
+var form = d3.select(formElem);
+
+// TODO continue here
 
 var currentNodesListBox = form.append('select').attr({
     id : 'currentNodesListBox',
