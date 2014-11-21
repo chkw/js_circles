@@ -67,8 +67,10 @@ createDialogBoxDivs = function() {
     bodyElem.appendChild(divElem);
 
     var textAreaElem = document.createElement('textarea');
-    textAreaElem.setAttributeNS(null, 'id', 'pathwayTextArea');
-    textAreaElem.setAttributeNS(null, 'readonly', 'readonly');
+    setElemAttributes(textAreaElem, {
+        'id' : 'pathwayTextArea',
+        'readonly' : 'readonly'
+    });
 
     divElem.appendChild(textAreaElem);
 
@@ -112,7 +114,9 @@ function showPathwayDialog() {
     var textAreaElem = document.getElementById('pathwayTextArea');
     textAreaElem.style['width'] = '100%';
     textAreaElem.style['height'] = '20em';
-    textAreaElem.setAttributeNS(null, 'text', graph.toPid());
+    setElemAttributes(textAreaElem, {
+        'text' : graph.toPid()
+    });
 
     $(dialogElem).dialog({
         'title' : 'pathway file',
@@ -177,30 +181,40 @@ var force = d3.layout.force().size([svgWidth, svgHeight]).linkDistance(d3_config
 //TODO setup controls
 
 var formElem = document.createElement('form');
-formElem.setAttributeNS(null, 'id', 'mainForm');
+setElemAttributes(formElem, {
+    'id' : 'mainForm'
+});
 formElem.style['display'] = 'none';
 document.getElementsByTagName('body')[0].appendChild(formElem);
 var form = d3.select(formElem);
 
+var childElem = document.createElement('select');
+formElem.appendChild(childElem);
+setElemAttributes(childElem, {
+    'id' : 'currentNodesListBox',
+    'name' : 'currentNodesListBox',
+    'class' : 'deleteControl'
+});
+childElem.onchange = function() {
+    console.log('change');
+};
+childElem.style['display'] = 'none';
+var currentNodesListBox = d3.select(childElem);
+
+childElem = document.createElement('select');
+formElem.appendChild(childElem);
+setElemAttributes(childElem, {
+    'id' : 'currentEdgesListBox',
+    'name' : 'currentEdgesListBox',
+    'class' : 'deleteControl'
+});
+childElem.onchange = function() {
+    console.log('change');
+};
+childElem.style['display'] = 'none';
+var currentEdgesListBox = d3.select(childElem);
+
 // TODO continue here
-
-var currentNodesListBox = form.append('select').attr({
-    id : 'currentNodesListBox',
-    name : 'currentNodesListBox',
-    'class' : 'deleteControl'
-}).on('change', function() {
-    console.log('change');
-}).style({
-    display : 'none'
-});
-
-var currentEdgesListBox = form.append('select').attr({
-    id : 'currentEdgesListBox',
-    name : 'currentEdgesListBox',
-    'class' : 'deleteControl'
-}).on('change', function() {
-    console.log('change');
-});
 
 var newNodeNameTextBox = form.append("input").attr({
     id : "newNodeNameTextBox",
