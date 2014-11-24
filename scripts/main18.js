@@ -257,7 +257,6 @@ setElemAttributes(childElem, {
     'name' : "addNodeButton",
     'class' : 'addControl'
 });
-var newNodeButton = d3.select(childElem);
 
 childElem = document.createElement('input');
 formElem.appendChild(childElem);
@@ -268,7 +267,6 @@ setElemAttributes(childElem, {
     'name' : "exportToUcscFormatButton",
     'class' : 'displayControl'
 });
-var exportToUcscFormatButton = d3.select(childElem);
 
 childElem = document.createElement('input');
 formElem.appendChild(childElem);
@@ -279,7 +277,6 @@ setElemAttributes(childElem, {
     'name' : "addRandomNodeButton",
     'class' : 'addControl'
 });
-var addRandomNodeButton = d3.select(childElem);
 
 childElem = document.createElement('input');
 formElem.appendChild(childElem);
@@ -290,7 +287,6 @@ setElemAttributes(childElem, {
     'name' : "addConnectedButton",
     'class' : 'addControl'
 });
-var addRandomConnectedNodeButton = d3.select(childElem);
 
 // TODO continue here
 
@@ -384,15 +380,19 @@ var showAddEdgeDialogBox = function(graph) {
 var showAddNodeDialogBox = function(graph) {
     var dialog = $("#addNodeDialog");
     dialog.removeAttr('title');
-    $("#newNodeNameTextBox").appendTo(dialog).attr({
-        'style' : 'display:inline'
-    });
-    $('#newNodeTypeListBox').appendTo(dialog).attr({
-        'style' : 'display:inline'
-    });
-    $('#addNodeButton').appendTo(dialog).attr({
-        'style' : 'display:inline'
-    });
+
+    var elem = document.getElementById('newNodeNameTextBox');
+    dialog.appendChild(elem);
+    elem.style['display'] = 'inline';
+
+    elem = document.getElementById('newNodeTypeListBox');
+    dialog.appendChild(elem);
+    elem.style['display'] = 'inline';
+
+    elem = document.getElementById('addNodeButton');
+    dialog.appendChild(elem);
+    elem.style['display'] = 'inline';
+
     dialog.attr({
         'style' : 'font-size: smaller'
     });
@@ -574,7 +574,9 @@ d3.json(metaDataUrl, function(error, data) {
                 });
 
                 // new node button
-                newNodeButton.on("click", function() {
+
+                var elem = document.getElementById('addNodeButton');
+                elem.onclick = function() {
                     id = this.getAttribute("id");
                     value = this.getAttribute("value");
 
@@ -588,7 +590,7 @@ d3.json(metaDataUrl, function(error, data) {
                     }));
 
                     updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
-                });
+                };
 
                 if (getQueryStringParameterByName('test').toLowerCase() == 'true') {
                     form.style({
@@ -603,9 +605,9 @@ d3.json(metaDataUrl, function(error, data) {
                         display : 'inline'
                     });
 
-                    addRandomNodeButton.style({
-                        display : 'inline'
-                    }).on("click", function() {
+                    var elem = document.getElementById('addRandomNodeButton');
+                    elem.style['display'] = 'inline';
+                    elem.onclick = function() {
                         id = this.getAttribute("id");
                         value = this.getAttribute("value");
 
@@ -616,11 +618,11 @@ d3.json(metaDataUrl, function(error, data) {
                         }));
 
                         updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
-                    });
+                    };
 
-                    addRandomConnectedNodeButton.style({
-                        display : 'inline'
-                    }).on("click", function() {
+                    elem = document.getElementById('addConnectedButton');
+                    elem.style['display'] = 'inline';
+                    elem.onclick = function() {
                         id = this.getAttribute("id");
                         value = this.getAttribute("value");
 
@@ -641,19 +643,19 @@ d3.json(metaDataUrl, function(error, data) {
                         }
 
                         updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
-                    });
+                    };
 
                     // graph as PID button
-                    exportToUcscFormatButton.on("click", function() {
+                    elem = document.getElementById('exportToUcscFormatButton');
+                    elem.style['display'] = 'inline';
+                    elem.onclick = function() {
                         id = this.getAttribute("id");
                         value = this.getAttribute("value");
 
                         var pidString = graph.toPid();
 
                         alert(pidString);
-                    }).style({
-                        display : 'inline'
-                    });
+                    };
 
                     testButton.style({
                         display : 'inline'
