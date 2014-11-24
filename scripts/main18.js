@@ -199,7 +199,6 @@ childElem.onchange = function() {
     console.log('change');
 };
 childElem.style['display'] = 'none';
-var currentNodesListBox = d3.select(childElem);
 
 childElem = document.createElement('select');
 formElem.appendChild(childElem);
@@ -212,7 +211,6 @@ childElem.onchange = function() {
     console.log('change');
 };
 childElem.style['display'] = 'none';
-var currentEdgesListBox = d3.select(childElem);
 
 childElem = document.createElement('input');
 formElem.appendChild(childElem);
@@ -234,7 +232,6 @@ childElem.onkeypress = function() {
         event.preventDefault();
     }
 };
-var newNodeNameTextBox = d3.select(childElem);
 
 childElem = document.createElement('select');
 formElem.appendChild(childElem);
@@ -246,7 +243,6 @@ setElemAttributes(childElem, {
 childElem.onchange = function() {
     console.log('change');
 };
-var newNodeTypeListBox = d3.select(childElem);
 
 childElem = document.createElement('input');
 formElem.appendChild(childElem);
@@ -288,13 +284,17 @@ setElemAttributes(childElem, {
     'class' : 'addControl'
 });
 
-// TODO continue here
-
-var addEdgeForm = d3.select("body").append("form").style({
-    display : 'none'
-}).attr({
+childElem = document.createElement('form');
+document.getElementsByTagName('body')[0].appendChild(childElem);
+childElem.style['display'] = 'none';
+setElemAttributes(childElem, {
     'id' : 'addEdgeForm'
-}); {// setup node selection mode controls
+});
+
+// TODO continue here
+var addEdgeForm = d3.select(childElem);
+{
+    // setup node selection mode controls
     addEdgeForm.append('p').text('edge type:');
 
     // TODO build select box for edge type
@@ -562,20 +562,18 @@ d3.json(metaDataUrl, function(error, data) {
                 updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
 
                 // entity types listbox
-                newNodeTypeListBox.each(function(d, i) {
-                    for (var i in sbgn_config['selectableEntityTypes']) {
-                        var entityType = sbgn_config['selectableEntityTypes'][i];
-                        var optionElement = document.createElementNS(htmlUri, 'option');
-                        optionElement.setAttributeNS(null, 'value', entityType);
-                        optionElement.innerHTML = entityType;
-
-                        this.appendChild(optionElement);
-                    }
-                });
+                var elem = document.getElementById('newNodeTypeListBox');
+                for (var i = 0; i < sbgn_config['selectableEntityTypes'].length; i++) {
+                    var entityType = sbgn_config['selectableEntityTypes'][i];
+                    var optionElement = document.createElementNS(htmlUri, 'option');
+                    optionElement.setAttributeNS(null, 'value', entityType);
+                    optionElement.innerHTML = entityType;
+                    elem.appendChild(optionElement);
+                };
 
                 // new node button
 
-                var elem = document.getElementById('addNodeButton');
+                elem = document.getElementById('addNodeButton');
                 elem.onclick = function() {
                     id = this.getAttribute("id");
                     value = this.getAttribute("value");
@@ -597,15 +595,13 @@ d3.json(metaDataUrl, function(error, data) {
                         display : 'inline'
                     });
 
-                    currentNodesListBox.style({
-                        display : 'inline'
-                    });
+                    var elem = document.getElementById('currentNodesListBox');
+                    elem.style['display'] = 'inline';
 
-                    currentEdgesListBox.style({
-                        display : 'inline'
-                    });
+                    elem = document.getElementById('currentEdgesListBox');
+                    elem.style['display'] = 'inline';
 
-                    var elem = document.getElementById('addRandomNodeButton');
+                    elem = document.getElementById('addRandomNodeButton');
                     elem.style['display'] = 'inline';
                     elem.onclick = function() {
                         id = this.getAttribute("id");
