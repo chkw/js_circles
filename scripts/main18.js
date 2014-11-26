@@ -292,35 +292,50 @@ setElemAttributes(childElem, {
 });
 
 // TODO continue here
-var addEdgeForm = d3.select(childElem);
-{
+var addEdgeFormElem = childElem; {
     // setup node selection mode controls
-    addEdgeForm.append('p').text('edge type:');
+    childElem = document.createElement('p');
+    addEdgeFormElem.appendChild(childElem);
+    childElem.innerHTML = 'edge type';
 
     // TODO build select box for edge type
-    addEdgeForm.append('select').attr({
+    childElem = document.createElement('select');
+    addEdgeFormElem.appendChild(childElem);
+    setElemAttributes(childElem, {
         'id' : 'edgeTypeSelect'
-    }).on('change', function() {
+    });
+    childElem.onchange = function() {
         var newEdgeType = document.getElementById('edgeTypeSelect').value;
         if (newEdgeType == sbgn_config['edgeTypeOptions'][0]) {
             clickedNodesArray.length = 0;
             resetNewEdgeDialog();
         }
         console.log('selected edge type: ' + newEdgeType);
-    });
+    };
+
+    // populate select box with allowed edge types
     for (var i in sbgn_config['edgeTypeOptions']) {
         var edgeTypeOption = sbgn_config['edgeTypeOptions'][i];
         var edgeTypeSymbol = sbgn_config['edgeTypeOptions'][i];
-        d3.select('#edgeTypeSelect').append('option').attr({
+
+        var optionElem = document.createElement('option');
+        childElem.appendChild(optionElem);
+        setElemAttributes(childElem, {
             'value' : edgeTypeSymbol
-        }).text(edgeTypeOption);
+        });
+        optionElem.innerHTML = edgeTypeOption;
     }
 
-    addEdgeForm.append('br');
+    addEdgeFormElem.appendChild(document.createElement('br'));
 
-    var clickedNodesDiv = addEdgeForm.append('div').attr({
-        id : 'clickedNodesDiv'
+    childElem = document.createElement('div');
+    addEdgeFormElem.appendChild(childElem);
+    setElemAttributes(childElem, {
+        'id' : 'clickedNodesDiv'
     });
+
+    var clickedNodesDivElem = document.getElementById('clickedNodesDiv');
+    var clickedNodesDiv = d3.select(clickedNodesDivElem);
 
     clickedNodesDiv.append('label').text('source');
     clickedNodesDiv.append('textarea').attr({
@@ -453,20 +468,38 @@ var showElementDialogBox = function(type, graph, index) {
     }
 };
 
-var testButton = form.append('input').attr({
-    id : 'testButton',
-    type : 'button',
-    value : 'testButton',
-    name : 'testButton',
+childElem = document.createElement('input');
+formElem.appendChild(childElem);
+setElemAttributes(childElem, {
+    'id' : 'testButton',
+    'type' : 'button',
+    'value' : 'testButton',
+    'name' : 'testButton',
     'class' : 'displayControl',
-    title : 'test'
-}).on('click', function() {
+    'title' : 'test'
+});
+childElem.onclick = function() {
     // $(showDialogBox('my title', 'my text'));
     // closeDialogBox();
     //d3.select('#pathwayTextArea').text('text from testButton');
     //$('#pathwayTextArea').val('text from the testButton');
     console.log('mode:' + getNodeClickMode());
-});
+};
+
+// var testButton = form.append('input').attr({
+// id : 'testButton',
+// type : 'button',
+// value : 'testButton',
+// name : 'testButton',
+// 'class' : 'displayControl',
+// title : 'test'
+// }).on('click', function() {
+// // $(showDialogBox('my title', 'my text'));
+// // closeDialogBox();
+// //d3.select('#pathwayTextArea').text('text from testButton');
+// //$('#pathwayTextArea').val('text from the testButton');
+// console.log('mode:' + getNodeClickMode());
+// });
 
 /**
  * get the node click mode, which is selected from the possible types of edges to create
@@ -650,9 +683,8 @@ d3.json(metaDataUrl, function(error, data) {
                         alert(pidString);
                     };
 
-                    testButton.style({
-                        display : 'inline'
-                    });
+                    elem = document.getElementById('testButton');
+                    elem.style['display'] = 'inline';
                 }
             });
         });
