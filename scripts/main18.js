@@ -364,22 +364,22 @@ var addEdgeForm = d3.select(childElem);
 }
 
 var showAddEdgeDialogBox = function(graph) {
-    var dialog = $("#addEdgeDialog");
-    dialog.removeAttr('title');
-    dialog.attr({
-        'style' : 'font-size: smaller'
-    });
-    dialog.dialog({
+    var dialog = document.getElementById('addEdgeDialog');
+    dialog.removeAttribute('title');
+    dialog.style['font-size'] = 'smaller';
+    $(dialog).dialog({
         'title' : 'new edge'
     });
-    $('#addEdgeForm').appendTo(dialog).attr({
-        'style' : 'display:inline'
-    });
+
+    var addEdgeFormElem = document.getElementById('addEdgeForm');
+    addEdgeFormElem.style['display'] = 'inline';
+    dialog.appendChild(addEdgeFormElem);
 };
 
 var showAddNodeDialogBox = function(graph) {
-    var dialog = $("#addNodeDialog");
-    dialog.removeAttr('title');
+    var dialog = document.getElementById('addNodeDialog');
+    dialog.removeAttribute('title');
+    dialog.style['font-size'] = 'smaller';
 
     var elem = document.getElementById('newNodeNameTextBox');
     dialog.appendChild(elem);
@@ -393,10 +393,7 @@ var showAddNodeDialogBox = function(graph) {
     dialog.appendChild(elem);
     elem.style['display'] = 'inline';
 
-    dialog.attr({
-        'style' : 'font-size: smaller'
-    });
-    dialog.dialog({
+    $(dialog).dialog({
         'title' : 'new node'
     });
 };
