@@ -291,7 +291,6 @@ setElemAttributes(childElem, {
     'id' : 'addEdgeForm'
 });
 
-// TODO continue here
 var addEdgeFormElem = childElem; {
     // setup node selection mode controls
     childElem = document.createElement('p');
@@ -334,6 +333,7 @@ var addEdgeFormElem = childElem; {
         'id' : 'clickedNodesDiv'
     });
 
+    // TODO continue here
     var clickedNodesDivElem = document.getElementById('clickedNodesDiv');
     var clickedNodesDiv = d3.select(clickedNodesDivElem);
 
@@ -413,16 +413,23 @@ var showAddNodeDialogBox = function(graph) {
     });
 };
 
+/**
+ * Determine which dialog box should be displayed... EDGE or NODE
+ */
 var showElementDialogBox = function(type, graph, index) {
-    var dialog = $("#elementDialog");
-    dialog.removeAttr('title');
-    dialog.empty();
+    var dialogElem = document.getElementById('elementDialog');
+    dialogElem.removeAttribute('title');
+    removeChildElems(dialogElem);
+
     if (type.toUpperCase() === 'EDGE') {
         var data = graph.links[index];
-        dialog.append('p').attr({
-            'style' : 'font-size: smaller'
-        }).text(data.source.name + ' ' + data.relation + ' ' + data.target.name);
-        dialog.dialog({
+
+        var pElem = document.createElement('p');
+        dialogElem.appendChild(pElem);
+        pElem.style['font-size'] = 'smaller';
+        pElem.innerHTML = data.source.name + ' ' + data.relation + ' ' + data.target.name;
+
+        $(dialogElem).dialog({
             'title' : type,
             buttons : {
                 "delete" : function() {
@@ -443,10 +450,13 @@ var showElementDialogBox = function(type, graph, index) {
         });
     } else if (type.toUpperCase() === 'NODE') {
         var data = graph.nodes[index];
-        dialog.append('p').attr({
-            'style' : 'font-size: smaller'
-        }).text(data.name + ': ' + data.group);
-        dialog.dialog({
+
+        var pElem = document.createElement('p');
+        dialogElem.appendChild(pElem);
+        pElem.style['font-size'] = 'smaller';
+        pElem.innerHTML = data.name + ': ' + data.group;
+
+        $(dialogElem).dialog({
             'title' : type,
             buttons : {
                 "delete" : function() {
