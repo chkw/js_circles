@@ -291,7 +291,8 @@ setElemAttributes(childElem, {
     'id' : 'addEdgeForm'
 });
 
-var addEdgeFormElem = childElem; {
+var addEdgeFormElem = childElem;
+{
     // setup node selection mode controls
     childElem = document.createElement('p');
     addEdgeFormElem.appendChild(childElem);
@@ -333,32 +334,48 @@ var addEdgeFormElem = childElem; {
         'id' : 'clickedNodesDiv'
     });
 
-    // TODO continue here
     var clickedNodesDivElem = document.getElementById('clickedNodesDiv');
-    var clickedNodesDiv = d3.select(clickedNodesDivElem);
 
-    clickedNodesDiv.append('label').text('source');
-    clickedNodesDiv.append('textarea').attr({
+    // source
+    childElem = document.createElement('label');
+    clickedNodesDivElem.appendChild(childElem);
+    childElem.innerHTML = 'source';
+
+    childElem = document.createElement('textarea');
+    clickedNodesDivElem.appendChild(childElem);
+    setElemAttributes(childElem, {
         'id' : 'sourceTextArea',
         'readonly' : 'readonly'
     });
-    clickedNodesDiv.append('br');
-    clickedNodesDiv.append('label').text('target');
-    clickedNodesDiv.append('textarea').attr({
+
+    clickedNodesDivElem.appendChild(document.createElement('br'));
+
+    // target
+    childElem = document.createElement('label');
+    clickedNodesDivElem.appendChild(childElem);
+    childElem.innerHTML = 'target';
+
+    childElem = document.createElement('textarea');
+    clickedNodesDivElem.appendChild(childElem);
+    setElemAttributes(childElem, {
         'id' : 'targetTextArea',
         'readonly' : 'readonly'
     });
-    clickedNodesDiv.append('br');
 
-    // TODO add edge button
-    clickedNodesDiv.append("input").attr({
-        id : "addEdgeButton",
-        type : "button",
-        value : "add new edge",
-        name : "addEdgeButton",
+    clickedNodesDivElem.appendChild(document.createElement('br'));
+
+    // add edge button
+    childElem = document.createElement('input');
+    clickedNodesDivElem.appendChild(childElem);
+    setElemAttributes(childElem, {
+        'id' : "addEdgeButton",
+        'type' : "button",
+        'value' : "add new edge",
+        'name' : "addEdgeButton",
         'class' : 'addControl',
         'disabled' : 'disabled'
-    }).on('click', function() {
+    });
+    childElem.onclick = function() {
         var sourceIdx = clickedNodesArray[0];
         var targetIdx = clickedNodesArray[1];
         var relation = document.getElementById('edgeTypeSelect').value;
@@ -375,9 +392,10 @@ var addEdgeFormElem = childElem; {
             updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
         }
 
-    });
+    };
 }
 
+// TODO continue here
 var showAddEdgeDialogBox = function(graph) {
     var dialog = document.getElementById('addEdgeDialog');
     dialog.removeAttribute('title');
