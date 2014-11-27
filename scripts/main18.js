@@ -291,8 +291,7 @@ setElemAttributes(childElem, {
     'id' : 'addEdgeForm'
 });
 
-var addEdgeFormElem = childElem;
-{
+var addEdgeFormElem = childElem; {
     // setup node selection mode controls
     childElem = document.createElement('p');
     addEdgeFormElem.appendChild(childElem);
@@ -544,18 +543,31 @@ function getNodeClickMode() {
 // TODO draw graph
 
 function throbberOn() {
-    svg.append('image').attr({
-        id : 'throbber',
+    var imageElem = document.createElement('image');
+    setElemAttributes(imageElem, {
+        'id' : 'throbber',
         'xlink:href' : throbberUrl,
-        x : (0.5 * svgWidth),
-        y : (0.5 * svgHeight),
+        'x' : (0.5 * svgWidth),
+        'y' : (0.5 * svgHeight),
         'width' : 16,
         'height' : 16
     });
+
+    svg[0][0].appendChild(imageElem);
+
+    // svg.append('image').attr({
+    // id : 'throbber',
+    // 'xlink:href' : throbberUrl,
+    // x : (0.5 * svgWidth),
+    // y : (0.5 * svgHeight),
+    // 'width' : 16,
+    // 'height' : 16
+    // });
 }
 
 function throbberOff() {
-    d3.select('#throbber').remove();
+    // d3.select('#throbber').remove();
+    removeElemById('throbber');
 }
 
 // circleMap data
