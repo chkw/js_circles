@@ -61,30 +61,30 @@ createDialogBoxDivs = function() {
     var bodyElem = document.getElementsByTagName('body')[0];
     var divElem = null;
 
-    divElem = createDivElement('pathwayDialog');
+    divElem = utils.createDivElement('pathwayDialog');
     divElem.setAttributeNS(null, 'title', '');
     divElem.style['display'] = 'none';
     bodyElem.appendChild(divElem);
 
     var textAreaElem = document.createElement('textarea');
-    setElemAttributes(textAreaElem, {
+    utils.setElemAttributes(textAreaElem, {
         'id' : 'pathwayTextArea',
         'readonly' : 'readonly'
     });
 
     divElem.appendChild(textAreaElem);
 
-    divElem = createDivElement('elementDialog');
+    divElem = utils.createDivElement('elementDialog');
     divElem.setAttributeNS(null, 'title', '');
     divElem.style['display'] = 'none';
     bodyElem.appendChild(divElem);
 
-    divElem = createDivElement('elementDialog');
+    divElem = utils.createDivElement('elementDialog');
     divElem.setAttributeNS(null, 'id', 'addNodeDialog');
     divElem.style['display'] = 'none';
     bodyElem.appendChild(divElem);
 
-    divElem = createDivElement('elementDialog');
+    divElem = utils.createDivElement('elementDialog');
     divElem.setAttributeNS(null, 'id', 'addEdgeDialog');
     divElem.style['display'] = 'none';
     bodyElem.appendChild(divElem);
@@ -181,7 +181,7 @@ var force = d3.layout.force().size([svgWidth, svgHeight]).linkDistance(d3_config
 //TODO setup controls
 
 var formElem = document.createElement('form');
-setElemAttributes(formElem, {
+utils.setElemAttributes(formElem, {
     'id' : 'mainForm'
 });
 formElem.style['display'] = 'none';
@@ -190,7 +190,7 @@ var form = d3.select(formElem);
 
 var childElem = document.createElement('select');
 formElem.appendChild(childElem);
-setElemAttributes(childElem, {
+utils.setElemAttributes(childElem, {
     'id' : 'currentNodesListBox',
     'name' : 'currentNodesListBox',
     'class' : 'deleteControl'
@@ -202,7 +202,7 @@ childElem.style['display'] = 'none';
 
 childElem = document.createElement('select');
 formElem.appendChild(childElem);
-setElemAttributes(childElem, {
+utils.setElemAttributes(childElem, {
     'id' : 'currentEdgesListBox',
     'name' : 'currentEdgesListBox',
     'class' : 'deleteControl'
@@ -214,7 +214,7 @@ childElem.style['display'] = 'none';
 
 childElem = document.createElement('input');
 formElem.appendChild(childElem);
-setElemAttributes(childElem, {
+utils.setElemAttributes(childElem, {
     'id' : "newNodeNameTextBox",
     'type' : "text",
     'value' : "name of new node",
@@ -235,7 +235,7 @@ childElem.onkeypress = function() {
 
 childElem = document.createElement('select');
 formElem.appendChild(childElem);
-setElemAttributes(childElem, {
+utils.setElemAttributes(childElem, {
     'id' : 'newNodeTypeListBox',
     'name' : 'newNodeTypeListBox',
     'class' : 'addControl'
@@ -246,7 +246,7 @@ childElem.onchange = function() {
 
 childElem = document.createElement('input');
 formElem.appendChild(childElem);
-setElemAttributes(childElem, {
+utils.setElemAttributes(childElem, {
     'id' : "addNodeButton",
     'type' : "button",
     'value' : "add a new node",
@@ -256,7 +256,7 @@ setElemAttributes(childElem, {
 
 childElem = document.createElement('input');
 formElem.appendChild(childElem);
-setElemAttributes(childElem, {
+utils.setElemAttributes(childElem, {
     'id' : "exportToUcscFormatButton",
     'type' : "button",
     'value' : "export to UCSC pathway format",
@@ -266,7 +266,7 @@ setElemAttributes(childElem, {
 
 childElem = document.createElement('input');
 formElem.appendChild(childElem);
-setElemAttributes(childElem, {
+utils.setElemAttributes(childElem, {
     'id' : "addRandomNodeButton",
     'type' : "button",
     'value' : "add random node",
@@ -276,7 +276,7 @@ setElemAttributes(childElem, {
 
 childElem = document.createElement('input');
 formElem.appendChild(childElem);
-setElemAttributes(childElem, {
+utils.setElemAttributes(childElem, {
     'id' : "addConnectedButton",
     'type' : "button",
     'value' : "add random connected node",
@@ -287,7 +287,7 @@ setElemAttributes(childElem, {
 childElem = document.createElement('form');
 document.getElementsByTagName('body')[0].appendChild(childElem);
 childElem.style['display'] = 'none';
-setElemAttributes(childElem, {
+utils.setElemAttributes(childElem, {
     'id' : 'addEdgeForm'
 });
 
@@ -300,7 +300,7 @@ var addEdgeFormElem = childElem; {
     // TODO build select box for edge type
     childElem = document.createElement('select');
     addEdgeFormElem.appendChild(childElem);
-    setElemAttributes(childElem, {
+    utils.setElemAttributes(childElem, {
         'id' : 'edgeTypeSelect'
     });
     childElem.onchange = function() {
@@ -319,7 +319,7 @@ var addEdgeFormElem = childElem; {
 
         var optionElem = document.createElement('option');
         childElem.appendChild(optionElem);
-        setElemAttributes(childElem, {
+        utils.setElemAttributes(childElem, {
             'value' : edgeTypeSymbol
         });
         optionElem.innerHTML = edgeTypeOption;
@@ -329,7 +329,7 @@ var addEdgeFormElem = childElem; {
 
     childElem = document.createElement('div');
     addEdgeFormElem.appendChild(childElem);
-    setElemAttributes(childElem, {
+    utils.setElemAttributes(childElem, {
         'id' : 'clickedNodesDiv'
     });
 
@@ -342,7 +342,7 @@ var addEdgeFormElem = childElem; {
 
     childElem = document.createElement('textarea');
     clickedNodesDivElem.appendChild(childElem);
-    setElemAttributes(childElem, {
+    utils.setElemAttributes(childElem, {
         'id' : 'sourceTextArea',
         'readonly' : 'readonly'
     });
@@ -356,7 +356,7 @@ var addEdgeFormElem = childElem; {
 
     childElem = document.createElement('textarea');
     clickedNodesDivElem.appendChild(childElem);
-    setElemAttributes(childElem, {
+    utils.setElemAttributes(childElem, {
         'id' : 'targetTextArea',
         'readonly' : 'readonly'
     });
@@ -366,7 +366,7 @@ var addEdgeFormElem = childElem; {
     // add edge button
     childElem = document.createElement('input');
     clickedNodesDivElem.appendChild(childElem);
-    setElemAttributes(childElem, {
+    utils.setElemAttributes(childElem, {
         'id' : "addEdgeButton",
         'type' : "button",
         'value' : "add new edge",
@@ -497,7 +497,7 @@ var showElementDialogBox = function(type, graph, index) {
 
 childElem = document.createElement('input');
 formElem.appendChild(childElem);
-setElemAttributes(childElem, {
+utils.setElemAttributes(childElem, {
     'id' : 'testButton',
     'type' : 'button',
     'value' : 'testButton',
@@ -544,7 +544,7 @@ function getNodeClickMode() {
 
 function throbberOn() {
     var imageElem = document.createElement('image');
-    setElemAttributes(imageElem, {
+    utils.setElemAttributes(imageElem, {
         'id' : 'throbber',
         'xlink:href' : throbberUrl,
         'x' : (0.5 * svgWidth),
@@ -573,7 +573,7 @@ function throbberOff() {
 // circleMap data
 d3.json(metaDataUrl, function(error, data) {
     // var circleDataLoaded = true;
-    if (getQueryStringParameterByName('circles').toLowerCase() == 'false') {
+    if (utils.getQueryStringParameterByName('circles').toLowerCase() == 'false') {
         circleDataLoaded = false;
     }
     metaData = data;
@@ -625,8 +625,9 @@ d3.json(metaDataUrl, function(error, data) {
                 // var cmg = null;
                 if (circleDataLoaded) {
                     cmg = new circleMapGenerator(metaData, circleData, query);
+                    console.log('cmg.data', cmg.data);
                 }
-                cmg = cmg2;
+                // cmg = cmg2;
 
                 // TODO render graph
                 updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
@@ -660,7 +661,7 @@ d3.json(metaDataUrl, function(error, data) {
                     updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
                 };
 
-                if (getQueryStringParameterByName('test').toLowerCase() == 'true') {
+                if (utils.getQueryStringParameterByName('test').toLowerCase() == 'true') {
                     form.style({
                         display : 'inline'
                     });

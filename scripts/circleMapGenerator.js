@@ -93,7 +93,7 @@ function circleMapGenerator_2(eventAlbum, queryData) {
     };
 
     // get sorted samples
-    var ss = new sortingSteps();
+    var ss = new eventData.sortingSteps();
     ss.addStep(this.getQueryFeatures()[0]);
     this.sortedSamples = this.getSortedSamples(ss);
 
@@ -104,7 +104,7 @@ function circleMapGenerator_2(eventAlbum, queryData) {
      * @param {Object} cohortMax
      */
     function getHexColor(score, cohortMin, cohortMax) {
-        if (! isNumerical(score)) {
+        if (! utils.isNumerical(score)) {
             return "grey";
         }
         var isPositive = (score >= 0) ? true : false;
@@ -131,11 +131,11 @@ function circleMapGenerator_2(eventAlbum, queryData) {
             normalizedScore = (score / cohortMin);
         }
 
-        var newR = linearInterpolation(normalizedScore, minR, maxR);
-        var newG = linearInterpolation(normalizedScore, minG, maxG);
-        var newB = linearInterpolation(normalizedScore, minB, maxB);
+        var newR = utils.linearInterpolation(normalizedScore, minR, maxR);
+        var newG = utils.linearInterpolation(normalizedScore, minG, maxG);
+        var newB = utils.linearInterpolation(normalizedScore, minB, maxB);
 
-        var hexColor = rgbToHex(Math.floor(newR), Math.floor(newG), Math.floor(newB));
+        var hexColor = utils.rgbToHex(Math.floor(newR), Math.floor(newG), Math.floor(newB));
 
         return hexColor;
     }
@@ -401,11 +401,11 @@ function circleMapGenerator(metaDataObj, dataObj, queryDataObj) {
             normalizedScore = (score / this.metaData[dataName].cohortMin);
         }
 
-        var newR = linearInterpolation(normalizedScore, minR, maxR);
-        var newG = linearInterpolation(normalizedScore, minG, maxG);
-        var newB = linearInterpolation(normalizedScore, minB, maxB);
+        var newR = utils.linearInterpolation(normalizedScore, minR, maxR);
+        var newG = utils.linearInterpolation(normalizedScore, minG, maxG);
+        var newB = utils.linearInterpolation(normalizedScore, minB, maxB);
 
-        var hexColor = rgbToHex(Math.floor(newR), Math.floor(newG), Math.floor(newB));
+        var hexColor = utils.rgbToHex(Math.floor(newR), Math.floor(newG), Math.floor(newB));
 
         return hexColor;
     }

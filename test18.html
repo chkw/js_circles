@@ -13,7 +13,7 @@
 		<link rel="stylesheet" href="css/jquery.contextmenu.css">
 
 		<script src="scripts/d3.v3.js"></script>
-		<script src="scripts/static.js"></script>
+		<script src="scripts/utils.js"></script>
 		<script src="scripts/jstat.min.js"></script>
 		<script src="scripts/OD_eventData.js"></script>
 		<script src="scripts/graphData.js"></script>
@@ -38,9 +38,9 @@
             clinicalData = aaa;
             expressionData = bbb;
 
-            eventAlbum = new OD_eventAlbum();
-            mongoExpressionData(expressionData, eventAlbum);
-            mongoClinicalData(clinicalData, eventAlbum);
+            eventAlbum = new eventData.OD_eventAlbum();
+            medbookDataLoader.mongoExpressionData(expressionData, eventAlbum);
+            medbookDataLoader.mongoClinicalData(clinicalData, eventAlbum);
 
             // circlemap settings
             queryData = {
@@ -58,7 +58,7 @@
             // pathway
             graphDataURL = "data/random_sif.tab";
             graph = new graphData();
-            graph.readSif(getResponse(graphDataURL));
+            graph.readSif(utils.getResponse(graphDataURL));
 
 		</script>
 		<script src="scripts/main18.js"></script>
