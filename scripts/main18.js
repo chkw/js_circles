@@ -550,8 +550,9 @@ function throbberOff() {
 }
 
 doit2 = function() {
-    var circleDataLoaded = true;
-    cmg = cmg2;
+    var circleDataLoaded = (utils.getQueryStringParameterByName('circles').toLowerCase() === 'true') ? true : false;
+
+    var cmg = cmg2;
 
     // TODO render graph
     updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
