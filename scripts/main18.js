@@ -23,16 +23,6 @@ var sbgn_config = {
 
 var throbberUrl = 'images/loading_16.gif';
 
-// circleMap data
-var metaData = null;
-var metaDataUrl = "data/metaDataJson";
-
-var circleData = null;
-var circleDataUrl = "data/dataJson";
-
-var query = null;
-var queryUrl = "data/queryJson";
-
 var d3_config = {
     // vars for d3.layout.force
     'linkDistance' : 120,
@@ -42,17 +32,6 @@ var d3_config = {
     'gravity' : 0.01,
     'nodeRadius' : 20
 };
-
-var graphDataURL = "data/test_pid";
-graphDataURL = 'data/biopaxpid_75288_rdf_pid';
-graphDataURL = 'data/biopaxpid_96010_xgmml_fix_pid';
-graphDataURL = 'data/pid_erg_small_pathway_v2_pid';
-graphDataURL = 'data/RB1_v5_pid';
-graphDataURL = 'data/random_sif.tab';
-
-var graph = new graphData();
-var cmg = null;
-var circleDataLoaded = true;
 
 var clickedNodesArray = new Array();
 
@@ -570,168 +549,111 @@ function throbberOff() {
     removeElemById('throbber');
 }
 
-// circleMap data
-d3.json(metaDataUrl, function(error, data) {
-    // var circleDataLoaded = true;
-    if (utils.getQueryStringParameterByName('circles').toLowerCase() == 'false') {
-        circleDataLoaded = false;
-    }
-    metaData = data;
-    if (metaData != null && typeof metaData === 'object') {
-        console.log("number of metaData --> " + Object.keys(metaData).length);
-    } else {
-        circleDataLoaded = false;
-        console.log("could not load data from " + metaDataUrl);
-    }
+doit2 = function() {
+    var circleDataLoaded = true;
+    cmg = cmg2;
 
-    // circleMap data
-    d3.json(circleDataUrl, function(error, data) {
-        circleData = data;
-        if (circleData != null && typeof circleData === 'object') {
-            console.log("number of circleData --> " + Object.keys(circleData).length);
-        } else {
-            circleDataLoaded = false;
-            console.log("could not load data from " + circleDataUrl);
-        }
+    // TODO render graph
+    updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
 
-        // circleMap data
-        d3.json(queryUrl, function(error, data) {
-            query = data;
-            if (query != null && typeof query === 'object') {
-                console.log("number of query --> " + Object.keys(query).length);
-            } else {
-                circleDataLoaded = false;
-                console.log("could not load data from " + queryUrl);
+    // entity types listbox
+    var elem = document.getElementById('newNodeTypeListBox');
+    for (var i = 0; i < sbgn_config['selectableEntityTypes'].length; i++) {
+        var entityType = sbgn_config['selectableEntityTypes'][i];
+        var optionElement = document.createElementNS(htmlUri, 'option');
+        optionElement.setAttributeNS(null, 'value', entityType);
+        optionElement.innerHTML = entityType;
+        elem.appendChild(optionElement);
+    };
+
+    // new node button
+
+    elem = document.getElementById('addNodeButton');
+    elem.onclick = function() {
+        id = this.getAttribute("id");
+        value = this.getAttribute("value");
+
+        var name = document.getElementById('newNodeNameTextBox').value;
+
+        // get the group
+        groups = getListBoxSelectedValues(document.getElementById('newNodeTypeListBox'));
+        graph.addNode(new nodeData({
+            'name' : name,
+            'group' : groups[0]
+        }));
+
+        updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
+    };
+
+    if (utils.getQueryStringParameterByName('test').toLowerCase() == 'true') {
+        form.style({
+            display : 'inline'
+        });
+
+        var elem = document.getElementById('currentNodesListBox');
+        elem.style['display'] = 'inline';
+
+        elem = document.getElementById('currentEdgesListBox');
+        elem.style['display'] = 'inline';
+
+        elem = document.getElementById('addRandomNodeButton');
+        elem.style['display'] = 'inline';
+        elem.onclick = function() {
+            id = this.getAttribute("id");
+            value = this.getAttribute("value");
+
+            group = Math.floor(Math.random() * 20);
+            graph.addNode(new nodeData({
+                name : Math.random().toString(),
+                'group' : group
+            }));
+
+            updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
+        };
+
+        elem = document.getElementById('addConnectedButton');
+        elem.style['display'] = 'inline';
+        elem.onclick = function() {
+            id = this.getAttribute("id");
+            value = this.getAttribute("value");
+
+            group = Math.floor(Math.random() * 20);
+            graph.addNode(new nodeData({
+                name : Math.random().toString(),
+                'group' : group
+            }));
+
+            sourceIdx = graph.nodes.length - 1;
+            targetIdx = Math.floor(Math.random() * graph.nodes.length);
+
+            if (sourceIdx != targetIdx) {
+                graph.addLink(new linkData({
+                    'sourceIdx' : sourceIdx,
+                    'targetIdx' : targetIdx
+                }));
             }
 
-            // network
-            d3.text(graphDataURL, function(error, data) {
-                if (error !== null) {
-                    console.log("error getting graph data --> " + error);
-                }
+            updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
+        };
 
-                // var graph = new graphData();
-                // if (endsWith(graphDataURL.toUpperCase(), 'PID')) {
-                // graph.readPid(data);
-                // } else if (endsWith(graphDataURL.toUpperCase(), 'SIF')) {
-                // graph.readSif(data);
-                // } else {
-                // graph.readTab(data);
-                // }
+        // graph as PID button
+        elem = document.getElementById('exportToUcscFormatButton');
+        elem.style['display'] = 'inline';
+        elem.onclick = function() {
+            id = this.getAttribute("id");
+            value = this.getAttribute("value");
 
-                graph.readSif(data);
+            var pidString = graph.toPid();
 
-                // prepare generator for creating SVG:g elements.
-                // var cmg = null;
-                if (circleDataLoaded) {
-                    cmg = new circleMapGenerator(metaData, circleData, query);
-                    console.log('cmg.data', cmg.data);
-                }
-                // cmg = cmg2;
+            alert(pidString);
+        };
 
-                // TODO render graph
-                updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
+        elem = document.getElementById('testButton');
+        elem.style['display'] = 'inline';
+    }
+};
 
-                // entity types listbox
-                var elem = document.getElementById('newNodeTypeListBox');
-                for (var i = 0; i < sbgn_config['selectableEntityTypes'].length; i++) {
-                    var entityType = sbgn_config['selectableEntityTypes'][i];
-                    var optionElement = document.createElementNS(htmlUri, 'option');
-                    optionElement.setAttributeNS(null, 'value', entityType);
-                    optionElement.innerHTML = entityType;
-                    elem.appendChild(optionElement);
-                };
-
-                // new node button
-
-                elem = document.getElementById('addNodeButton');
-                elem.onclick = function() {
-                    id = this.getAttribute("id");
-                    value = this.getAttribute("value");
-
-                    var name = document.getElementById('newNodeNameTextBox').value;
-
-                    // get the group
-                    groups = getListBoxSelectedValues(document.getElementById('newNodeTypeListBox'));
-                    graph.addNode(new nodeData({
-                        'name' : name,
-                        'group' : groups[0]
-                    }));
-
-                    updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
-                };
-
-                if (utils.getQueryStringParameterByName('test').toLowerCase() == 'true') {
-                    form.style({
-                        display : 'inline'
-                    });
-
-                    var elem = document.getElementById('currentNodesListBox');
-                    elem.style['display'] = 'inline';
-
-                    elem = document.getElementById('currentEdgesListBox');
-                    elem.style['display'] = 'inline';
-
-                    elem = document.getElementById('addRandomNodeButton');
-                    elem.style['display'] = 'inline';
-                    elem.onclick = function() {
-                        id = this.getAttribute("id");
-                        value = this.getAttribute("value");
-
-                        group = Math.floor(Math.random() * 20);
-                        graph.addNode(new nodeData({
-                            name : Math.random().toString(),
-                            'group' : group
-                        }));
-
-                        updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
-                    };
-
-                    elem = document.getElementById('addConnectedButton');
-                    elem.style['display'] = 'inline';
-                    elem.onclick = function() {
-                        id = this.getAttribute("id");
-                        value = this.getAttribute("value");
-
-                        group = Math.floor(Math.random() * 20);
-                        graph.addNode(new nodeData({
-                            name : Math.random().toString(),
-                            'group' : group
-                        }));
-
-                        sourceIdx = graph.nodes.length - 1;
-                        targetIdx = Math.floor(Math.random() * graph.nodes.length);
-
-                        if (sourceIdx != targetIdx) {
-                            graph.addLink(new linkData({
-                                'sourceIdx' : sourceIdx,
-                                'targetIdx' : targetIdx
-                            }));
-                        }
-
-                        updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
-                    };
-
-                    // graph as PID button
-                    elem = document.getElementById('exportToUcscFormatButton');
-                    elem.style['display'] = 'inline';
-                    elem.onclick = function() {
-                        id = this.getAttribute("id");
-                        value = this.getAttribute("value");
-
-                        var pidString = graph.toPid();
-
-                        alert(pidString);
-                    };
-
-                    elem = document.getElementById('testButton');
-                    elem.style['display'] = 'inline';
-                }
-            });
-        });
-    });
-});
-
+doit2();
 // TODO instance methods
 
 // requires svg, force, graph, cmg, circleDataLoaded, and various constants
