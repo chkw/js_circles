@@ -270,7 +270,8 @@ utils.setElemAttributes(childElem, {
     'id' : 'addEdgeForm'
 });
 
-var addEdgeFormElem = childElem; {
+var addEdgeFormElem = childElem;
+{
     // setup node selection mode controls
     childElem = document.createElement('p');
     addEdgeFormElem.appendChild(childElem);
@@ -415,7 +416,7 @@ var showAddNodeDialogBox = function(graph) {
 var showElementDialogBox = function(type, graph, index) {
     var dialogElem = document.getElementById('elementDialog');
     dialogElem.removeAttribute('title');
-    removeChildElems(dialogElem);
+    utils.removeChildElems(dialogElem);
 
     if (type.toUpperCase() === 'EDGE') {
         var data = graph.links[index];
@@ -550,10 +551,6 @@ function throbberOff() {
 }
 
 doit2 = function() {
-    var circleDataLoaded = (utils.getQueryStringParameterByName('circles').toLowerCase() === 'true') ? true : false;
-
-    var cmg = cmg2;
-
     // TODO render graph
     updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
 

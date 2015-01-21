@@ -162,10 +162,10 @@ function graphData() {
         // delete stuff
         for (var i in linksToDelete) {
             link = linksToDelete[i];
-            removeA(this.links, link);
+            utils.removeA(this.links, link);
         }
         node = this.nodes[idx];
-        removeA(this.nodes, node);
+        utils.removeA(this.nodes, node);
     };
     /**
      * Delete a link by its array index.
@@ -354,18 +354,4 @@ function graphData() {
 
         return pidString;
     };
-}
-
-/**
- * remove from array by value (instead of index)
- */
-function removeA(arr) {
-    var what, a = arguments, L = a.length, ax;
-    while (L > 1 && arr.length) {
-        what = a[--L];
-        while (( ax = arr.indexOf(what)) !== -1) {
-            arr.splice(ax, 1);
-        }
-    }
-    return arr;
 }

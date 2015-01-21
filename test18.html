@@ -53,13 +53,15 @@
                 "ringMergeSwitch" : false
             };
 
-            cmg2 = new circleMapGenerator_2(eventAlbum, queryData);
+            cmg = cmg2 = new circleMapGenerator_2(eventAlbum, queryData);
             query = queryData;
 
             // pathway
             graphDataURL = "data/random_sif.tab";
             graph = new graphData();
             graph.readSif(utils.getResponse(graphDataURL));
+
+            circleDataLoaded = (utils.getQueryStringParameterByName('circles').toLowerCase() === 'true') ? true : false;
 
 		</script>
 		<script src="scripts/main18.js"></script>
