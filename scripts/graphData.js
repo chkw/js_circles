@@ -5,6 +5,10 @@
  * objects to use for drawing network graphs in D3.js.
  */
 
+//var graphData = {};
+//(function(gd) {
+//})(graphData);
+
 /**
  * Data to specify a node.
  */
@@ -69,7 +73,7 @@ function graphData() {
      */
     this.addNode = function(nodeData) {
         // check if it is nodeData object
-        if (nodeData.constructor.name != 'nodeData') {
+        if (nodeData.constructor.name !== 'nodeData') {
             console.log('not nodeData: ' + JSON.stringify(nodeData));
             return null;
         }
