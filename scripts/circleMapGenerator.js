@@ -199,17 +199,25 @@ function circleMapGenerator(eventAlbum, queryData) {
 
             var ringName = ringsList[i];
 
-            var dataName = (ringName === 'expression data') ? (feature + '_mRNA') : ringName;
+            var dataName = null;
+            if (ringName === 'expression data') {
+                dataName = feature + '_mRNA';
+            } else if (ringName === 'viper data') {
+                dataName = feature + '_viper';
+            } else {
+                dataName = ringName;
+            }
+
             var ringData = this.getRingData(dataName);
 
-            var allowedValues = this.eventAlbum.getEvent(dataName).metadata.allowedValues;
-
-            var eventStats = this.eventStats[dataName];
             if (ringData == null) {
                 // draw a grey ring for no data.
                 var arc = createD3Arc(innerRadius, innerRadius + ringThickness, 0, 360);
                 circleMapGroup.append("path").attr("d", arc).attr("fill", "grey");
             } else {
+                var allowedValues = this.eventAlbum.getEvent(dataName).metadata.allowedValues;
+                var eventStats = this.eventStats[dataName];
+
                 var startDegrees = 0;
                 var colorMapper = this.colorMappers[ringName];
                 this.sortedSamples.forEach(function(val, idx, arr) {
