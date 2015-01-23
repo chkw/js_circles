@@ -574,7 +574,7 @@ doit2 = function() {
         var name = document.getElementById('newNodeNameTextBox').value;
 
         // get the group
-        groups = getListBoxSelectedValues(document.getElementById('newNodeTypeListBox'));
+        groups = utils.getListBoxSelectedValues(document.getElementById('newNodeTypeListBox'));
         graph.addNode(new nodeData({
             'name' : name,
             'group' : groups[0]

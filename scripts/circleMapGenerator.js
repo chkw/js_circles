@@ -10,8 +10,8 @@
  * 4) D3.js
  */
 
-// TODO new constructor should take parameters: OD_eventData, queryData
-function circleMapGenerator_2(eventAlbum, queryData) {
+// constructor should take parameters: OD_eventData, queryData
+function circleMapGenerator(eventAlbum, queryData) {
     this.eventAlbum = eventAlbum.fillInMissingSamples();
     this.queryData = queryData;
 
@@ -164,79 +164,13 @@ function circleMapGenerator_2(eventAlbum, queryData) {
     }
 
     /**
-     * draw a CircleMap via d3.js
-     * @param {Object} feature
-     * @param {Object} d3SvgTagElement
-     */
-    this.drawCircleMap_old = function(feature, d3SvgTagElement) {
-        var fullRadius = 100;
-
-        var expressionEventIds = this.eventAlbum.getEventIdsByType()['expression data'];
-        var numDatasets = expressionEventIds.length;
-        numDatasets = 1;
-
-        // +1 for the center
-        var ringThickness = fullRadius / (numDatasets + 1);
-        var innerRadius = ringThickness;
-
-        var degreeIncrements = 360 / this.sortedSamples.length;
-
-        // arc paths will be added to this SVG group
-        var circleMapSvgElement = d3SvgTagElement.append('svg').attr({
-            id : 'circleMapSvg' + feature,
-            'class' : 'circleMapSvg',
-            name : feature
-        });
-        var circleMapGroup = circleMapSvgElement.append('g').attr({
-            'class' : 'circleMapG'
-        });
-
-        // iterate over rings
-
-        // var datasetNames = expressionEventIds;
-        // for (var i in datasetNames) {
-        var dataName = feature + '_mRNA';
-        var ringData = this.getRingData(feature + '_mRNA');
-        var eventStats = this.eventStats[dataName];
-        if (ringData == null) {
-            // draw a grey ring for no data.
-            var arc = createD3Arc(innerRadius, innerRadius + ringThickness, 0, 360);
-            circleMapGroup.append("path").attr("d", arc).attr("fill", "grey");
-        } else {
-            var startDegrees = 0;
-            this.sortedSamples.forEach(function(val, idx, arr) {
-                var sampleName = val;
-                var hexColor = "grey";
-                if ( sampleName in ringData) {
-                    var score = ringData[sampleName];
-                    hexColor = getHexColor(score, eventStats['min'], eventStats['max']);
-                }
-
-                var arc = createD3Arc(innerRadius, innerRadius + ringThickness, startDegrees, startDegrees + degreeIncrements);
-                circleMapGroup.append("path").attr("d", arc).attr("fill", hexColor);
-
-                // clockwise from 12 o clock
-                startDegrees = startDegrees + degreeIncrements;
-            });
-        }
-
-        innerRadius = innerRadius + ringThickness;
-        // };
-
-        // add a label
-        // circleMapGroup.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(feature);
-
-        return circleMapSvgElement;
-    };
-
-    /**
-     * draw a CircleMap via d3.js.  This one handles multiple rings.
+     * This is the only outward-facing method in this object.
+     * draws a CircleMap via d3.js.
+     * handles multiple rings.
      * @param {Object} feature
      * @param {Object} d3SvgTagElement
      */
     this.drawCircleMap = function(feature, d3SvgTagElement) {
-        // TODO get list of rings (ringData)
-
         var ringsList = this.queryData['ringsList'];
 
         var fullRadius = 100;

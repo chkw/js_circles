@@ -31,7 +31,7 @@
 	</head>
 	<body>
 		<div id='graphDiv'>
-			Network graph goes here.
+			Network graph.
 		</div>
 		<script>
             // hard coded data
@@ -65,7 +65,7 @@
                 // "ringMergeSwitch" : false
             };
 
-            cmg = cmg2 = new circleMapGenerator_2(eventAlbum, queryData);
+            cmg = new circleMapGenerator(eventAlbum, queryData);
             query = queryData;
 
             circleDataLoaded = (utils.getQueryStringParameterByName('circles').toLowerCase() === 'true') ? true : false;
