@@ -16,16 +16,19 @@ function circleMapGenerator_2(eventAlbum, queryData) {
     this.queryData = queryData;
 
     this.eventStats = {};
+    this.colorMappers = {};
     var eventIdsByGroup = this.eventAlbum.getEventIdsByType();
     for (var group in eventIdsByGroup) {
         var eventIds = eventIdsByGroup[group];
         for (var i = 0; i < eventIds.length; i++) {
             var eventId = eventIds[i];
             var eventObj = this.eventAlbum.getEvent(eventId);
-            if (utils.isObjInArray(['numeric', 'expression data'], eventObj.metadata.allowedValues)) {
-                continue;
+            if (!utils.isObjInArray(['numeric'], eventObj.metadata.allowedValues)) {
+                // define a discrete color mapper
+                this.colorMappers[eventId] = d3.scale.category10();
+            } else {
+                this.eventStats[eventId] = eventObj.data.getStats();
             }
-            this.eventStats[eventId] = eventObj.data.getStats();
         }
     }
 
@@ -95,13 +98,14 @@ function circleMapGenerator_2(eventAlbum, queryData) {
     var ss = new eventData.sortingSteps();
     if (utils.hasOwnProperty(this.queryData, "orderFeature")) {
         var features = [].concat(this.queryData["orderFeature"]);
+        features.reverse();
         for (var i = 0; i < features.length; i++) {
             ss.addStep(features[i]);
         }
     } else {
         ss.addStep(this.getQueryFeatures()[0]);
     }
-    console.log('ss', ss);
+    console.log('ring sorting steps', ss);
     this.sortedSamples = this.getSortedSamples(ss);
 
     /**
@@ -232,6 +236,7 @@ function circleMapGenerator_2(eventAlbum, queryData) {
      */
     this.drawCircleMap = function(feature, d3SvgTagElement) {
         // TODO get list of rings (ringData)
+
         var ringsList = this.queryData['ringsList'];
 
         var fullRadius = 100;
@@ -257,15 +262,14 @@ function circleMapGenerator_2(eventAlbum, queryData) {
 
         // iterate over rings
         for (var i = 0; i < ringsList.length; i++) {
+
             var ringName = ringsList[i];
 
             var dataName = (ringName === 'expression data') ? (feature + '_mRNA') : ringName;
             var ringData = this.getRingData(dataName);
 
-            // TODO qqq
+            var allowedValues = this.eventAlbum.getEvent(dataName).metadata.allowedValues;
 
-            // var dataName = feature + '_mRNA';
-            // var ringData = this.getRingData(feature + '_mRNA');
             var eventStats = this.eventStats[dataName];
             if (ringData == null) {
                 // draw a grey ring for no data.
@@ -273,16 +277,20 @@ function circleMapGenerator_2(eventAlbum, queryData) {
                 circleMapGroup.append("path").attr("d", arc).attr("fill", "grey");
             } else {
                 var startDegrees = 0;
+                var colorMapper = this.colorMappers[ringName];
                 this.sortedSamples.forEach(function(val, idx, arr) {
                     var sampleName = val;
                     var hexColor = "grey";
 
                     if ( sampleName in ringData) {
                         var score = ringData[sampleName];
-                        // assign color for numerical data
-                        hexColor = getHexColor(score, eventStats['min'], eventStats['max']);
-
-                        // TODO assign color cagetorical data
+                        if (eventStats != null) {
+                            // assign color for numerical data
+                            hexColor = getHexColor(score, eventStats['min'], eventStats['max']);
+                        } else {
+                            // assign color categorical data
+                            hexColor = colorMapper(score);
+                        }
                     }
 
                     var arc = createD3Arc(innerRadius, innerRadius + ringThickness, startDegrees, startDegrees + degreeIncrements);
