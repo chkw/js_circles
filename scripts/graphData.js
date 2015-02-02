@@ -358,4 +358,48 @@ function graphData() {
 
         return pidString;
     };
+
+    /**
+     * Get the graph as a Javascript object for loading into cytoscapeJS as an elements object.
+     *
+     */
+    this.toCytoscapeElements = function() {
+        var elements = {
+            'nodes' : [],
+            'edges' : []
+        };
+
+        // nodes
+        for (var i in this.nodes) {
+            var node = this.nodes[i];
+
+            elements['nodes'].push({
+                'data' : {
+                    'id' : node['name'],
+                    'type' : node['group']
+                }
+            });
+        }
+
+        // relations
+        for (var i in this.links) {
+            var link = this.links[i];
+
+            // relation may be stored as value or relation
+            var relation = link['value'];
+            if ('relation' in link) {
+                relation = link['relation'];
+            }
+
+            elements['edges'].push({
+                'data' : {
+                    'source' : this.nodes[link['source']]['name'],
+                    'target' : this.nodes[link['target']]['name'],
+                    'relation' : relation
+                }
+            });
+        }
+
+        return elements;
+    };
 }
