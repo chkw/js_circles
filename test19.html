@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>test19.html</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="css/main19.css" type="text/css" />
+
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+		<script src="bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+		// https://github.com/joewalnes/jquery-simple-context-menu
+		<script src="scripts/jquery.contextmenu.js"></script>
+		<link rel="stylesheet" href="css/jquery.contextmenu.css">
+
+		<script src="bower_components/d3/d3.min.js"></script>
+		<script src="bower_components/jstat/dist/jstat.min.js"></script>
+		<script src="scripts/utils.js"></script>
+		<script src="scripts/OD_eventData.js"></script>
+		<script src="scripts/graphData.js"></script>
+		<script src="scripts/medbook_data_load.js"></script>
+		<script src="scripts/circleMapGenerator.js"></script>
+		<!-- <script src='data/clinicalData.js'></script>
+		<script src='data/expressionData.js'></script> -->
+		<noscript>
+			<div align="center">
+				<p style="color:black;background-color:red;font-size:18pt">
+					This website requires JavaScript.  Please turn on JavaScript and then <a href="">try it again</a>.
+				</p>
+			</div>
+		</noscript>
+	</head>
+	<body>
+		<div id='graphDiv'>
+			Network graph.
+		</div>
+		<script>
+            // hard coded data
+            // clinicalData = aaa;
+            // expressionData = bbb;
+
+            eventAlbum = new eventData.OD_eventAlbum();
+            medbookDataLoader.getExpressionData('data/expression.tab', eventAlbum);
+            medbookDataLoader.getClinicalData('data/subtype.tab', eventAlbum);
+            medbookDataLoader.getViperData('data/viper.tab', eventAlbum);
+
+            console.log('eventAlbum', eventAlbum);
+
+            // pathway
+            graphDataURL = "data/vlado.sif";
+            graph = new graphData();
+            graph.readSif(utils.getResponse(graphDataURL));
+
+            console.log('graph', graph);
+
+            // medbookDataLoader.mongoClinicalData(clinicalData, eventAlbum);
+            //
+            // circlemap settings
+            queryData = {
+                // "sampleGroupSummarySwitch" : false,
+                // "ignoreMissingSamples" : false,
+                // "features" : ["PEG10_mRNA", "PFKFB4_mRNA", "PPARG_mRNA", "PRR5_mRNA", "REEP6_mRNA", "RUNX1T1_mRNA", "SELL_mRNA", "SERTAD1_mRNA", "SLC30A4_mRNA", "SPINK1_mRNA", "ST8SIA4_mRNA", "TEAD2_mRNA", "TMPRSS2_mRNA"],
+                "features" : ['ABTB2_mRNA', 'APOBEC3F_mRNA', 'APP_mRNA', 'AR_mRNA', 'DZIP1_mRNA', 'EPAS1_mRNA', 'ERG_mRNA', 'ESR2_mRNA', 'FGD1_mRNA', 'FKBP9_mRNA', 'IL6_mRNA', 'MYOM2_mRNA', 'NCOA1_mRNA', 'P2RY10_mRNA', 'PPP2R5C_mRNA', 'PTGER3_mRNA', 'SLC16A1_mRNA', 'ST5_mRNA', 'TBC1D16_mRNA', 'TBX21_mRNA', 'TGFB1_mRNA', 'TGFB2_mRNA', 'UGDH_mRNA', 'USP20_mRNA', 'VEGFA_mRNA', 'ZFPM2_mRNA'],
+                "ringsList" : ["core_subtype", "expression data", 'viper data'],
+                "orderFeature" : ['core_subtype', "AR_mRNA"],
+                "sortingRing" : "expression data",
+                // "ringMergeSwitch" : false
+            };
+
+            cmg = new circleMapGenerator(eventAlbum, queryData);
+            query = queryData;
+
+            circleDataLoaded = (utils.getQueryStringParameterByName('circles').toLowerCase() === 'true') ? true : false;
+            // circleDataLoaded = false;
+
+		</script>
+		<script src="scripts/main19.js"></script>
+	</body>
+</html>
