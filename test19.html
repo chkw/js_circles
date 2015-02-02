@@ -9,7 +9,7 @@
 		<script src="bower_components/jquery/dist/jquery.min.js"></script>
 		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 
-		// https://github.com/joewalnes/jquery-simple-context-menu
+		<!-- https://github.com/joewalnes/jquery-simple-context-menu -->
 		<script src="scripts/jquery.contextmenu.js"></script>
 		<link rel="stylesheet" href="css/jquery.contextmenu.css">
 
@@ -20,8 +20,6 @@
 		<script src="scripts/graphData.js"></script>
 		<script src="scripts/medbook_data_load.js"></script>
 		<script src="scripts/circleMapGenerator.js"></script>
-		<!-- <script src='data/clinicalData.js'></script>
-		<script src='data/expressionData.js'></script> -->
 		<noscript>
 			<div align="center">
 				<p style="color:black;background-color:red;font-size:18pt">
@@ -48,7 +46,7 @@
 
             // pathway
             graphDataURL = "data/vlado.sif";
-            graph = new graphData();
+            graph = new graphData.graphData();
             graph.readSif(utils.getResponse(graphDataURL));
 
             console.log('graph', graph);
