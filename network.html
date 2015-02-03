@@ -7,7 +7,7 @@
 		<!-- <script src="jquery/jquery-1.6.1.min.js"></script>
 		<script src="cytoscape.js-2.3.8/build/cytoscape.min.js"></script> -->
 
-		<script src="bower_components/jquery/dist/jquery.min.js"></script>
+		<!-- <script src="bower_components/jquery/dist/jquery.min.js"></script> -->
 		<script src="bower_components/cytoscape/dist/cytoscape.min.js"></script>
 		<script src="bower_components/jstat/dist/jstat.min.js"></script>
 		<script src="bower_components/d3/d3.min.js"></script>
@@ -18,7 +18,7 @@
 		<script src="scripts/medbook_data_load.js"></script>
 		<script src="scripts/circleMapGenerator.js"></script>
 
-		<script src="scripts/cytoscapejs_sample.js"></script>
+		<script src="scripts/cytoCircle.js"></script>
 	</head>
 	<body>
 		<div id='cytoDiv' style='height: 80%; width: 80%; position: absolute; left: 0; top: 0;'></div>
@@ -30,7 +30,7 @@
 
             divElem = document.getElementById('cytoDiv');
 
-            buildCytoGraph(divElem, graph, null, null);
+            cytoCircle.buildCytoGraph(divElem, graph.toCytoscapeElements(), null, null);
 		</script>
 	</body>
 </html>
