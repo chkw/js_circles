@@ -77,6 +77,7 @@ var windowWidth = window.innerWidth;
 var windowHeight = window.innerHeight;
 
 var svg = d3.select("body").append("svg").attr({
+    // 'viewBox' : 0 + ' ' + 0 + ' ' + windowWidth + ' ' + windowHeight,
     'width' : windowWidth,
     'height' : windowHeight,
     'id' : 'circleMaps'
@@ -270,8 +271,7 @@ utils.setElemAttributes(childElem, {
     'id' : 'addEdgeForm'
 });
 
-var addEdgeFormElem = childElem;
-{
+var addEdgeFormElem = childElem; {
     // setup node selection mode controls
     childElem = document.createElement('p');
     addEdgeFormElem.appendChild(childElem);
@@ -660,6 +660,9 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
     var largeScale = 'scale(2)';
     var smallScale = 'scale(0.2)';
 
+    // var largeScale = 'scale(1)';
+    // var smallScale = 'scale(1)';
+
     // clear the current graph
     var removedLinks = svg.selectAll(".link").remove();
     var removedNodes = svg.selectAll(".node").remove();
@@ -675,6 +678,9 @@ function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
         for (var i in nodeNames) {
             var feature = nodeNames[i];
             var circleMapElement = cmg.drawCircleMap(feature, svgNodeLayer);
+            // var svgElem = circleMapElement[0][0];
+            // console.log('circleMapElement for', feature, svgElem.outerHTML);
+            // console.log('++++++++++++++');
         }
     }
 

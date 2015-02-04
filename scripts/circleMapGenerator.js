@@ -185,10 +185,13 @@ function circleMapGenerator(eventAlbum, queryData) {
         var degreeIncrements = 360 / this.sortedSamples.length;
 
         // arc paths will be added to this SVG group
+        // TODO use document.createElement instead !!!
         var circleMapSvgElement = d3SvgTagElement.append('svg').attr({
-            id : 'circleMapSvg' + feature,
+            'xmlns' : 'http://www.w3.org/2000/svg',
+            // 'viewBox' : (-1 * fullRadius) + ' ' + (-1 * fullRadius) + ' ' + (2 * fullRadius) + ' ' + (2 * fullRadius),
+            'id' : 'circleMapSvg' + feature,
             'class' : 'circleMapSvg',
-            name : feature
+            'name' : feature
         });
         var circleMapGroup = circleMapSvgElement.append('g').attr({
             'class' : 'circleMapG'

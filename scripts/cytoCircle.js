@@ -11,6 +11,31 @@
 
 var cytoCircle = {};
 (function(cc) {
+    cc.test2 = function(cytoscapeObj) {
+        var nodes = cytoscapeObj.elements('node');
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            var nodeID = node.id();
+            console.log('nodeID', nodeID);
+        }
+    };
+
+    cc.test = function(cytoscapeObj, nodeID) {
+        cc.setNodeSvgUri(cytoscapeObj, nodeID, arCircleMapSVG);
+    };
+
+    cc.setNodeSvgUri = function(cytoscapeObj, nodeID, stringifiedSVG) {
+        var nodes = cytoscapeObj.elements('node#' + nodeID);
+        var dataURI = 'data:image/svg+xml;utf8,' + encodeURIComponent(stringifiedSVG);
+        console.log('dataURI', dataURI);
+        nodes.css({
+            // 'background-image' : 'https://farm8.staticflickr.com/7272/7633179468_3e19e45a0c_b.jpg',
+            // 'background-image' : "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><linearGradient id='gradient'><stop offset='10%' stop-color='#F00'/><stop offset='90%' stop-color='#fcc'/> </linearGradient><rect fill='url(#gradient)' x='0' y='0' width='100%' height='100%'/></svg>",
+            'background-image' : dataURI,
+            'background-fit' : 'cover'
+        });
+    };
+
     cc.buildCytoGraph = function(containerElem, cytoscapeElementsObj) {
         var cyto = cytoscape({
             'container' : containerElem,
@@ -38,7 +63,7 @@ var cytoCircle = {};
                 'text-valign' : 'center',
                 'text-outline-color' : 'white',
                 'text-outline-width' : 0,
-                'min-zoomed-font-size': 8,
+                'min-zoomed-font-size' : 8,
                 'content' : 'data(id)'
             }).selector('edge').css({
                 'width' : 6,
@@ -48,7 +73,7 @@ var cytoCircle = {};
                 'color' : 'black',
                 'text-outline-color' : 'white',
                 'text-outline-width' : 0,
-                'min-zoomed-font-size': 8,
+                'min-zoomed-font-size' : 8,
                 'content' : 'data(relation)'
             })
             // .selector('#bird')
