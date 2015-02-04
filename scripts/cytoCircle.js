@@ -11,22 +11,45 @@
 
 var cytoCircle = {};
 (function(cc) {
-    cc.buildCytoGraph = function(containerElem, cytoscapeElementsObj, styleObj, layoutObj) {
-        var cy = cytoscape({
-            container : containerElem,
+    cc.buildCytoGraph = function(containerElem, cytoscapeElementsObj) {
+        var cyto = cytoscape({
+            'container' : containerElem,
+            'elements' : cytoscapeElementsObj,
 
-            style : cytoscape.stylesheet().selector('node').css({
+            // http://js.cytoscape.org/#layouts
+            'layout' : {
+                name : 'breadthfirst',
+                directed : true,
+                padding : 10
+            },
+
+            // layout : {
+            // name : 'cose'
+            // },
+
+            'style' : cytoscape.stylesheet().selector('node').css({
                 'height' : 80,
                 'width' : 80,
                 'background-fit' : 'cover',
                 'border-color' : '#000',
                 'border-width' : 3,
-                'border-opacity' : 0.5
+                'border-opacity' : 0.5,
+                'color' : 'black',
+                'text-valign' : 'center',
+                'text-outline-color' : 'white',
+                'text-outline-width' : 0,
+                'min-zoomed-font-size': 8,
+                'content' : 'data(id)'
             }).selector('edge').css({
                 'width' : 6,
                 'target-arrow-shape' : 'triangle',
                 'line-color' : '#ffaaaa',
-                'target-arrow-color' : '#ffaaaa'
+                'target-arrow-color' : '#ffaaaa',
+                'color' : 'black',
+                'text-outline-color' : 'white',
+                'text-outline-width' : 0,
+                'min-zoomed-font-size': 8,
+                'content' : 'data(relation)'
             })
             // .selector('#bird')
             // .css({
@@ -60,21 +83,8 @@ var cytoCircle = {};
             // .css({
             // 'background-image': 'https://farm3.staticflickr.com/2660/3715569167_7e978e8319_b.jpg'
             // })
-            ,
-
-            elements : cytoscapeElementsObj,
-
-            // http://js.cytoscape.org/#layouts
-            layout : {
-                name : 'breadthfirst',
-                directed : true,
-                padding : 10
-            }
-
-            // layout : {
-            // name : 'cose'
-            // }
         });
+        return cyto;
     };
 
 })(cytoCircle);
