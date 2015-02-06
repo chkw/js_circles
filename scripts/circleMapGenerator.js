@@ -164,13 +164,9 @@ function circleMapGenerator(eventAlbum, queryData) {
     }
 
     /**
-     * This is the only outward-facing method in this object.
-     * draws a CircleMap via d3.js.
-     * handles multiple rings.
-     * @param {Object} feature
-     * @param {Object} d3SvgTagElement
+     * Generate an svg:group DOM element to be appended to an svg element.
      */
-    this.drawCircleMap = function(feature, d3SvgTagElement) {
+    this.generateCircleMapSvgGElem = function(feature) {
         var ringsList = this.queryData['ringsList'];
 
         var fullRadius = 100;
@@ -185,15 +181,8 @@ function circleMapGenerator(eventAlbum, queryData) {
         var degreeIncrements = 360 / this.sortedSamples.length;
 
         // arc paths will be added to this SVG group
-        // TODO use document.createElement instead !!!
-        var circleMapSvgElement = d3SvgTagElement.append('svg').attr({
-            'xmlns' : 'http://www.w3.org/2000/svg',
-            // 'viewBox' : (-1 * fullRadius) + ' ' + (-1 * fullRadius) + ' ' + (2 * fullRadius) + ' ' + (2 * fullRadius),
-            'id' : 'circleMapSvg' + feature,
-            'class' : 'circleMapSvg',
-            'name' : feature
-        });
-        var circleMapGroup = circleMapSvgElement.append('g').attr({
+        var circleMapGroup = document.createElementNS(utils.svgNamespaceUri, 'g');
+        utils.setElemAttributes(circleMapGroup, {
             'class' : 'circleMapG'
         });
 
@@ -216,7 +205,12 @@ function circleMapGenerator(eventAlbum, queryData) {
             if (ringData == null) {
                 // draw a grey ring for no data.
                 var arc = createD3Arc(innerRadius, innerRadius + ringThickness, 0, 360);
-                circleMapGroup.append("path").attr("d", arc).attr("fill", "grey");
+                var pathElem = document.createElementNS(utils.svgNamespaceUri, 'path');
+                utils.setElemAttributes(pathElem, {
+                    'd' : arc(),
+                    'fill' : 'grey'
+                });
+                circleMapGroup.appendChild(pathElem);
             } else {
                 var allowedValues = this.eventAlbum.getEvent(dataName).metadata.allowedValues;
                 var eventStats = this.eventStats[dataName];
@@ -239,7 +233,12 @@ function circleMapGenerator(eventAlbum, queryData) {
                     }
 
                     var arc = createD3Arc(innerRadius, innerRadius + ringThickness, startDegrees, startDegrees + degreeIncrements);
-                    circleMapGroup.append("path").attr("d", arc).attr("fill", hexColor);
+                    var pathElem = document.createElementNS(utils.svgNamespaceUri, 'path');
+                    utils.setElemAttributes(pathElem, {
+                        'd' : arc(),
+                        'fill' : hexColor
+                    });
+                    circleMapGroup.appendChild(pathElem);
 
                     // clockwise from 12 o clock
                     startDegrees = startDegrees + degreeIncrements;
@@ -252,7 +251,34 @@ function circleMapGenerator(eventAlbum, queryData) {
         // add a label
         // circleMapGroup.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(feature);
 
-        return circleMapSvgElement;
+        return circleMapGroup;
+    };
+
+    /**
+     * This is the only outward-facing method in this object.
+     * draws a CircleMap via d3.js.
+     * handles multiple rings.
+     * @param {Object} feature
+     * @param {Object} d3SvgTagElement
+     */
+    this.drawCircleMap = function(feature, d3SvgTagElement) {
+
+        var svgGElem = this.generateCircleMapSvgGElem(feature);
+
+        var svgElem = document.createElementNS(utils.svgNamespaceUri, 'svg');
+        // svgElem.setAttributeNS('null', 'xmlns', 'http://www.w3.org/2000/svg');
+        utils.setElemAttributes(svgElem, {
+            // 'xmlns' : utils.svgNamespaceUri,
+            // 'viewBox' : (-1 * fullRadius) + ' ' + (-1 * fullRadius) + ' ' + (2 * fullRadius) + ' ' + (2 * fullRadius),
+            'id' : 'circleMapSvg' + feature,
+            'class' : 'circleMapSvg',
+            'name' : feature
+        });
+        svgElem.appendChild(svgGElem);
+
+        d3SvgTagElement[0][0].appendChild(svgElem);
+
+        return svgElem;
     };
 };
 

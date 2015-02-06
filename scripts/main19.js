@@ -94,7 +94,7 @@ function showPathwayDialog() {
     var textAreaElem = document.getElementById('pathwayTextArea');
     textAreaElem.style['width'] = '100%';
     textAreaElem.style['height'] = '20em';
-    setElemAttributes(textAreaElem, {
+    utils.setElemAttributes(textAreaElem, {
         'text' : graph.toPid()
     });
 
