@@ -276,7 +276,7 @@ function circleMapGenerator(eventAlbum, queryData) {
         });
         svgElem.appendChild(svgGElem);
 
-        d3SvgTagElement[0][0].appendChild(svgElem);
+        utils.extractFromD3(d3SvgTagElement).appendChild(svgElem);
 
         return svgElem;
     };

@@ -11,26 +11,30 @@
 
 var cytoCircle = {};
 (function(cc) {
-    cc.test2 = function(cytoscapeObj) {
+    cc.setNodeCircleMapBackgrounds = function(cytoscapeObj, circleMapGenerator) {
         var nodes = cytoscapeObj.elements('node');
         for (var i = 0; i < nodes.length; i++) {
             var node = nodes[i];
             var nodeID = node.id();
-            console.log('nodeID', nodeID);
+
+            cc.setNodeCircleMapBackground(cytoscapeObj, nodeID, circleMapGenerator);
         }
     };
 
-    cc.test = function(cytoscapeObj, nodeID) {
-        cc.setNodeSvgUri(cytoscapeObj, nodeID, arCircleMapSVG);
+    cc.setNodeCircleMapBackground = function(cytoscapeObj, nodeID, circleMapGenerator) {
+        var svgGElem = circleMapGenerator.generateCircleMapSvgGElem(nodeID);
+
+        var svgTagOpen = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">';
+        var stringifiedSvg = svgTagOpen + svgGElem.outerHTML + '</svg>';
+
+        cc.setNodeCssBackgroundSvgUri(cytoscapeObj, nodeID, stringifiedSvg);
     };
 
-    cc.setNodeSvgUri = function(cytoscapeObj, nodeID, stringifiedSVG) {
+    cc.setNodeCssBackgroundSvgUri = function(cytoscapeObj, nodeID, stringifiedSVG) {
         var nodes = cytoscapeObj.elements('node#' + nodeID);
         var dataURI = 'data:image/svg+xml;utf8,' + encodeURIComponent(stringifiedSVG);
-        console.log('dataURI', dataURI);
+        // console.log('dataURI', dataURI);
         nodes.css({
-            // 'background-image' : 'https://farm8.staticflickr.com/7272/7633179468_3e19e45a0c_b.jpg',
-            // 'background-image' : "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><linearGradient id='gradient'><stop offset='10%' stop-color='#F00'/><stop offset='90%' stop-color='#fcc'/> </linearGradient><rect fill='url(#gradient)' x='0' y='0' width='100%' height='100%'/></svg>",
             'background-image' : dataURI,
             'background-fit' : 'cover'
         });
