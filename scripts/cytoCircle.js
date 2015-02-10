@@ -11,35 +11,68 @@
 
 var cytoCircle = {};
 (function(cc) {
-    cc.setNodeCircleMapBackgrounds = function(cytoscapeObj, circleMapGenerator) {
-        var nodes = cytoscapeObj.elements('node');
-        for (var i = 0; i < nodes.length; i++) {
-            var node = nodes[i];
-            var nodeID = node.id();
+    /**
+     * Remove the circlemap background images from nodes.
+     */
+    cc.removeCircleMaps = function(cytoscapeObj) {
+        var cyNodes = cytoscapeObj.elements('node');
+        cyNodes.removeCss('background-image');
+    };
 
-            cc.setNodeCircleMapBackground(cytoscapeObj, nodeID, circleMapGenerator);
+    /**
+     * Generate and set circlemap images for all cytoscape nodes.
+     *
+     * @param {Object} cytoscapeObj
+     * @param {Object} circleMapGenerator
+     */
+    cc.setNodeCircleMapBackgrounds = function(cytoscapeObj, circleMapGenerator) {
+        var cyNodes = cytoscapeObj.elements('node');
+        for (var i = 0; i < cyNodes.length; i++) {
+            var cyNode = cyNodes[i];
+            var nodeID = cyNode.id();
+
+            setNodeCircleMapBackground(cytoscapeObj, nodeID, circleMapGenerator);
         }
     };
 
-    cc.setNodeCircleMapBackground = function(cytoscapeObj, nodeID, circleMapGenerator) {
+    /**
+     * Generate an SVG data URI for a node and set it as the background of a cytoscape node.
+     *
+     * @param {Object} cytoscapeObj
+     * @param {Object} nodeID
+     * @param {Object} circleMapGenerator
+     */
+    var setNodeCircleMapBackground = function(cytoscapeObj, nodeID, circleMapGenerator) {
         var svgGElem = circleMapGenerator.generateCircleMapSvgGElem(nodeID);
 
         var svgTagOpen = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">';
         var stringifiedSvg = svgTagOpen + svgGElem.outerHTML + '</svg>';
 
-        cc.setNodeCssBackgroundSvgUri(cytoscapeObj, nodeID, stringifiedSvg);
+        setNodeCssBackgroundSvgUri(cytoscapeObj, nodeID, stringifiedSvg);
     };
 
-    cc.setNodeCssBackgroundSvgUri = function(cytoscapeObj, nodeID, stringifiedSVG) {
-        var nodes = cytoscapeObj.elements('node#' + nodeID);
+    /**
+     * Set the background image of a cytoscape node via data URI of an SVG.
+     *
+     * @param {Object} cytoscapeObj
+     * @param {Object} nodeID
+     * @param {Object} stringifiedSVG
+     */
+    var setNodeCssBackgroundSvgUri = function(cytoscapeObj, nodeID, stringifiedSVG) {
+        var cyNodes = cytoscapeObj.elements('node#' + nodeID);
         var dataURI = 'data:image/svg+xml;utf8,' + encodeURIComponent(stringifiedSVG);
         // console.log('dataURI', dataURI);
-        nodes.css({
+        cyNodes.css({
             'background-image' : dataURI,
             'background-fit' : 'cover'
         });
     };
 
+    /**
+     * Container element must have the minimum style attributes: style='height: 80%; width: 80%; position: absolute; left: 0; top: 50;'
+     * @param {Object} containerElem
+     * @param {Object} cytoscapeElementsObj
+     */
     cc.buildCytoGraph = function(containerElem, cytoscapeElementsObj) {
         var cyto = cytoscape({
             'container' : containerElem,
@@ -80,38 +113,6 @@ var cytoCircle = {};
                 'min-zoomed-font-size' : 8,
                 'content' : 'data(relation)'
             })
-            // .selector('#bird')
-            // .css({
-            // 'background-image': 'https://farm8.staticflickr.com/7272/7633179468_3e19e45a0c_b.jpg'
-            // })
-            // .selector('#cat')
-            // .css({
-            // 'background-image': 'https://farm2.staticflickr.com/1261/1413379559_412a540d29_b.jpg'
-            // })
-            // .selector('#ladybug')
-            // .css({
-            // 'background-image': 'https://farm4.staticflickr.com/3063/2751740612_af11fb090b_b.jpg'
-            // })
-            // .selector('#aphid')
-            // .css({
-            // 'background-image': 'https://farm9.staticflickr.com/8316/8003798443_32d01257c8_b.jpg'
-            // })
-            // .selector('#rose')
-            // .css({
-            // 'background-image': 'https://farm6.staticflickr.com/5109/5817854163_eaccd688f5_b.jpg'
-            // })
-            // .selector('#grasshopper')
-            // .css({
-            // 'background-image': 'https://farm7.staticflickr.com/6098/6224655456_f4c3c98589_b.jpg'
-            // })
-            // .selector('#plant')
-            // .css({
-            // 'background-image': 'https://farm1.staticflickr.com/231/524893064_f49a4d1d10_z.jpg'
-            // })
-            // .selector('#wheat')
-            // .css({
-            // 'background-image': 'https://farm3.staticflickr.com/2660/3715569167_7e978e8319_b.jpg'
-            // })
         });
         return cyto;
     };
