@@ -180,10 +180,10 @@ var circleMapGenerator = {};
         /**
          * Generate an svg:group DOM element to be appended to an svg element.
          */
-        this.generateCircleMapSvgGElem = function(feature) {
+        this.generateCircleMapSvgGElem = function(feature, radius) {
             var ringsList = this.queryData['ringsList'];
 
-            var fullRadius = 100;
+            var fullRadius = ( typeof radius === 'undefined') ? 100 : radius;
 
             var expressionEventIds = this.eventAlbum.getEventIdsByType()['expression data'];
             var numDatasets = ringsList.length;
@@ -272,9 +272,11 @@ var circleMapGenerator = {};
          *Get a data URI for the circleMap svg.
          */
         this.getCircleMapDataUri = function(feature) {
-            var svgGElem = this.generateCircleMapSvgGElem(feature);
+            var radius = 100;
 
-            var svgTagOpen = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">';
+            var svgGElem = this.generateCircleMapSvgGElem(feature, radius);
+
+            var svgTagOpen = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + (-1 * radius) + ' ' + (-1 * radius) + ' ' + (2 * radius) + ' ' + (2 * radius) + '">';
             var stringifiedSvg = svgTagOpen + svgGElem.outerHTML + '</svg>';
 
             var dataURI = 'data:image/svg+xml;utf8,' + encodeURIComponent(stringifiedSvg);
