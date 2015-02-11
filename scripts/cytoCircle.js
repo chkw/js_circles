@@ -75,7 +75,9 @@ var cytoCircle = {};
             'style' : cytoscape.stylesheet().selector('node').css({
                 'height' : 80,
                 'width' : 80,
-                'background-fit' : 'cover',
+                'background-repeat' : 'no-repeat', // for performance, non-repeating
+                'background-clip' : 'none', // for performance, non-clipping
+                'background-fit' : 'none', // none for original size, contain to fit inside node, or cover to cover the node
                 // 'border-color' : '#000',
                 // 'border-width' : 0,
                 // 'border-opacity' : 0.5,
