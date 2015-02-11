@@ -10,289 +10,304 @@
  * 4) D3.js
  */
 
-// constructor should take parameters: OD_eventData, queryData
-function circleMapGenerator(eventAlbum, queryData) {
-    this.eventAlbum = eventAlbum.fillInMissingSamples();
-    this.queryData = queryData;
+var circleMapGenerator = {};
+(function(cmg) {
 
-    this.eventStats = {};
-    this.colorMappers = {};
-    var eventIdsByGroup = this.eventAlbum.getEventIdsByType();
-    for (var group in eventIdsByGroup) {
-        var eventIds = eventIdsByGroup[group];
-        for (var i = 0; i < eventIds.length; i++) {
-            var eventId = eventIds[i];
-            var eventObj = this.eventAlbum.getEvent(eventId);
-            if (!utils.isObjInArray(['numeric'], eventObj.metadata.allowedValues)) {
-                // define a discrete color mapper
-                this.colorMappers[eventId] = d3.scale.category10();
-            } else {
-                this.eventStats[eventId] = eventObj.data.getStats();
+    cmg.exampleQueryData = {
+        // "sampleGroupSummarySwitch" : false,
+        // "ignoreMissingSamples" : false,
+        // "features" : ["PEG10_mRNA", "PFKFB4_mRNA", "PPARG_mRNA", "PRR5_mRNA", "REEP6_mRNA", "RUNX1T1_mRNA", "SELL_mRNA", "SERTAD1_mRNA", "SLC30A4_mRNA", "SPINK1_mRNA", "ST8SIA4_mRNA", "TEAD2_mRNA", "TMPRSS2_mRNA"],
+        "features" : ['ABTB2_mRNA', 'APOBEC3F_mRNA', 'APP_mRNA', 'AR_mRNA', 'DZIP1_mRNA', 'EPAS1_mRNA', 'ERG_mRNA', 'ESR2_mRNA', 'FGD1_mRNA', 'FKBP9_mRNA', 'IL6_mRNA', 'MYOM2_mRNA', 'NCOA1_mRNA', 'P2RY10_mRNA', 'PPP2R5C_mRNA', 'PTGER3_mRNA', 'SLC16A1_mRNA', 'ST5_mRNA', 'TBC1D16_mRNA', 'TBX21_mRNA', 'TGFB1_mRNA', 'TGFB2_mRNA', 'UGDH_mRNA', 'USP20_mRNA', 'VEGFA_mRNA', 'ZFPM2_mRNA'],
+        "ringsList" : ["core_subtype", "expression data", 'viper data'],
+        "orderFeature" : ['core_subtype', "AR_mRNA"],
+        "sortingRing" : "expression data",
+        // "ringMergeSwitch" : false
+    };
+
+    // constructor should take parameters: OD_eventData, queryData
+    cmg.circleMapGenerator = function(eventAlbum, queryData) {
+        this.eventAlbum = eventAlbum.fillInMissingSamples();
+        this.queryData = queryData;
+
+        this.eventStats = {};
+        this.colorMappers = {};
+        var eventIdsByGroup = this.eventAlbum.getEventIdsByType();
+        for (var group in eventIdsByGroup) {
+            var eventIds = eventIdsByGroup[group];
+            for (var i = 0; i < eventIds.length; i++) {
+                var eventId = eventIds[i];
+                var eventObj = this.eventAlbum.getEvent(eventId);
+                if (!utils.isObjInArray(['numeric'], eventObj.metadata.allowedValues)) {
+                    // define a discrete color mapper
+                    this.colorMappers[eventId] = d3.scale.category10();
+                } else {
+                    this.eventStats[eventId] = eventObj.data.getStats();
+                }
             }
         }
-    }
 
-    /**
-     * Get the query features... these should match up with eventIDs in the eventAlbum
-     */
-    this.getQueryFeatures = function() {
-        if ("features" in this.queryData) {
-            return this.queryData["features"];
+        /**
+         * Get the query features... these should match up with eventIDs in the eventAlbum
+         */
+        this.getQueryFeatures = function() {
+            if ("features" in this.queryData) {
+                return this.queryData["features"];
+            } else {
+                return new Array();
+            }
+        };
+
+        /**
+         * get the names of data sets from the eventAlbum, grouped by datatype
+         */
+        this.getDatasetNames = function() {
+            return this.eventAlbum.getEventIdsByType();
+        };
+
+        /**
+         * log the object attributes to console
+         */
+        this.logData = function() {
+            console.log(this);
+        };
+
+        /**
+         * get all sampleIDs from the eventAlbum
+         */
+        this.getSampleNames = function() {
+            return this.eventAlbum.getAllSampleIds();
+        };
+
+        /**
+         * get the data for a ring.  The return object are sample values keyed on sampleId.
+         * @param {Object} eventId
+         */
+        this.getRingData = function(eventId) {
+            var id = eventId;
+            var eventObj = this.eventAlbum.getEvent(id);
+
+            // event not found
+            if (eventObj == null) {
+                return null;
+            } else {
+                var result = {};
+                var eventData = eventObj.data.getData();
+                for (var i = 0; i < eventData.length; i++) {
+                    var sampleData = eventData[i];
+                    result[sampleData['id']] = sampleData['val'];
+                }
+                return result;
+            }
+        };
+
+        /**
+         * Get a sorted list of sampleIds
+         */
+        this.getSortedSamples = function(sortingSteps) {
+            var sortedSampleIds = this.eventAlbum.multisortSamples(sortingSteps);
+            return sortedSampleIds;
+        };
+
+        // get sorted samples
+        var ss = new eventData.sortingSteps();
+        if (utils.hasOwnProperty(this.queryData, "orderFeature")) {
+            var features = [].concat(this.queryData["orderFeature"]);
+            features.reverse();
+            for (var i = 0; i < features.length; i++) {
+                ss.addStep(features[i]);
+            }
         } else {
-            return new Array();
+            ss.addStep(this.getQueryFeatures()[0]);
         }
-    };
+        console.log('ring sorting steps', ss);
+        this.sortedSamples = this.getSortedSamples(ss);
 
-    /**
-     * get the names of data sets from the eventAlbum, grouped by datatype
-     */
-    this.getDatasetNames = function() {
-        return this.eventAlbum.getEventIdsByType();
-    };
-
-    /**
-     * log the object attributes to console
-     */
-    this.logData = function() {
-        console.log(this);
-    };
-
-    /**
-     * get all sampleIDs from the eventAlbum
-     */
-    this.getSampleNames = function() {
-        return this.eventAlbum.getAllSampleIds();
-    };
-
-    /**
-     * get the data for a ring.  The return object are sample values keyed on sampleId.
-     * @param {Object} eventId
-     */
-    this.getRingData = function(eventId) {
-        var id = eventId;
-        var eventObj = this.eventAlbum.getEvent(id);
-
-        // event not found
-        if (eventObj == null) {
-            return null;
-        } else {
-            var result = {};
-            var eventData = eventObj.data.getData();
-            for (var i = 0; i < eventData.length; i++) {
-                var sampleData = eventData[i];
-                result[sampleData['id']] = sampleData['val'];
+        /**
+         * get a color for a score
+         * @param {Object} score
+         * @param {Object} cohortMin
+         * @param {Object} cohortMax
+         */
+        function getHexColor(score, cohortMin, cohortMax) {
+            if (! utils.isNumerical(score)) {
+                return "grey";
             }
-            return result;
-        }
-    };
+            var isPositive = (score >= 0) ? true : false;
 
-    /**
-     * Get a sorted list of sampleIds
-     */
-    this.getSortedSamples = function(sortingSteps) {
-        var sortedSampleIds = this.eventAlbum.multisortSamples(sortingSteps);
-        return sortedSampleIds;
-    };
+            var maxR = 255;
+            var maxG = 0;
+            var maxB = 0;
 
-    // get sorted samples
-    var ss = new eventData.sortingSteps();
-    if (utils.hasOwnProperty(this.queryData, "orderFeature")) {
-        var features = [].concat(this.queryData["orderFeature"]);
-        features.reverse();
-        for (var i = 0; i < features.length; i++) {
-            ss.addStep(features[i]);
-        }
-    } else {
-        ss.addStep(this.getQueryFeatures()[0]);
-    }
-    console.log('ring sorting steps', ss);
-    this.sortedSamples = this.getSortedSamples(ss);
+            var minR = 255;
+            var minG = 255;
+            var minB = 255;
 
-    /**
-     * get a color for a score
-     * @param {Object} score
-     * @param {Object} cohortMin
-     * @param {Object} cohortMax
-     */
-    function getHexColor(score, cohortMin, cohortMax) {
-        if (! utils.isNumerical(score)) {
-            return "grey";
-        }
-        var isPositive = (score >= 0) ? true : false;
+            var normalizedScore = (score / cohortMax);
 
-        var maxR = 255;
-        var maxG = 0;
-        var maxB = 0;
+            if (!isPositive) {
+                maxR = 0;
+                maxG = 0;
+                maxB = 255;
 
-        var minR = 255;
-        var minG = 255;
-        var minB = 255;
+                minR = 255;
+                minG = 255;
+                minB = 255;
 
-        var normalizedScore = (score / cohortMax);
-
-        if (!isPositive) {
-            maxR = 0;
-            maxG = 0;
-            maxB = 255;
-
-            minR = 255;
-            minG = 255;
-            minB = 255;
-
-            normalizedScore = (score / cohortMin);
-        }
-
-        var newR = utils.linearInterpolation(normalizedScore, minR, maxR);
-        var newG = utils.linearInterpolation(normalizedScore, minG, maxG);
-        var newB = utils.linearInterpolation(normalizedScore, minB, maxB);
-
-        var hexColor = utils.rgbToHex(Math.floor(newR), Math.floor(newG), Math.floor(newB));
-
-        return hexColor;
-    }
-
-    /**
-     * create an svg arc via d3.js
-     * @param {Object} innerRadius
-     * @param {Object} outerRadius
-     * @param {Object} startDegrees
-     * @param {Object} endDegrees
-     */
-    function createD3Arc(innerRadius, outerRadius, startDegrees, endDegrees) {
-        var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius).startAngle(startDegrees * (Math.PI / 180)).endAngle(endDegrees * (Math.PI / 180));
-        return arc;
-    }
-
-    /**
-     * Generate an svg:group DOM element to be appended to an svg element.
-     */
-    this.generateCircleMapSvgGElem = function(feature) {
-        var ringsList = this.queryData['ringsList'];
-
-        var fullRadius = 100;
-
-        var expressionEventIds = this.eventAlbum.getEventIdsByType()['expression data'];
-        var numDatasets = ringsList.length;
-
-        // +1 for the center
-        var ringThickness = fullRadius / (numDatasets + 1);
-        var innerRadius = ringThickness;
-
-        var degreeIncrements = 360 / this.sortedSamples.length;
-
-        // arc paths will be added to this SVG group
-        var circleMapGroup = document.createElementNS(utils.svgNamespaceUri, 'g');
-        utils.setElemAttributes(circleMapGroup, {
-            'class' : 'circleMapG'
-        });
-
-        // iterate over rings
-        for (var i = 0; i < ringsList.length; i++) {
-
-            var ringName = ringsList[i];
-
-            var dataName = null;
-            if (ringName === 'expression data') {
-                dataName = feature + '_mRNA';
-            } else if (ringName === 'viper data') {
-                dataName = feature + '_viper';
-            } else {
-                dataName = ringName;
+                normalizedScore = (score / cohortMin);
             }
 
-            var ringData = this.getRingData(dataName);
+            var newR = utils.linearInterpolation(normalizedScore, minR, maxR);
+            var newG = utils.linearInterpolation(normalizedScore, minG, maxG);
+            var newB = utils.linearInterpolation(normalizedScore, minB, maxB);
 
-            if (ringData == null) {
-                // draw a grey ring for no data.
-                var arc = createD3Arc(innerRadius, innerRadius + ringThickness, 0, 360);
-                var pathElem = document.createElementNS(utils.svgNamespaceUri, 'path');
-                utils.setElemAttributes(pathElem, {
-                    'd' : arc(),
-                    'fill' : 'grey'
-                });
-                circleMapGroup.appendChild(pathElem);
-            } else {
-                var allowedValues = this.eventAlbum.getEvent(dataName).metadata.allowedValues;
-                var eventStats = this.eventStats[dataName];
+            var hexColor = utils.rgbToHex(Math.floor(newR), Math.floor(newG), Math.floor(newB));
 
-                var startDegrees = 0;
-                var colorMapper = this.colorMappers[ringName];
-                this.sortedSamples.forEach(function(val, idx, arr) {
-                    var sampleName = val;
-                    var hexColor = "grey";
+            return hexColor;
+        }
 
-                    if ( sampleName in ringData) {
-                        var score = ringData[sampleName];
-                        if (eventStats != null) {
-                            // assign color for numerical data
-                            hexColor = getHexColor(score, eventStats['min'], eventStats['max']);
-                        } else {
-                            // assign color categorical data
-                            hexColor = colorMapper(score);
-                        }
-                    }
+        /**
+         * create an svg arc via d3.js
+         * @param {Object} innerRadius
+         * @param {Object} outerRadius
+         * @param {Object} startDegrees
+         * @param {Object} endDegrees
+         */
+        function createD3Arc(innerRadius, outerRadius, startDegrees, endDegrees) {
+            var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius).startAngle(startDegrees * (Math.PI / 180)).endAngle(endDegrees * (Math.PI / 180));
+            return arc;
+        }
 
-                    var arc = createD3Arc(innerRadius, innerRadius + ringThickness, startDegrees, startDegrees + degreeIncrements);
+        /**
+         * Generate an svg:group DOM element to be appended to an svg element.
+         */
+        this.generateCircleMapSvgGElem = function(feature) {
+            var ringsList = this.queryData['ringsList'];
+
+            var fullRadius = 100;
+
+            var expressionEventIds = this.eventAlbum.getEventIdsByType()['expression data'];
+            var numDatasets = ringsList.length;
+
+            // +1 for the center
+            var ringThickness = fullRadius / (numDatasets + 1);
+            var innerRadius = ringThickness;
+
+            var degreeIncrements = 360 / this.sortedSamples.length;
+
+            // arc paths will be added to this SVG group
+            var circleMapGroup = document.createElementNS(utils.svgNamespaceUri, 'g');
+            utils.setElemAttributes(circleMapGroup, {
+                'class' : 'circleMapG'
+            });
+
+            // iterate over rings
+            for (var i = 0; i < ringsList.length; i++) {
+
+                var ringName = ringsList[i];
+
+                var dataName = null;
+                if (ringName === 'expression data') {
+                    dataName = feature + '_mRNA';
+                } else if (ringName === 'viper data') {
+                    dataName = feature + '_viper';
+                } else {
+                    dataName = ringName;
+                }
+
+                var ringData = this.getRingData(dataName);
+
+                if (ringData == null) {
+                    // draw a grey ring for no data.
+                    var arc = createD3Arc(innerRadius, innerRadius + ringThickness, 0, 360);
                     var pathElem = document.createElementNS(utils.svgNamespaceUri, 'path');
                     utils.setElemAttributes(pathElem, {
                         'd' : arc(),
-                        'fill' : hexColor
+                        'fill' : 'grey'
                     });
                     circleMapGroup.appendChild(pathElem);
+                } else {
+                    var allowedValues = this.eventAlbum.getEvent(dataName).metadata.allowedValues;
+                    var eventStats = this.eventStats[dataName];
 
-                    // clockwise from 12 o clock
-                    startDegrees = startDegrees + degreeIncrements;
-                });
+                    var startDegrees = 0;
+                    var colorMapper = this.colorMappers[ringName];
+                    this.sortedSamples.forEach(function(val, idx, arr) {
+                        var sampleName = val;
+                        var hexColor = "grey";
+
+                        if ( sampleName in ringData) {
+                            var score = ringData[sampleName];
+                            if (eventStats != null) {
+                                // assign color for numerical data
+                                hexColor = getHexColor(score, eventStats['min'], eventStats['max']);
+                            } else {
+                                // assign color categorical data
+                                hexColor = colorMapper(score);
+                            }
+                        }
+
+                        var arc = createD3Arc(innerRadius, innerRadius + ringThickness, startDegrees, startDegrees + degreeIncrements);
+                        var pathElem = document.createElementNS(utils.svgNamespaceUri, 'path');
+                        utils.setElemAttributes(pathElem, {
+                            'd' : arc(),
+                            'fill' : hexColor
+                        });
+                        circleMapGroup.appendChild(pathElem);
+
+                        // clockwise from 12 o clock
+                        startDegrees = startDegrees + degreeIncrements;
+                    });
+                }
+
+                innerRadius = innerRadius + ringThickness;
             }
 
-            innerRadius = innerRadius + ringThickness;
-        }
+            // add a label
+            // circleMapGroup.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(feature);
 
-        // add a label
-        // circleMapGroup.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(feature);
+            return circleMapGroup;
+        };
 
-        return circleMapGroup;
+        /**
+         *Get a data URI for the circleMap svg.
+         */
+        this.getCircleMapDataUri = function(feature) {
+            var svgGElem = this.generateCircleMapSvgGElem(feature);
+
+            var svgTagOpen = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">';
+            var stringifiedSvg = svgTagOpen + svgGElem.outerHTML + '</svg>';
+
+            var dataURI = 'data:image/svg+xml;utf8,' + encodeURIComponent(stringifiedSvg);
+
+            return dataURI;
+        };
+
+        /**
+         * This is the only outward-facing method in this object.
+         * draws a CircleMap via d3.js.
+         * handles multiple rings.
+         * @param {Object} feature
+         * @param {Object} d3SvgTagElement
+         */
+        this.drawCircleMap = function(feature, d3SvgTagElement) {
+
+            var svgGElem = this.generateCircleMapSvgGElem(feature);
+
+            var svgElem = document.createElementNS(utils.svgNamespaceUri, 'svg');
+            // svgElem.setAttributeNS('null', 'xmlns', 'http://www.w3.org/2000/svg');
+            utils.setElemAttributes(svgElem, {
+                // 'xmlns' : utils.svgNamespaceUri,
+                // 'viewBox' : (-1 * fullRadius) + ' ' + (-1 * fullRadius) + ' ' + (2 * fullRadius) + ' ' + (2 * fullRadius),
+                'id' : 'circleMapSvg' + feature,
+                'class' : 'circleMapSvg',
+                'name' : feature
+            });
+            svgElem.appendChild(svgGElem);
+
+            utils.extractFromD3(d3SvgTagElement).appendChild(svgElem);
+
+            return svgElem;
+        };
     };
 
-    /**
-     *Get a data URI for the circleMap svg.
-     */
-    this.getCircleMapDataUri = function(feature) {
-        var svgGElem = this.generateCircleMapSvgGElem(feature);
-
-        var svgTagOpen = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">';
-        var stringifiedSvg = svgTagOpen + svgGElem.outerHTML + '</svg>';
-
-        var dataURI = 'data:image/svg+xml;utf8,' + encodeURIComponent(stringifiedSvg);
-
-        return dataURI;
-    };
-
-    /**
-     * This is the only outward-facing method in this object.
-     * draws a CircleMap via d3.js.
-     * handles multiple rings.
-     * @param {Object} feature
-     * @param {Object} d3SvgTagElement
-     */
-    this.drawCircleMap = function(feature, d3SvgTagElement) {
-
-        var svgGElem = this.generateCircleMapSvgGElem(feature);
-
-        var svgElem = document.createElementNS(utils.svgNamespaceUri, 'svg');
-        // svgElem.setAttributeNS('null', 'xmlns', 'http://www.w3.org/2000/svg');
-        utils.setElemAttributes(svgElem, {
-            // 'xmlns' : utils.svgNamespaceUri,
-            // 'viewBox' : (-1 * fullRadius) + ' ' + (-1 * fullRadius) + ' ' + (2 * fullRadius) + ' ' + (2 * fullRadius),
-            'id' : 'circleMapSvg' + feature,
-            'class' : 'circleMapSvg',
-            'name' : feature
-        });
-        svgElem.appendChild(svgGElem);
-
-        utils.extractFromD3(d3SvgTagElement).appendChild(svgElem);
-
-        return svgElem;
-    };
-};
-
+})(circleMapGenerator);
