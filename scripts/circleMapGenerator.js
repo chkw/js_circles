@@ -20,7 +20,7 @@ var circleMapGenerator = {};
         "features" : ['ABTB2_mRNA', 'APOBEC3F_mRNA', 'APP_mRNA', 'AR_mRNA', 'DZIP1_mRNA', 'EPAS1_mRNA', 'ERG_mRNA', 'ESR2_mRNA', 'FGD1_mRNA', 'FKBP9_mRNA', 'IL6_mRNA', 'MYOM2_mRNA', 'NCOA1_mRNA', 'P2RY10_mRNA', 'PPP2R5C_mRNA', 'PTGER3_mRNA', 'SLC16A1_mRNA', 'ST5_mRNA', 'TBC1D16_mRNA', 'TBX21_mRNA', 'TGFB1_mRNA', 'TGFB2_mRNA', 'UGDH_mRNA', 'USP20_mRNA', 'VEGFA_mRNA', 'ZFPM2_mRNA'],
         "ringsList" : ["core_subtype", "expression data", 'viper data'],
         "orderFeature" : ['core_subtype', "AR_mRNA"],
-        "sortingRing" : "expression data",
+        "sortingRing" : "expression data"
         // "ringMergeSwitch" : false
     };
 
