@@ -20,7 +20,7 @@
 		<!-- <script src="scripts/cytoCircles_package.js"></script> -->
 	</head>
 	<body>
-		<div id='cytoDiv' style='height: 80%; width: 80%; position: absolute; left: 0; top: 50;'></div>
+		<div id='cytoDiv' style='height: 80%; width: 100%; position: absolute; left: 0; top: 50;'></div>
 		<script>
             // pathway
             graphDataURL = "data/vlado.sif";
@@ -46,7 +46,7 @@
                 // "sampleGroupSummarySwitch" : false,
                 // "ignoreMissingSamples" : false,
                 // "features" : ["PEG10_mRNA", "PFKFB4_mRNA", "PPARG_mRNA", "PRR5_mRNA", "REEP6_mRNA", "RUNX1T1_mRNA", "SELL_mRNA", "SERTAD1_mRNA", "SLC30A4_mRNA", "SPINK1_mRNA", "ST8SIA4_mRNA", "TEAD2_mRNA", "TMPRSS2_mRNA"],
-                "features" : ['ABTB2_mRNA', 'APOBEC3F_mRNA', 'APP_mRNA', 'AR_mRNA', 'DZIP1_mRNA', 'EPAS1_mRNA', 'ERG_mRNA', 'ESR2_mRNA', 'FGD1_mRNA', 'FKBP9_mRNA', 'IL6_mRNA', 'MYOM2_mRNA', 'NCOA1_mRNA', 'P2RY10_mRNA', 'PPP2R5C_mRNA', 'PTGER3_mRNA', 'SLC16A1_mRNA', 'ST5_mRNA', 'TBC1D16_mRNA', 'TBX21_mRNA', 'TGFB1_mRNA', 'TGFB2_mRNA', 'UGDH_mRNA', 'USP20_mRNA', 'VEGFA_mRNA', 'ZFPM2_mRNA'],
+                // "features" : ['ABTB2_mRNA', 'APOBEC3F_mRNA', 'APP_mRNA', 'AR_mRNA', 'DZIP1_mRNA', 'EPAS1_mRNA', 'ERG_mRNA', 'ESR2_mRNA', 'FGD1_mRNA', 'FKBP9_mRNA', 'IL6_mRNA', 'MYOM2_mRNA', 'NCOA1_mRNA', 'P2RY10_mRNA', 'PPP2R5C_mRNA', 'PTGER3_mRNA', 'SLC16A1_mRNA', 'ST5_mRNA', 'TBC1D16_mRNA', 'TBX21_mRNA', 'TGFB1_mRNA', 'TGFB2_mRNA', 'UGDH_mRNA', 'USP20_mRNA', 'VEGFA_mRNA', 'ZFPM2_mRNA'],
                 "ringsList" : ["core_subtype", "expression data", 'viper data'],
                 "orderFeature" : ['core_subtype', "AR_mRNA"],
                 "sortingRing" : "expression data",
@@ -57,7 +57,7 @@
 
             // generate and set circlemap background images
             cytoCircle.setNodeCircleMapBackgrounds(cyto, cmg);
-            console.log('generated circlemaps');
+            console.log('circlemaps generated');
 
             // setTimeout(function() {
             // cytoCircle.removeCircleMaps(cyto);
