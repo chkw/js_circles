@@ -33,6 +33,16 @@
             cyto = cytoCircle.buildCytoGraph(divElem, graph.toCytoscapeElements());
 
             // circle data
+            // expression.tab and viper.tab are sample-by-gene matrices.
+            // subtype.tab is a feature-by-sample matrix looking like:
+
+            // SAMPLE_ID       core_subtype
+            // STRING  categoric
+            // sample1 non_core
+            // sample2 non_core
+            // sample3 core_small_cell
+
+            // second line indicates allowed values: string, categoric, numeric, date
             eventAlbum = new eventData.OD_eventAlbum();
             medbookDataLoader.getExpressionData('data/expression.tab', eventAlbum);
             medbookDataLoader.getClinicalData('data/subtype.tab', eventAlbum);
