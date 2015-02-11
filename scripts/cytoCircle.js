@@ -31,24 +31,9 @@ var cytoCircle = {};
             var cyNode = cyNodes[i];
             var nodeID = cyNode.id();
 
-            setNodeCircleMapBackground(cytoscapeObj, nodeID, circleMapGenerator);
+            var dataURI = circleMapGenerator.getCircleMapDataUri(nodeID);
+            setNodeCssBackgroundSvgUri(cytoscapeObj, nodeID, dataURI);
         }
-    };
-
-    /**
-     * Generate an SVG data URI for a node and set it as the background of a cytoscape node.
-     *
-     * @param {Object} cytoscapeObj
-     * @param {Object} nodeID
-     * @param {Object} circleMapGenerator
-     */
-    var setNodeCircleMapBackground = function(cytoscapeObj, nodeID, circleMapGenerator) {
-        var svgGElem = circleMapGenerator.generateCircleMapSvgGElem(nodeID);
-
-        var svgTagOpen = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">';
-        var stringifiedSvg = svgTagOpen + svgGElem.outerHTML + '</svg>';
-
-        setNodeCssBackgroundSvgUri(cytoscapeObj, nodeID, stringifiedSvg);
     };
 
     /**
@@ -58,10 +43,8 @@ var cytoCircle = {};
      * @param {Object} nodeID
      * @param {Object} stringifiedSVG
      */
-    var setNodeCssBackgroundSvgUri = function(cytoscapeObj, nodeID, stringifiedSVG) {
+    var setNodeCssBackgroundSvgUri = function(cytoscapeObj, nodeID, dataURI) {
         var cyNodes = cytoscapeObj.elements('node#' + nodeID);
-        var dataURI = 'data:image/svg+xml;utf8,' + encodeURIComponent(stringifiedSVG);
-        // console.log('dataURI', dataURI);
         cyNodes.css({
             'background-image' : dataURI,
             'background-fit' : 'cover'

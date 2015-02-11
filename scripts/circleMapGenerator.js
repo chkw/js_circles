@@ -255,6 +255,20 @@ function circleMapGenerator(eventAlbum, queryData) {
     };
 
     /**
+     *Get a data URI for the circleMap svg.
+     */
+    this.getCircleMapDataUri = function(feature) {
+        var svgGElem = this.generateCircleMapSvgGElem(feature);
+
+        var svgTagOpen = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">';
+        var stringifiedSvg = svgTagOpen + svgGElem.outerHTML + '</svg>';
+
+        var dataURI = 'data:image/svg+xml;utf8,' + encodeURIComponent(stringifiedSvg);
+
+        return dataURI;
+    };
+
+    /**
      * This is the only outward-facing method in this object.
      * draws a CircleMap via d3.js.
      * handles multiple rings.
