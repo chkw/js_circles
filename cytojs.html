@@ -20,7 +20,11 @@
 		<!-- <script src="scripts/cytoCircles_package.js"></script> -->
 	</head>
 	<body>
-		<div id='cytoDiv' style='height: 80%; width: 100%; position: absolute; left: 0; top: 50;'></div>
+		<div id='formsDiv'>
+			<form id='cytoForm'></form>
+		</div>
+		<hr>
+		<div id='cytoDiv' style='height: 100%; width: 100%; position: absolute; left: 0; top: 80;'></div>
 		<script>
             // pathway
             graphDataURL = "data/vlado.sif";
@@ -77,13 +81,45 @@
                 }
             });
 
-            // generate and set circlemap background images
-            cytoCircle.setNodeCircleMapBackgrounds(cyto, cmg);
-            console.log('circlemaps generated');
-
             // setTimeout(function() {
             // cytoCircle.removeCircleMaps(cyto);
             // }, 3000);
+
+            cytoFormElem = document.getElementById('cytoForm');
+
+            // button to turn on circleMap
+            childElem = document.createElement('input');
+            cytoFormElem.appendChild(childElem);
+            utils.setElemAttributes(childElem, {
+                'id' : 'setCircleMapNodes',
+                'type' : 'button',
+                'value' : 'setCircleMapNodes',
+                'name' : 'setCircleMapNodesButton',
+                'class' : 'test',
+                'title' : 'set CircleMap nodes'
+            });
+            childElem.onclick = function() {
+                console.log('clicked setCircleMapNodesButton');
+                cytoCircle.setNodeCircleMapBackgrounds(cyto, cmg);
+                console.log('circlemaps generated');
+            };
+
+            // button to turn off circleMap
+            childElem = document.createElement('input');
+            cytoFormElem.appendChild(childElem);
+            utils.setElemAttributes(childElem, {
+                'id' : 'turnOffCircleMapNodes',
+                'type' : 'button',
+                'value' : 'turnOffCircleMapNodes',
+                'name' : 'turnOffCircleMapNodesButton',
+                'class' : 'test',
+                'title' : 'turn off CircleMap nodes'
+            });
+            childElem.onclick = function() {
+                console.log('clicked turnOffCircleMapNodes');
+                cytoCircle.removeCircleMaps(cyto);
+                console.log('removed circlemaps');
+            };
 
 		</script>
 	</body>
