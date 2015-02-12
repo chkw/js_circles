@@ -200,6 +200,8 @@ var circleMapGenerator = {};
                 'class' : 'circleMapG'
             });
 
+            var legendColorMapper;
+
             // iterate over rings
             for (var i = 0; i < ringsList.length; i++) {
 
@@ -216,7 +218,18 @@ var circleMapGenerator = {};
 
                 var ringData = this.getRingData(dataName);
 
-                if (ringData == null) {
+                if (feature.toLowerCase() === 'legend') {
+                    if ( typeof legendColorMapper === 'undefined') {
+                        legendColorMapper = d3.scale.category10();
+                    }
+                    var arc = createD3Arc(innerRadius, innerRadius + ringThickness, 0, 360);
+                    var pathElem = document.createElementNS(utils.svgNamespaceUri, 'path');
+                    utils.setElemAttributes(pathElem, {
+                        'd' : arc(),
+                        'fill' : legendColorMapper(dataName)
+                    });
+                    circleMapGroup.appendChild(pathElem);
+                } else if (ringData == null) {
                     // draw a grey ring for no data.
                     var arc = createD3Arc(innerRadius, innerRadius + ringThickness, 0, 360);
                     var pathElem = document.createElementNS(utils.svgNamespaceUri, 'path');

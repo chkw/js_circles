@@ -65,6 +65,18 @@
 
             cmg = new circleMapGenerator.circleMapGenerator(eventAlbum, queryData);
 
+            // legend node
+            legendNode = cyto.add({
+                group : "nodes",
+                data : {
+                    id : "legend"
+                },
+                position : {
+                    x : 100,
+                    y : 100
+                }
+            });
+
             // generate and set circlemap background images
             cytoCircle.setNodeCircleMapBackgrounds(cyto, cmg);
             console.log('circlemaps generated');
