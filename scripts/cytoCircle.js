@@ -61,6 +61,8 @@ var cytoCircle = {};
             'container' : containerElem,
             'elements' : cytoscapeElementsObj,
 
+            'boxSelectionEnabled' : true,
+
             // http://js.cytoscape.org/#layouts
             'layout' : {
 
@@ -160,15 +162,39 @@ var cytoCircle = {};
                 'min-zoomed-font-size' : 8,
                 'content' : 'data(id)'
             }).selector('edge').css({
-                'width' : 6,
-                'target-arrow-shape' : 'triangle',
-                'line-color' : '#ffaaaa',
-                'target-arrow-color' : '#ffaaaa',
-                'color' : 'black',
-                'text-outline-color' : 'white',
-                'text-outline-width' : 0,
-                'min-zoomed-font-size' : 8,
-                'content' : 'data(relation)'
+                'width' : 1,
+                'line-color' : '#000000',
+                'target-arrow-color' : '#000000'
+            }).selector('edge[relation = "-t>"]').css({
+                'line-style' : 'solid',
+                'target-arrow-shape' : 'triangle'
+            }).selector('edge[relation = "-t|"]').css({
+                'line-style' : 'solid',
+                'target-arrow-shape' : 'tee'
+            }).selector('edge[relation = "-a>"]').css({
+                'line-style' : 'dashed',
+                'target-arrow-shape' : 'triangle'
+            }).selector('edge[relation = "-a|"]').css({
+                'line-style' : 'dashed',
+                'target-arrow-shape' : 'tee'
+            }).selector('edge[relation = "-ap>"]').css({
+                'line-style' : 'dashed',
+                'target-arrow-shape' : 'triangle'
+            }).selector('edge[relation = "-ap|"]').css({
+                'line-style' : 'dashed',
+                'target-arrow-shape' : 'tee'
+            }).selector('edge[relation = "component>"]').css({
+                'line-style' : 'dashed',
+                'target-arrow-shape' : 'circle'
+            }).selector('edge[relation = "member>"]').css({
+                'line-style' : 'dashed',
+                'target-arrow-shape' : 'circle'
+            }).selector('edge[relation = "-disconnected-"]').css({
+                'line-style' : 'dotted'
+            }).selector(':selected').css({
+                'border-color' : '#E5E500',
+                'line-color' : '#E5E500',
+                'target-arrow-color' : '#E5E500'
             })
         });
         return cyto;
