@@ -152,9 +152,9 @@ var cytoCircle = {};
                 'background-repeat' : 'no-repeat', // for performance, non-repeating
                 'background-clip' : 'none', // for performance, non-clipping
                 'background-fit' : 'none', // none for original size, contain to fit inside node, or cover to cover the node
-                // 'border-color' : '#000',
-                // 'border-width' : 0,
-                // 'border-opacity' : 0.5,
+                'border-color' : '#000',
+                'border-width' : 2,
+                'border-opacity' : 0.5,
                 'color' : 'black',
                 'text-valign' : 'top',
                 'text-outline-color' : 'white',
@@ -197,6 +197,39 @@ var cytoCircle = {};
                 'target-arrow-color' : '#E5E500'
             })
         });
+
+        cyto.$("*").qtip({
+            content : function() {
+                var qtip_text = "<b>" + this.data("NAME") + "</b>";
+                if (this.filter("[TYPE]").length) {
+                    qtip_text += "<br />Type: <em>" + this.data("TYPE") + "</em>";
+                }
+                if (this.filter("[INTERACTION]").length) {
+                    qtip_text += "<br />Interaction: <em>" + this.data("INTERACTION") + "</em>";
+                }
+                if (this.filter("[relation]").length) {
+                    qtip_text += "<br />relation: <em>" + this.data("relation") + "</em>";
+                }
+                if (this.filter("[SIGNATURE]").length) {
+                    qtip_text += "<br />Signature: <em>" + this.data("SIGNATURE") + "</em>";
+                }
+                if (this.filter("[BOOTSTRAP]").length) {
+                    qtip_text += "<br />Bootstrap: <em>" + this.data("BOOTSTRAP") + "</em>";
+                }
+                if (this.filter("[IMAGE]").length) {
+                    qtip_text += "<br />Image: <em>" + this.data("IMAGE") + "</em>";
+                }
+                return qtip_text;
+            },
+            style : {
+                classes : "qtip-bootstrap",
+                tip : {
+                    width : 16,
+                    height : 8
+                }
+            }
+        });
+
         return cyto;
     };
 
