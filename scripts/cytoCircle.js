@@ -229,9 +229,26 @@ var cytoCircle = {};
             })
         });
 
+        return cyto;
+    };
+
+    /**
+     * Set the qtips.
+     */
+    cc.setQtips = function() {
         cyto.$("*").qtip({
             content : function() {
-                var qtip_text = "<b>" + this.data("NAME") + "</b>";
+                // 'this' is a cytoscape element obj.
+
+                var qtip_text = '';
+                if (this.isNode()) {
+                    qtip_text = "<b>" + this.data("id") + "</b>";
+                }
+
+                if (this.isEdge()) {
+                    qtip_text = "<b>" + this.data("source") + ' to ' + this.data('target') + "</b>";
+                }
+
                 if (this.filter("[TYPE]").length) {
                     qtip_text += "<br />Type: <em>" + this.data("TYPE") + "</em>";
                 }
@@ -260,8 +277,6 @@ var cytoCircle = {};
                 }
             }
         });
-
-        return cyto;
     };
 
 })(cytoCircle);
