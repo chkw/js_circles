@@ -14,7 +14,6 @@
 		<script src="bower_components/qtip2/jquery.qtip.min.js"></script>
 		<script src="bower_components/cytoscape-qtip/cytoscape-qtip.js"></script>
 
-
 		<script src="scripts/utils.js"></script>
 		<script src="scripts/OD_eventData.js"></script>
 		<script src="scripts/graphData.js"></script>
@@ -27,14 +26,7 @@
 	</head>
 	<body>
 		<div id='formsDiv'>
-			<form id='cytoForm' name='cytoForm'>
-				<input id='circleMapRadioOff' type="radio" name="turnOnCircleMapRadio" value="off" onClick='cytoCircle.removeCircleMaps(cyto);' checked/>
-				CircleMaps OFF
-				<br />
-				<input id='circleMapRadioOn' type="radio" name="turnOnCircleMapRadio" value="on" onClick='cytoCircle.setNodeCircleMapBackgrounds(cyto, cmg);'/>
-				CircleMaps ON
-				<hr>
-			</form>
+			<form id='cytoForm' name='cytoForm'></form>
 		</div>
 		<hr>
 		<div id='cytoDiv' style='height: 100%; width: 100%; position: absolute; left: 0; top: 80;'></div>
@@ -97,6 +89,33 @@
             // setTimeout(function() {
             // cytoCircle.removeCircleMaps(cyto);
             // }, 3000);
+
+            formElem = document.getElementById('cytoForm');
+            utils.removeChildElems(formElem);
+
+            childElem = document.createElement('input');
+            formElem.appendChild(childElem);
+            utils.setElemAttributes(childElem, {
+                'id' : 'circleMapCheckbox',
+                'type' : 'checkbox',
+                'value' : 'circleMapCheckbox',
+                'name' : 'circleMapCheckbox',
+                'class' : 'displayControl',
+                'title' : 'circleMapCheckbox'
+            });
+            childElem.onclick = function() {
+                console.log('circleMapCheckbox.onclick', 'checked:', this.checked);
+                var checked = this.checked;
+                if (checked) {
+                    cytoCircle.setNodeCircleMapBackgrounds(cyto, cmg);
+                } else {
+                    cytoCircle.removeCircleMaps(cyto);
+                }
+            };
+
+            childElem = document.createElement('label');
+            formElem.appendChild(childElem);
+            childElem.innerHTML = 'turn on CircleMaps';
 
 		</script>
 	</body>

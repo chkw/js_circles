@@ -162,7 +162,7 @@ var cytoCircle = {};
                 'min-zoomed-font-size' : 8,
                 'content' : 'data(id)'
             }).selector('edge').css({
-                'width' : 1,
+                'width' : 2,
                 'line-color' : '#000000',
                 'target-arrow-color' : '#000000'
             }).selector('edge[relation = "-t>"]').css({
