@@ -12,6 +12,9 @@
 var cytoCircle = {};
 (function(cc) {
 
+    /**
+     * Create a div element that contains controls for toggling circlemaps.
+     */
     cc.createCircleMapToggleControl = function() {
         var divElem1 = document.createElement('div');
         var childElem = document.createElement('input');
@@ -26,9 +29,9 @@ var cytoCircle = {};
         });
         childElem.onclick = function() {
             if (this.checked) {
-                cytoCircle.setNodeCircleMapBackgrounds(cyto, cmg);
+                cc.setNodeCircleMapBackgrounds(cyto, cmg);
             } else {
-                cytoCircle.removeCircleMaps(cyto);
+                cc.removeCircleMaps(cyto);
             }
         };
 
