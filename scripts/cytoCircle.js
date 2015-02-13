@@ -11,6 +11,34 @@
 
 var cytoCircle = {};
 (function(cc) {
+
+    cc.createCircleMapToggleControl = function() {
+        var divElem1 = document.createElement('div');
+        var childElem = document.createElement('input');
+        divElem1.appendChild(childElem);
+        utils.setElemAttributes(childElem, {
+            'id' : 'circleMapCheckbox',
+            'type' : 'checkbox',
+            'value' : 'circleMapCheckbox',
+            'name' : 'circleMapCheckbox',
+            'class' : 'displayControl',
+            'title' : 'check to turn on CircleMaps'
+        });
+        childElem.onclick = function() {
+            if (this.checked) {
+                cytoCircle.setNodeCircleMapBackgrounds(cyto, cmg);
+            } else {
+                cytoCircle.removeCircleMaps(cyto);
+            }
+        };
+
+        childElem = document.createElement('label');
+        divElem1.appendChild(childElem);
+        childElem.innerHTML = 'turn on CircleMaps';
+
+        return divElem1;
+    };
+
     /**
      * Remove the circlemap background images from nodes.
      */

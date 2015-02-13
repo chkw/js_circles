@@ -91,31 +91,7 @@
             // }, 3000);
 
             formElem = document.getElementById('cytoForm');
-            utils.removeChildElems(formElem);
-
-            childElem = document.createElement('input');
-            formElem.appendChild(childElem);
-            utils.setElemAttributes(childElem, {
-                'id' : 'circleMapCheckbox',
-                'type' : 'checkbox',
-                'value' : 'circleMapCheckbox',
-                'name' : 'circleMapCheckbox',
-                'class' : 'displayControl',
-                'title' : 'circleMapCheckbox'
-            });
-            childElem.onclick = function() {
-                console.log('circleMapCheckbox.onclick', 'checked:', this.checked);
-                var checked = this.checked;
-                if (checked) {
-                    cytoCircle.setNodeCircleMapBackgrounds(cyto, cmg);
-                } else {
-                    cytoCircle.removeCircleMaps(cyto);
-                }
-            };
-
-            childElem = document.createElement('label');
-            formElem.appendChild(childElem);
-            childElem.innerHTML = 'turn on CircleMaps';
+            formElem.appendChild(cytoCircle.createCircleMapToggleControl());
 
 		</script>
 	</body>
