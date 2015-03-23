@@ -185,7 +185,7 @@ var circleMapGenerator = {};
 
             var fullRadius = ( typeof radius === 'undefined') ? 100 : radius;
 
-            var expressionEventIds = this.eventAlbum.getEventIdsByType()['expression data'];
+            // var expressionEventIds = this.eventAlbum.getEventIdsByType()['expression data'];
             var numDatasets = ringsList.length;
 
             // +1 for the center
@@ -208,10 +208,10 @@ var circleMapGenerator = {};
                 var ringName = ringsList[i];
 
                 var dataName = null;
-                if (ringName === 'expression data') {
-                    dataName = feature + '_mRNA';
-                } else if (ringName === 'viper data') {
-                    dataName = feature + '_viper';
+
+                // find data name suffix at runtime
+                if ( ringName in this.eventAlbum.datatypeSuffixMapping) {
+                    dataName = feature + this.eventAlbum.datatypeSuffixMapping[ringName];
                 } else {
                     dataName = ringName;
                 }
