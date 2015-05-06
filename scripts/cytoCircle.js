@@ -63,37 +63,6 @@ var cytoCircle = {};
         cc.setQtips();
     };
 
-    var samsNodeCss = cytoscape.stylesheet().selector("node").css({
-        "height" : "mapData(SCORE, 1, 6, 15, 100)",
-        "width" : "mapData(SCORE, 1, 6, 15, 100)",
-        "border-color" : "#000000",
-        "border-width" : 2,
-        "border-opacity" : 0.5,
-        "content" : "data(LABEL)",
-        "font-size" : 8,
-        "color" : "white",
-        "text-valign" : "center",
-        "text-outline-width" : 1,
-        "text-outline-color" : "#000000"
-    }).selector("node[SIGNATURE]").selector("node[SIGNATURE <= 0]").css({
-        "background-color" : "mapData(SIGNATURE, -6, 0, blue, white)"
-    }).selector("node[SIGNATURE]").selector("node[SIGNATURE >= 0]").css({
-        "background-color" : "mapData(SIGNATURE, 0, 6, white, red)"
-    }).selector("node[TYPE = 'protein']")// if there is an image use ellipse
-    .css({
-        "shape" : "ellipse"
-    }).selector("node[TYPE = 'abstract']").css({
-        "shape" : "roundrectangle"
-    }).selector("node[TYPE = 'complex']").css({
-        "shape" : "hexagon"
-    }).selector("node[TYPE = 'family']").css({
-        "shape" : "triangle"
-    }).selector("node[IMAGE]").css({
-        "shape" : "ellipse",
-        "background-image" : "data(IMAGE)",
-        "background-fit" : "cover"
-    });
-
     /**
      * Create a div element that contains controls for toggling circlemaps.
      */
@@ -173,97 +142,104 @@ var cytoCircle = {};
      * @param {Object} cytoscapeElementsObj
      */
     cc.buildCytoGraph = function(containerElem, cytoscapeElementsObj) {
-        var cyto = cytoscape({
-            'container' : containerElem,
-            'elements' : cytoscapeElementsObj,
-
-            'boxSelectionEnabled' : false,
-
-            // http://js.cytoscape.org/#layouts
-            'layout' : {
-
-                // 'name' : 'breadthfirst',
-                // 'fit' : true, // whether to fit the viewport to the graph
-                // 'directed' : true, // whether the tree is directed downwards (or edges can point in any direction if false)
-                // 'padding' : 10, // padding on fit
-                // 'circle' : false, // put depths in concentric circles if true, put depths top down if false
-                // 'boundingBox' : undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
-                // 'avoidOverlap' : true, // prevents node overlap, may overflow boundingBox if not enough space
-                // 'roots' : undefined, // the roots of the trees
-                // 'maximalAdjustments' : 3, // how many times to try to position the nodes in a maximal way (i.e. no backtracking)
-                // 'animate' : false, // whether to transition the node positions
-                // 'animationDuration' : 500, // duration of animation in ms if enabled
-                // 'ready' : function() {
-                // console.log('layout ready');
-                // }, // callback on layoutready
-                // 'stop' : function() {
-                // console.log('layout stop');
-                // } // callback on layoutstop
-                // },
-
+        // http://js.cytoscape.org/#layouts
+        var layouts = {
+            "breadthfirst" : {
+                'name' : 'breadthfirst',
+                'fit' : true, // whether to fit the viewport to the graph
+                'directed' : true, // whether the tree is directed downwards (or edges can point in any direction if false)
+                'padding' : 10, // padding on fit
+                'circle' : false, // put depths in concentric circles if true, put depths top down if false
+                'boundingBox' : undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+                'avoidOverlap' : true, // prevents node overlap, may overflow boundingBox if not enough space
+                'roots' : undefined, // the roots of the trees
+                'maximalAdjustments' : 3, // how many times to try to position the nodes in a maximal way (i.e. no backtracking)
+                'animate' : false, // whether to transition the node positions
+                'animationDuration' : 500, // duration of animation in ms if enabled
+                'ready' : function() {
+                    console.log('layout ready');
+                }, // callback on layoutready
+                'stop' : function() {
+                    console.log('layout stop');
+                } // callback on layoutstop
+            },
+            "cose" : {
                 name : 'cose',
-
                 // Called on `layoutready`
                 ready : function() {
                 },
-
                 // Called on `layoutstop`
                 stop : function() {
                 },
-
                 // Whether to animate while running the layout
                 animate : false,
-
                 // Number of iterations between consecutive screen positions update (0 -> only updated on the end)
                 refresh : 4,
-
                 // Whether to fit the network view after when done
                 fit : true,
-
                 // Padding on fit
                 padding : 10,
-
                 // Constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
                 boundingBox : undefined,
-
                 // Whether to randomize node positions on the beginning
                 randomize : true,
-
                 // Whether to use the JS console to print debug messages
                 debug : false,
-
                 // Node repulsion (non overlapping) multiplier
                 nodeRepulsion : 400000,
-
                 // Node repulsion (overlapping) multiplier
                 nodeOverlap : 10,
-
                 // Ideal edge (non nested) length
                 idealEdgeLength : 10,
-
                 // Divisor to compute edge forces
                 edgeElasticity : 100,
-
                 // Nesting factor (multiplier) to compute ideal edge length for nested edges
                 nestingFactor : 5,
-
                 // Gravity force (constant)
                 gravity : 250,
-
                 // Maximum number of iterations to perform
                 numIter : 100,
-
                 // Initial temperature (maximum node displacement)
                 initialTemp : 200,
-
                 // Cooling factor (how the temperature is reduced between consecutive iterations
                 coolingFactor : 0.95,
-
                 // Lower temperature threshold (below this point the layout will end)
                 minTemp : 1.0
-            },
+            }
+        };
 
-            'style' : cytoscape.stylesheet().selector('node').css({
+        var styling = {
+            "samsNodes" : cytoscape.stylesheet().selector("node").css({
+                "height" : "mapData(SCORE, 1, 6, 15, 100)",
+                "width" : "mapData(SCORE, 1, 6, 15, 100)",
+                "border-color" : "#000000",
+                "border-width" : 2,
+                "border-opacity" : 0.5,
+                "content" : "data(LABEL)",
+                "font-size" : 8,
+                "color" : "white",
+                "text-valign" : "center",
+                "text-outline-width" : 1,
+                "text-outline-color" : "#000000"
+            }).selector("node[SIGNATURE]").selector("node[SIGNATURE <= 0]").css({
+                "background-color" : "mapData(SIGNATURE, -6, 0, blue, white)"
+            }).selector("node[SIGNATURE]").selector("node[SIGNATURE >= 0]").css({
+                "background-color" : "mapData(SIGNATURE, 0, 6, white, red)"
+            }).selector("node[TYPE = 'protein']")// if there is an image use ellipse
+            .css({
+                "shape" : "ellipse"
+            }).selector("node[TYPE = 'abstract']").css({
+                "shape" : "roundrectangle"
+            }).selector("node[TYPE = 'complex']").css({
+                "shape" : "hexagon"
+            }).selector("node[TYPE = 'family']").css({
+                "shape" : "triangle"
+            }).selector("node[IMAGE]").css({
+                "shape" : "ellipse",
+                "background-image" : "data(IMAGE)",
+                "background-fit" : "cover"
+            }),
+            "simpleNodes" : cytoscape.stylesheet().selector('node').css({
                 'height' : 80,
                 'width' : 80,
                 'background-repeat' : 'no-repeat', // for performance, non-repeating
@@ -278,7 +254,19 @@ var cytoCircle = {};
                 'text-outline-width' : 0,
                 'min-zoomed-font-size' : 8,
                 'content' : 'data(id)'
-            }).selector('edge').css({
+            })
+        };
+
+        var cyto = cytoscape({
+            'container' : containerElem,
+            'elements' : cytoscapeElementsObj,
+
+            'boxSelectionEnabled' : false,
+
+            // http://js.cytoscape.org/#layouts
+            'layout' : layouts.breadthfirst,
+
+            'style' : styling["simpleNodes"].selector('edge').css({
                 'width' : 2,
                 'line-color' : '#000000',
                 'target-arrow-color' : '#000000'
