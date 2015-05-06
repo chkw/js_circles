@@ -12,14 +12,42 @@
 var cytoCircle = {};
 (function(cc) {
 
-    cc.buildCytoCircleGraph = function(containerDiv, graphConfig, circleDataConfig) {
+    /**
+     * cytoscape object
+     */
+    cc.cytoObj = null;
+
+    cc.buildCytoCircleGraph = function(containerDivElem, graphConfig, circleDataConfig) {
+        // set up divs
+        var cytoGraphFormDiv = document.createElement("div");
+        containerDivElem.appendChild(cytoGraphFormDiv);
+        utils.setElemAttributes(cytoGraphFormDiv, {
+            "id" : "cytoGraphFormDiv"
+        });
+
+        var cytoGraphForm = document.createElement("form");
+        cytoGraphFormDiv.appendChild(cytoGraphForm);
+        utils.setElemAttributes(cytoGraphForm, {
+            "id" : "cytoGraphForm",
+            "name" : "cytoGraphForm"
+        });
+
+        containerDivElem.appendChild(document.createElement("hr"));
+
+        var cytoGraphDiv = document.createElement("div");
+        containerDivElem.appendChild(cytoGraphDiv);
+        utils.setElemAttributes(cytoGraphDiv, {
+            "id" : "cytoGraphDiv",
+            "style" : "height: 100%; width: 100%; position: absolute; left: 0; top: 80;"
+        });
+
         // pathway
         // graphDataURL = "data/forYulia/pathway.sif";
         graph = new graphData.graphData();
         graph.readSif(utils.getResponse(graphConfig['url']));
 
         // draw pathway graph
-        cyto = cc.buildCytoGraph(divElem, graph.toCytoscapeElements());
+        cc.cytoObj = cc.buildCytoGraph(cytoGraphDiv, graph.toCytoscapeElements());
 
         // event data
         eventAlbum = new eventData.OD_eventAlbum();
@@ -28,10 +56,9 @@ var cytoCircle = {};
         medbookDataLoader.getGeneBySampleData("data/forYulia/yuliaScore.tab", eventAlbum, '_yuliaScore', 'yuliaScore', 'numeric');
 
         // circleMap generator
-        cmg = new circleMapGenerator.circleMapGenerator(eventAlbum, circleDataConfig);
+        var cmg = new circleMapGenerator.circleMapGenerator(eventAlbum, circleDataConfig);
 
-        formElem = document.getElementById('cytoForm');
-        formElem.appendChild(cc.createCircleMapToggleControl());
+        cytoGraphForm.appendChild(cc.createCircleMapToggleControl(cmg));
 
         cc.setQtips();
     };
@@ -70,7 +97,7 @@ var cytoCircle = {};
     /**
      * Create a div element that contains controls for toggling circlemaps.
      */
-    cc.createCircleMapToggleControl = function() {
+    cc.createCircleMapToggleControl = function(circleMapGenerator) {
         var divElem1 = document.createElement('div');
         var childElem = document.createElement('input');
         divElem1.appendChild(childElem);
@@ -84,14 +111,17 @@ var cytoCircle = {};
         });
         childElem.onclick = function() {
             if (this.checked) {
-                cc.setNodeCircleMapBackgrounds(cyto, cmg);
+                cc.setNodeCircleMapBackgrounds(cc.cytoObj, circleMapGenerator);
             } else {
-                cc.removeCircleMaps(cyto);
+                cc.removeCircleMaps(cc.cytoObj);
             }
         };
 
         childElem = document.createElement('label');
         divElem1.appendChild(childElem);
+        utils.setElemAttributes(childElem, {
+            'title' : 'check to turn on CircleMaps'
+        });
         childElem.innerHTML = 'turn on CircleMaps';
 
         return divElem1;
@@ -292,7 +322,7 @@ var cytoCircle = {};
      * Set the qtips.
      */
     cc.setQtips = function() {
-        cyto.$("*").qtip({
+        cc.cytoObj.$("*").qtip({
             content : function() {
                 // 'this' is a cytoscape element obj.
 
