@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- <link href="style.css" rel="stylesheet" /> -->
+		<meta charset=utf-8 />
+		<title>cytojs02.html</title>
+
+		<link rel="stylesheet" href="bower_components/qtip2/jquery.qtip.min.css">
+
+		<script src="bower_components/cytoscape/dist/cytoscape.min.js"></script>
+		<script src="bower_components/d3/d3.min.js"></script>
+		<script src="bower_components/jstat/dist/jstat.min.js"></script>
+		<script src="bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="bower_components/qtip2/jquery.qtip.min.js"></script>
+		<script src="bower_components/cytoscape-qtip/cytoscape-qtip.js"></script>
+
+		<script src="scripts/utils.js"></script>
+		<script src="scripts/OD_eventData.js"></script>
+		<script src="scripts/graphData.js"></script>
+		<script src="scripts/medbook_data_load.js"></script>
+		<script src="scripts/circleMapGenerator.js"></script>
+
+		<script src="scripts/cytoCircle.js"></script>
+
+		<!-- <script src="scripts/cytoCircles_package.js"></script> -->
+	</head>
+	<body>
+		<div id='formsDiv'>
+			<form id='cytoForm' name='cytoForm'></form>
+		</div>
+		<hr>
+		<div id='cytoDiv' style='height: 100%; width: 100%; position: absolute; left: 0; top: 80;'></div>
+		<script>
+            divElem = document.getElementById('cytoDiv');
+
+            cytoCircle.buildCytoCircleGraph(divElem, {
+                "url" : "data/forYulia/pathway.sif"
+            }, {
+                // "sampleGroupSummarySwitch" : false,
+                // "ignoreMissingSamples" : false,
+                // "features" : ["PEG10_mRNA", "PFKFB4_mRNA", "PPARG_mRNA", "PRR5_mRNA", "REEP6_mRNA", "RUNX1T1_mRNA", "SELL_mRNA", "SERTAD1_mRNA", "SLC30A4_mRNA", "SPINK1_mRNA", "ST8SIA4_mRNA", "TEAD2_mRNA", "TMPRSS2_mRNA"],
+                // "features" : ['ABTB2_mRNA', 'APOBEC3F_mRNA', 'APP_mRNA', 'AR_mRNA', 'DZIP1_mRNA', 'EPAS1_mRNA', 'ERG_mRNA', 'ESR2_mRNA', 'FGD1_mRNA', 'FKBP9_mRNA', 'IL6_mRNA', 'MYOM2_mRNA', 'NCOA1_mRNA', 'P2RY10_mRNA', 'PPP2R5C_mRNA', 'PTGER3_mRNA', 'SLC16A1_mRNA', 'ST5_mRNA', 'TBC1D16_mRNA', 'TBX21_mRNA', 'TGFB1_mRNA', 'TGFB2_mRNA', 'UGDH_mRNA', 'USP20_mRNA', 'VEGFA_mRNA', 'ZFPM2_mRNA'],
+                "ringsList" : ["bryanScore", "mergedScore", 'yuliaScore'],
+                "orderFeature" : ["mergedScore"],
+                "sortingRing" : "mergedScore",
+                // "ringMergeSwitch" : false
+            });
+
+            // legend node
+            // legendNode = cyto.add({
+            // group : "nodes",
+            // data : {
+            // id : "legend"
+            // },
+            // position : {
+            // x : 100,
+            // y : 100
+            // }
+            // });
+
+            // setTimeout(function() {
+            // cytoCircle.removeCircleMaps(cyto);
+            // }, 3000);
+		</script>
+	</body>
+</html>

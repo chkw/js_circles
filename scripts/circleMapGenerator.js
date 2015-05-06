@@ -160,6 +160,10 @@ var circleMapGenerator = {};
             var newG = utils.linearInterpolation(normalizedScore, minG, maxG);
             var newB = utils.linearInterpolation(normalizedScore, minB, maxB);
 
+            newR = utils.rangeLimit(newR, 0, 255);
+            newG = utils.rangeLimit(newG, 0, 255);
+            newB = utils.rangeLimit(newB, 0, 255);
+
             var hexColor = utils.rgbToHex(Math.floor(newR), Math.floor(newG), Math.floor(newB));
 
             return hexColor;
@@ -252,7 +256,8 @@ var circleMapGenerator = {};
                             var score = ringData[sampleName];
                             if (eventStats != null) {
                                 // assign color for numerical data
-                                hexColor = getHexColor(score, eventStats['min'], eventStats['max']);
+                                // hexColor = getHexColor(score, eventStats['min'], eventStats['max']);
+                                hexColor = getHexColor(score, -1.0, 1.0);
                             } else {
                                 // assign color categorical data
                                 hexColor = colorMapper(score);

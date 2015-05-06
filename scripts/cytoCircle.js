@@ -12,6 +12,61 @@
 var cytoCircle = {};
 (function(cc) {
 
+    cc.buildCytoCircleGraph = function(containerDiv, graphConfig, circleDataConfig) {
+        // pathway
+        // graphDataURL = "data/forYulia/pathway.sif";
+        graph = new graphData.graphData();
+        graph.readSif(utils.getResponse(graphConfig['url']));
+
+        // draw pathway graph
+        cyto = cc.buildCytoGraph(divElem, graph.toCytoscapeElements());
+
+        // event data
+        eventAlbum = new eventData.OD_eventAlbum();
+        medbookDataLoader.getGeneBySampleData("data/forYulia/bryanScore.tab", eventAlbum, '_bryanScore', 'bryanScore', 'numeric');
+        medbookDataLoader.getGeneBySampleData("data/forYulia/mergedScore.tab", eventAlbum, '_mergedScore', 'mergedScore', 'numeric');
+        medbookDataLoader.getGeneBySampleData("data/forYulia/yuliaScore.tab", eventAlbum, '_yuliaScore', 'yuliaScore', 'numeric');
+
+        // circleMap generator
+        cmg = new circleMapGenerator.circleMapGenerator(eventAlbum, circleDataConfig);
+
+        formElem = document.getElementById('cytoForm');
+        formElem.appendChild(cc.createCircleMapToggleControl());
+
+        cc.setQtips();
+    };
+
+    var samsNodeCss = cytoscape.stylesheet().selector("node").css({
+        "height" : "mapData(SCORE, 1, 6, 15, 100)",
+        "width" : "mapData(SCORE, 1, 6, 15, 100)",
+        "border-color" : "#000000",
+        "border-width" : 2,
+        "border-opacity" : 0.5,
+        "content" : "data(LABEL)",
+        "font-size" : 8,
+        "color" : "white",
+        "text-valign" : "center",
+        "text-outline-width" : 1,
+        "text-outline-color" : "#000000"
+    }).selector("node[SIGNATURE]").selector("node[SIGNATURE <= 0]").css({
+        "background-color" : "mapData(SIGNATURE, -6, 0, blue, white)"
+    }).selector("node[SIGNATURE]").selector("node[SIGNATURE >= 0]").css({
+        "background-color" : "mapData(SIGNATURE, 0, 6, white, red)"
+    }).selector("node[TYPE = 'protein']")// if there is an image use ellipse
+    .css({
+        "shape" : "ellipse"
+    }).selector("node[TYPE = 'abstract']").css({
+        "shape" : "roundrectangle"
+    }).selector("node[TYPE = 'complex']").css({
+        "shape" : "hexagon"
+    }).selector("node[TYPE = 'family']").css({
+        "shape" : "triangle"
+    }).selector("node[IMAGE]").css({
+        "shape" : "ellipse",
+        "background-image" : "data(IMAGE)",
+        "background-fit" : "cover"
+    });
+
     /**
      * Create a div element that contains controls for toggling circlemaps.
      */
@@ -92,7 +147,7 @@ var cytoCircle = {};
             'container' : containerElem,
             'elements' : cytoscapeElementsObj,
 
-            'boxSelectionEnabled' : true,
+            'boxSelectionEnabled' : false,
 
             // http://js.cytoscape.org/#layouts
             'layout' : {
@@ -114,6 +169,7 @@ var cytoCircle = {};
                 // 'stop' : function() {
                 // console.log('layout stop');
                 // } // callback on layoutstop
+                // },
 
                 name : 'cose',
 
