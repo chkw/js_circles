@@ -1,10 +1,8 @@
 // http://bl.ocks.org/mbostock/929623 shows a nice way to build a graph with intuitive controls.
 // bl.ocks.org/rkirsling/5001347
 // blueprints and rexster https://github.com/tinkerpop/blueprints/wiki
-// context menu: http://joewalnes.com/2011/07/22/a-simple-good-looking-context-menu-for-jquery/
-// context menu: https://github.com/arnklint/jquery-contextMenu
+// context menu: https://medialize.github.io/jQuery-contextMenu/
 
-// uses https://github.com/joewalnes/jquery-simple-context-menu
 var htmlUri = 'http://www.w3.org/1999/xhtml';
 var svgNamespaceUri = 'http://www.w3.org/2000/svg';
 var xlinkUri = 'http://www.w3.org/1999/xlink';
@@ -73,8 +71,8 @@ createDialogBoxDivs();
 
 // TODO svg element that contains the graph
 
-var windowWidth = window.innerWidth;
-var windowHeight = window.innerHeight;
+var windowWidth = 0.6 * window.innerWidth;
+var windowHeight = 0.6 * window.innerHeight;
 
 var svg = d3.select("body").append("svg").attr({
     // 'viewBox' : 0 + ' ' + 0 + ' ' + windowWidth + ' ' + windowHeight,
@@ -113,36 +111,57 @@ function showPathwayDialog() {
     });
 }
 
-// uses https://github.com/joewalnes/jquery-simple-context-menu
-$(document.getElementById('circleMaps')).contextPopup({
-    title : '',
-    items : [{
-        // addNodeDialog
-        label : 'new node',
-        // icon : 'icons/shopping-basket.png',
-        action : function() {
-            console.log('clicked new node');
-            showAddNodeDialogBox(graph);
-        }
-    }, {
-        // addEdge
-        label : 'new edge',
-        // icon : 'icons/shopping-basket.png',
-        action : function() {
-            console.log('clicked new edge');
-            showAddEdgeDialogBox(graph);
-        }
-    }, null, // divider
-    {
-        label : 'export to UCSC pathway format',
-        // icon : 'icons/application-monitor.png',
-        action : function() {
-            console.log('clicked export to UCSC pathway format');
-            showPathwayDialog();
-            // var pidString = graph.toPid();
-            // alert(pidString);
-        }
-    }]
+$.contextMenu({
+    // selector : ".axis",
+    selector : "#circleMaps",
+    trigger : 'left',
+    callback : function(key, options) {
+        // default callback
+        var elem = this[0];
+        console.log('elem', elem);
+    },
+    build : function($trigger, contextmenuEvent) {
+        var items = {
+            'title' : {
+                name : function() {
+                    return "circleMaps contextMenu";
+                },
+                icon : null,
+                disabled : false
+                // ,
+                // callback : function(key, opt) {
+                // }
+            },
+            "sep1" : "---------",
+            "add_node" : {
+                name : "add a node",
+                icon : null,
+                disabled : false,
+                callback : function(key, opt) {
+                    showAddNodeDialogBox(graph);
+                }
+            },
+            "add_edge" : {
+                name : "add an edge",
+                icon : null,
+                disabled : false,
+                callback : function(key, opt) {
+                    showAddEdgeDialogBox(graph);
+                }
+            },
+            "export" : {
+                name : "export to UCSC pathway format",
+                icon : null,
+                disabled : false,
+                callback : function(key, opt) {
+                    showPathwayDialog();
+                }
+            },
+        };
+        return {
+            'items' : items
+        };
+    }
 });
 
 svg.append('g').attr({
@@ -271,7 +290,8 @@ utils.setElemAttributes(childElem, {
     'id' : 'addEdgeForm'
 });
 
-var addEdgeFormElem = childElem; {
+var addEdgeFormElem = childElem;
+{
     // setup node selection mode controls
     childElem = document.createElement('p');
     addEdgeFormElem.appendChild(childElem);

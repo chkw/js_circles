@@ -6,7 +6,7 @@
  */
 
 var graphData = {};
-(function(gd) {
+(function(gd) {"use strict";
 
     /**
      * Data to specify a node.

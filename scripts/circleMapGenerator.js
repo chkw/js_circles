@@ -11,7 +11,7 @@
  */
 
 var circleMapGenerator = {};
-(function(cmg) {
+(function(cmg) {"use strict";
 
     cmg.exampleQueryData = {
         // "sampleGroupSummarySwitch" : false,
@@ -256,8 +256,8 @@ var circleMapGenerator = {};
                             var score = ringData[sampleName];
                             if (eventStats != null) {
                                 // assign color for numerical data
-                                // hexColor = getHexColor(score, eventStats['min'], eventStats['max']);
-                                hexColor = getHexColor(score, -1.0, 1.0);
+                                hexColor = getHexColor(score, eventStats['min'], eventStats['max']);
+                                // hexColor = getHexColor(score, -1.0, 1.0);
                             } else {
                                 // assign color categorical data
                                 hexColor = colorMapper(score);

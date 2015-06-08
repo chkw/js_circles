@@ -10,7 +10,7 @@
  */
 
 var cytoCircle = {};
-(function(cc) {
+(function(cc) {"use strict";
 
     /**
      * cytoscape object
@@ -43,20 +43,21 @@ var cytoCircle = {};
 
         // pathway
         // graphDataURL = "data/forYulia/pathway.sif";
-        graph = new graphData.graphData();
+        var graph = new graphData.graphData();
         graph.readSif(utils.getResponse(graphConfig['url']));
 
         // draw pathway graph
         cc.cytoObj = cc.buildCytoGraph(cytoGraphDiv, graph.toCytoscapeElements());
 
         // event data
-        eventAlbum = new eventData.OD_eventAlbum();
-        medbookDataLoader.getGeneBySampleData("data/forYulia/bryanScore.tab", eventAlbum, '_bryanScore', 'bryanScore', 'numeric');
-        medbookDataLoader.getGeneBySampleData("data/forYulia/mergedScore.tab", eventAlbum, '_mergedScore', 'mergedScore', 'numeric');
-        medbookDataLoader.getGeneBySampleData("data/forYulia/yuliaScore.tab", eventAlbum, '_yuliaScore', 'yuliaScore', 'numeric');
+        var eventAlbum = new eventData.OD_eventAlbum();
+        medbookDataLoader.getGeneBySampleData("data/igf1r/igf1r_genes_wcdt_expression.tab", eventAlbum, '_wcdt_expression', 'wcdt_expression', 'numeric');
+        medbookDataLoader.getGeneBySampleData("data/igf1r/igf1r_genes_tcga_expression.tab", eventAlbum, '_tcga_expression', 'tcga_expression', 'numeric');
+
+        cc.album = eventAlbum;
 
         // circleMap generator
-        var cmg = new circleMapGenerator.circleMapGenerator(eventAlbum, circleDataConfig);
+        var cmg = new circleMapGenerator.circleMapGenerator(cc.album, circleDataConfig);
 
         cytoGraphForm.appendChild(cc.createCircleMapToggleControl(cmg));
 
