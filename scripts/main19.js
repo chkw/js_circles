@@ -34,10 +34,30 @@ var circleMapGraph = circleMapGraph || {};
         'nodeRadius' : 20
     };
 
-    var clickedNodesArray = new Array();
+    cmGraph.clickedNodesArray = new Array();
 
-    var createDialogBoxDivs = function() {
-        // TODO dialogBox is a div
+    cmGraph.containerDivElem = null;
+    cmGraph.graphDataObj = null;
+    cmGraph.circleMapGeneratorObj = null;
+
+    /**
+     * One method call to build the graph
+     */
+    cmGraph.buildCircleMapGraph = function(containerDivElem, graphDataObj, circleMapGeneratorObj) {
+        cmGraph.containerDivElem = containerDivElem;
+        cmGraph.graphDataObj = graphDataObj;
+        cmGraph.circleMapGeneratorObj = circleMapGeneratorObj;
+    };
+
+    cmGraph.svgElem = null;
+    cmGraph.colorMapper = null;
+    cmGraph.force = null;
+
+    /**
+     * Initialization steps
+     */
+    cmGraph.setup = function() {
+        // dialog boxes
         var bodyElem = document.getElementsByTagName('body')[0];
         var divElem = null;
 
@@ -68,27 +88,86 @@ var circleMapGraph = circleMapGraph || {};
         divElem.setAttributeNS(null, 'id', 'addEdgeDialog');
         divElem.style['display'] = 'none';
         bodyElem.appendChild(divElem);
+
+        // context menu
+        $.contextMenu({
+            // selector : ".axis",
+            selector : "#circleMaps",
+            trigger : 'left',
+            callback : function(key, options) {
+                // default callback
+                var elem = this[0];
+                console.log('elem', elem);
+            },
+            build : function($trigger, contextmenuEvent) {
+                var items = {
+                    'title' : {
+                        name : function() {
+                            return "circleMaps contextMenu";
+                        },
+                        icon : null,
+                        disabled : false
+                        // ,
+                        // callback : function(key, opt) {
+                        // }
+                    },
+                    "sep1" : "---------",
+                    "add_node" : {
+                        name : "add a node",
+                        icon : null,
+                        disabled : false,
+                        callback : function(key, opt) {
+                            showAddNodeDialogBox(graph);
+                        }
+                    },
+                    "add_edge" : {
+                        name : "add an edge",
+                        icon : null,
+                        disabled : false,
+                        callback : function(key, opt) {
+                            showAddEdgeDialogBox(graph);
+                        }
+                    },
+                    "export" : {
+                        name : "export to UCSC pathway format",
+                        icon : null,
+                        disabled : false,
+                        callback : function(key, opt) {
+                            gmGraph.showPathwayDialog();
+                        }
+                    },
+                };
+                return {
+                    'items' : items
+                };
+            }
+        });
+
+        // outer SVG element
+        var windowWidth = 0.6 * window.innerWidth;
+        var windowHeight = 0.6 * window.innerHeight;
+
+        cmGraph.svgElem = d3.select(cmGraph.containerDivElem).append("svg").attr({
+            'width' : windowWidth,
+            'height' : windowHeight,
+            'id' : 'circleMaps'
+        });
+        cmGraph.svgElem.append('g').attr({
+            id : 'linkLayer'
+        });
+        cmGraph.svgElem.append('g').attr({
+            id : 'nodeLayer'
+        });
+
+        // for d3 color mapping.
+        cmGraph.colorMapper = d3.scale.category20();
+
+        // for d3 layout and rendering
+        cmGraph.force = d3.layout.force().size([windowWidth, windowHeight]).linkDistance(d3_config['linkDistance']).linkStrength(d3_config['linkStrength']).friction(d3_config['friction']).gravity(d3_config['gravity']);
+
     };
 
-    createDialogBoxDivs();
-
-    // TODO svg element that contains the graph
-
-    var windowWidth = 0.6 * window.innerWidth;
-    var windowHeight = 0.6 * window.innerHeight;
-
-    var svg = d3.select("body").append("svg").attr({
-        // 'viewBox' : 0 + ' ' + 0 + ' ' + windowWidth + ' ' + windowHeight,
-        'width' : windowWidth,
-        'height' : windowHeight,
-        'id' : 'circleMaps'
-    });
-
-    var svgWidth = svg.attr('width'), svgHeight = svg.attr('height');
-
-    // TODO context menu on svg area
-
-    function showPathwayDialog() {
+    gmGraph.showPathwayDialog = function() {
         var dialogElem = document.getElementById('pathwayDialog');
         dialogElem.style['font-size'] = '10px';
 
@@ -112,74 +191,7 @@ var circleMapGraph = circleMapGraph || {};
                 }
             }
         });
-    }
-
-
-    $.contextMenu({
-        // selector : ".axis",
-        selector : "#circleMaps",
-        trigger : 'left',
-        callback : function(key, options) {
-            // default callback
-            var elem = this[0];
-            console.log('elem', elem);
-        },
-        build : function($trigger, contextmenuEvent) {
-            var items = {
-                'title' : {
-                    name : function() {
-                        return "circleMaps contextMenu";
-                    },
-                    icon : null,
-                    disabled : false
-                    // ,
-                    // callback : function(key, opt) {
-                    // }
-                },
-                "sep1" : "---------",
-                "add_node" : {
-                    name : "add a node",
-                    icon : null,
-                    disabled : false,
-                    callback : function(key, opt) {
-                        showAddNodeDialogBox(graph);
-                    }
-                },
-                "add_edge" : {
-                    name : "add an edge",
-                    icon : null,
-                    disabled : false,
-                    callback : function(key, opt) {
-                        showAddEdgeDialogBox(graph);
-                    }
-                },
-                "export" : {
-                    name : "export to UCSC pathway format",
-                    icon : null,
-                    disabled : false,
-                    callback : function(key, opt) {
-                        showPathwayDialog();
-                    }
-                },
-            };
-            return {
-                'items' : items
-            };
-        }
-    });
-
-    svg.append('g').attr({
-        id : 'linkLayer'
-    });
-    svg.append('g').attr({
-        id : 'nodeLayer'
-    });
-
-    // for d3 color mapping.
-    var colorMapper = d3.scale.category20();
-
-    // for d3 layout and rendering
-    var force = d3.layout.force().size([svgWidth, svgHeight]).linkDistance(d3_config['linkDistance']).linkStrength(d3_config['linkStrength']).friction(d3_config['friction']).gravity(d3_config['gravity']);
+    };
 
     //TODO setup controls
 
@@ -294,8 +306,7 @@ var circleMapGraph = circleMapGraph || {};
         'id' : 'addEdgeForm'
     });
 
-    var addEdgeFormElem = childElem;
-    {
+    var addEdgeFormElem = childElem; {
         // setup node selection mode controls
         childElem = document.createElement('p');
         addEdgeFormElem.appendChild(childElem);
