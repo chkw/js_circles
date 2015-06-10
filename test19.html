@@ -20,6 +20,9 @@
 		<script src="scripts/graphData.js"></script>
 		<script src="scripts/medbook_data_load.js"></script>
 		<script src="scripts/circleMapGenerator.js"></script>
+
+		<script src="scripts/main19.js"></script>
+
 		<noscript>
 			<div align="center">
 				<p style="color:black;background-color:red;font-size:18pt">
@@ -71,7 +74,8 @@
             circleDataLoaded = (utils.getQueryStringParameterByName('circles').toLowerCase() === 'true') ? true : false;
             // circleDataLoaded = false;
 
+            circleMapGraph.buildCircleMapGraph(document.getElementById('graphDiv'), graph, cmg, circleDataLoaded);
+
 		</script>
-		<script src="scripts/main19.js"></script>
 	</body>
 </html>

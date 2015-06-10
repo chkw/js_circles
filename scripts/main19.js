@@ -22,8 +22,6 @@ var circleMapGraph = circleMapGraph || {};
         'edgeTypeSymbols' : ['stop adding edges', '-a>', '-a|', '-t>', '-t|', 'component>', 'member>']
     };
 
-    var throbberUrl = 'images/loading_16.gif';
-
     var d3_config = {
         // vars for d3.layout.force
         'linkDistance' : 120,
@@ -39,14 +37,18 @@ var circleMapGraph = circleMapGraph || {};
     cmGraph.containerDivElem = null;
     cmGraph.graphDataObj = null;
     cmGraph.circleMapGeneratorObj = null;
+    cmGraph.circleMapMode = false;
 
     /**
      * One method call to build the graph
      */
-    cmGraph.buildCircleMapGraph = function(containerDivElem, graphDataObj, circleMapGeneratorObj) {
+    cmGraph.buildCircleMapGraph = function(containerDivElem, graphDataObj, circleMapGeneratorObj, circleMapMode) {
         cmGraph.containerDivElem = containerDivElem;
         cmGraph.graphDataObj = graphDataObj;
         cmGraph.circleMapGeneratorObj = circleMapGeneratorObj;
+        cmGraph.circleMapMode = circleMapMode;
+
+        cmGraph.setup();
     };
 
     cmGraph.svgElem = null;
@@ -117,7 +119,7 @@ var circleMapGraph = circleMapGraph || {};
                         icon : null,
                         disabled : false,
                         callback : function(key, opt) {
-                            showAddNodeDialogBox(graph);
+                            cmGraph.showAddNodeDialogBox();
                         }
                     },
                     "add_edge" : {
@@ -125,7 +127,7 @@ var circleMapGraph = circleMapGraph || {};
                         icon : null,
                         disabled : false,
                         callback : function(key, opt) {
-                            showAddEdgeDialogBox(graph);
+                            cmGraph.showAddEdgeDialogBox();
                         }
                     },
                     "export" : {
@@ -133,7 +135,7 @@ var circleMapGraph = circleMapGraph || {};
                         icon : null,
                         disabled : false,
                         callback : function(key, opt) {
-                            gmGraph.showPathwayDialog();
+                            cmGraph.showPathwayDialog();
                         }
                     },
                 };
@@ -165,9 +167,11 @@ var circleMapGraph = circleMapGraph || {};
         // for d3 layout and rendering
         cmGraph.force = d3.layout.force().size([windowWidth, windowHeight]).linkDistance(d3_config['linkDistance']).linkStrength(d3_config['linkStrength']).friction(d3_config['friction']).gravity(d3_config['gravity']);
 
+        // setup more controls
+        cmGraph.setupMoreControls(cmGraph.containerDivElem);
     };
 
-    gmGraph.showPathwayDialog = function() {
+    cmGraph.showPathwayDialog = function() {
         var dialogElem = document.getElementById('pathwayDialog');
         dialogElem.style['font-size'] = '10px';
 
@@ -193,224 +197,245 @@ var circleMapGraph = circleMapGraph || {};
         });
     };
 
-    //TODO setup controls
+    //TODO setup some more controls
+    cmGraph.setupMoreControls = function(formContainerDivElem) {
 
-    var formElem = document.createElement('form');
-    utils.setElemAttributes(formElem, {
-        'id' : 'mainForm'
-    });
-    formElem.style['display'] = 'none';
-    document.getElementsByTagName('body')[0].appendChild(formElem);
-    var form = d3.select(formElem);
+        var formElem = document.createElement('form');
+        utils.setElemAttributes(formElem, {
+            'id' : 'mainForm'
+        });
+        formElem.style['display'] = 'none';
+        formContainerDivElem.appendChild(formElem);
+        var form = d3.select(formElem);
 
-    var childElem = document.createElement('select');
-    formElem.appendChild(childElem);
-    utils.setElemAttributes(childElem, {
-        'id' : 'currentNodesListBox',
-        'name' : 'currentNodesListBox',
-        'class' : 'deleteControl'
-    });
-    childElem.onchange = function() {
-        console.log('change');
-    };
-    childElem.style['display'] = 'none';
-
-    childElem = document.createElement('select');
-    formElem.appendChild(childElem);
-    utils.setElemAttributes(childElem, {
-        'id' : 'currentEdgesListBox',
-        'name' : 'currentEdgesListBox',
-        'class' : 'deleteControl'
-    });
-    childElem.onchange = function() {
-        console.log('change');
-    };
-    childElem.style['display'] = 'none';
-
-    childElem = document.createElement('input');
-    formElem.appendChild(childElem);
-    utils.setElemAttributes(childElem, {
-        'id' : "newNodeNameTextBox",
-        'type' : "text",
-        'value' : "name of new node",
-        'name' : "newNodeNameTextBox",
-        'title' : 'name of new node',
-        'class' : 'addControl'
-    });
-    childElem.onkeypress = function() {
-        // http://stackoverflow.com/questions/15261447/how-do-i-capture-keystroke-events-in-d3-js
-        console.log('keypress');
-        var keyCode = event.keyCode;
-        console.log('keyCode:' + keyCode);
-        if (keyCode == 13) {
-            // prevent page from reloading on return key (13)
-            event.preventDefault();
-        }
-    };
-
-    childElem = document.createElement('select');
-    formElem.appendChild(childElem);
-    utils.setElemAttributes(childElem, {
-        'id' : 'newNodeTypeListBox',
-        'name' : 'newNodeTypeListBox',
-        'class' : 'addControl'
-    });
-    childElem.onchange = function() {
-        console.log('change');
-    };
-
-    childElem = document.createElement('input');
-    formElem.appendChild(childElem);
-    utils.setElemAttributes(childElem, {
-        'id' : "addNodeButton",
-        'type' : "button",
-        'value' : "add a new node",
-        'name' : "addNodeButton",
-        'class' : 'addControl'
-    });
-
-    childElem = document.createElement('input');
-    formElem.appendChild(childElem);
-    utils.setElemAttributes(childElem, {
-        'id' : "exportToUcscFormatButton",
-        'type' : "button",
-        'value' : "export to UCSC pathway format",
-        'name' : "exportToUcscFormatButton",
-        'class' : 'displayControl'
-    });
-
-    childElem = document.createElement('input');
-    formElem.appendChild(childElem);
-    utils.setElemAttributes(childElem, {
-        'id' : "addRandomNodeButton",
-        'type' : "button",
-        'value' : "add random node",
-        'name' : "addRandomNodeButton",
-        'class' : 'addControl'
-    });
-
-    childElem = document.createElement('input');
-    formElem.appendChild(childElem);
-    utils.setElemAttributes(childElem, {
-        'id' : "addConnectedButton",
-        'type' : "button",
-        'value' : "add random connected node",
-        'name' : "addConnectedButton",
-        'class' : 'addControl'
-    });
-
-    childElem = document.createElement('form');
-    document.getElementsByTagName('body')[0].appendChild(childElem);
-    childElem.style['display'] = 'none';
-    utils.setElemAttributes(childElem, {
-        'id' : 'addEdgeForm'
-    });
-
-    var addEdgeFormElem = childElem; {
-        // setup node selection mode controls
-        childElem = document.createElement('p');
-        addEdgeFormElem.appendChild(childElem);
-        childElem.innerHTML = 'edge type';
-
-        // TODO build select box for edge type
-        childElem = document.createElement('select');
-        addEdgeFormElem.appendChild(childElem);
+        var childElem = document.createElement('select');
+        formElem.appendChild(childElem);
         utils.setElemAttributes(childElem, {
-            'id' : 'edgeTypeSelect'
+            'id' : 'currentNodesListBox',
+            'name' : 'currentNodesListBox',
+            'class' : 'deleteControl'
         });
         childElem.onchange = function() {
-            var newEdgeType = document.getElementById('edgeTypeSelect').value;
-            if (newEdgeType == sbgn_config['edgeTypeOptions'][0]) {
-                clickedNodesArray.length = 0;
-                resetNewEdgeDialog();
+            console.log('change');
+        };
+        childElem.style['display'] = 'none';
+
+        childElem = document.createElement('select');
+        formElem.appendChild(childElem);
+        utils.setElemAttributes(childElem, {
+            'id' : 'currentEdgesListBox',
+            'name' : 'currentEdgesListBox',
+            'class' : 'deleteControl'
+        });
+        childElem.onchange = function() {
+            console.log('change');
+        };
+        childElem.style['display'] = 'none';
+
+        childElem = document.createElement('input');
+        formElem.appendChild(childElem);
+        utils.setElemAttributes(childElem, {
+            'id' : "newNodeNameTextBox",
+            'type' : "text",
+            'value' : "name of new node",
+            'name' : "newNodeNameTextBox",
+            'title' : 'name of new node',
+            'class' : 'addControl'
+        });
+        childElem.onkeypress = function() {
+            // http://stackoverflow.com/questions/15261447/how-do-i-capture-keystroke-events-in-d3-js
+            console.log('keypress');
+            var keyCode = event.keyCode;
+            console.log('keyCode:' + keyCode);
+            if (keyCode == 13) {
+                // prevent page from reloading on return key (13)
+                event.preventDefault();
             }
-            console.log('selected edge type: ' + newEdgeType);
         };
 
-        // populate select box with allowed edge types
-        for (var i in sbgn_config['edgeTypeOptions']) {
-            var edgeTypeOption = sbgn_config['edgeTypeOptions'][i];
-            var edgeTypeSymbol = sbgn_config['edgeTypeOptions'][i];
+        childElem = document.createElement('select');
+        formElem.appendChild(childElem);
+        utils.setElemAttributes(childElem, {
+            'id' : 'newNodeTypeListBox',
+            'name' : 'newNodeTypeListBox',
+            'class' : 'addControl'
+        });
+        childElem.onchange = function() {
+            console.log('change');
+        };
 
-            var optionElem = document.createElement('option');
-            childElem.appendChild(optionElem);
+        childElem = document.createElement('input');
+        formElem.appendChild(childElem);
+        utils.setElemAttributes(childElem, {
+            'id' : "addNodeButton",
+            'type' : "button",
+            'value' : "add a new node",
+            'name' : "addNodeButton",
+            'class' : 'addControl'
+        });
+
+        childElem = document.createElement('input');
+        formElem.appendChild(childElem);
+        utils.setElemAttributes(childElem, {
+            'id' : "exportToUcscFormatButton",
+            'type' : "button",
+            'value' : "export to UCSC pathway format",
+            'name' : "exportToUcscFormatButton",
+            'class' : 'displayControl'
+        });
+
+        childElem = document.createElement('input');
+        formElem.appendChild(childElem);
+        utils.setElemAttributes(childElem, {
+            'id' : "addRandomNodeButton",
+            'type' : "button",
+            'value' : "add random node",
+            'name' : "addRandomNodeButton",
+            'class' : 'addControl'
+        });
+
+        childElem = document.createElement('input');
+        formElem.appendChild(childElem);
+        utils.setElemAttributes(childElem, {
+            'id' : "addConnectedButton",
+            'type' : "button",
+            'value' : "add random connected node",
+            'name' : "addConnectedButton",
+            'class' : 'addControl'
+        });
+
+        childElem = document.createElement('form');
+        document.getElementsByTagName('body')[0].appendChild(childElem);
+        childElem.style['display'] = 'none';
+        utils.setElemAttributes(childElem, {
+            'id' : 'addEdgeForm'
+        });
+
+        var addEdgeFormElem = childElem;
+        {
+            // setup node selection mode controls
+            childElem = document.createElement('p');
+            addEdgeFormElem.appendChild(childElem);
+            childElem.innerHTML = 'edge type';
+
+            // TODO build select box for edge type
+            childElem = document.createElement('select');
+            addEdgeFormElem.appendChild(childElem);
             utils.setElemAttributes(childElem, {
-                'value' : edgeTypeSymbol
+                'id' : 'edgeTypeSelect'
             });
-            optionElem.innerHTML = edgeTypeOption;
+            childElem.onchange = function() {
+                var newEdgeType = document.getElementById('edgeTypeSelect').value;
+                if (newEdgeType == sbgn_config['edgeTypeOptions'][0]) {
+                    cmGraph.clickedNodesArray.length = 0;
+                    cmGraph.resetNewEdgeDialog();
+                }
+                console.log('selected edge type: ' + newEdgeType);
+            };
+
+            // populate select box with allowed edge types
+            for (var i in sbgn_config['edgeTypeOptions']) {
+                var edgeTypeOption = sbgn_config['edgeTypeOptions'][i];
+                var edgeTypeSymbol = sbgn_config['edgeTypeOptions'][i];
+
+                var optionElem = document.createElement('option');
+                childElem.appendChild(optionElem);
+                utils.setElemAttributes(childElem, {
+                    'value' : edgeTypeSymbol
+                });
+                optionElem.innerHTML = edgeTypeOption;
+            }
+
+            addEdgeFormElem.appendChild(document.createElement('br'));
+
+            childElem = document.createElement('div');
+            addEdgeFormElem.appendChild(childElem);
+            utils.setElemAttributes(childElem, {
+                'id' : 'clickedNodesDiv'
+            });
+
+            var clickedNodesDivElem = document.getElementById('clickedNodesDiv');
+
+            // source
+            childElem = document.createElement('label');
+            clickedNodesDivElem.appendChild(childElem);
+            childElem.innerHTML = 'source';
+
+            childElem = document.createElement('textarea');
+            clickedNodesDivElem.appendChild(childElem);
+            utils.setElemAttributes(childElem, {
+                'id' : 'sourceTextArea',
+                'readonly' : 'readonly'
+            });
+
+            clickedNodesDivElem.appendChild(document.createElement('br'));
+
+            // target
+            childElem = document.createElement('label');
+            clickedNodesDivElem.appendChild(childElem);
+            childElem.innerHTML = 'target';
+
+            childElem = document.createElement('textarea');
+            clickedNodesDivElem.appendChild(childElem);
+            utils.setElemAttributes(childElem, {
+                'id' : 'targetTextArea',
+                'readonly' : 'readonly'
+            });
+
+            clickedNodesDivElem.appendChild(document.createElement('br'));
+
+            // add edge button
+            childElem = document.createElement('input');
+            clickedNodesDivElem.appendChild(childElem);
+            utils.setElemAttributes(childElem, {
+                'id' : "addEdgeButton",
+                'type' : "button",
+                'value' : "add new edge",
+                'name' : "addEdgeButton",
+                'class' : 'addControl',
+                'disabled' : 'disabled'
+            });
+            childElem.onclick = function() {
+                var sourceIdx = cmGraph.clickedNodesArray[0];
+                var targetIdx = cmGraph.clickedNodesArray[1];
+                var relation = document.getElementById('edgeTypeSelect').value;
+                console.log(sourceIdx + ' ' + relation + ' ' + targetIdx);
+
+                if ((sourceIdx != targetIdx) && (relation != sbgn_config['edgeTypeOptions'][0]) && (clickedNodesArray.slice(-2).length == 2)) {
+                    graph.addLink(new linkData({
+                        'sourceIdx' : sourceIdx,
+                        'targetIdx' : targetIdx,
+                        'relation' : relation
+                    }));
+                    cmGraph.clearClickedNodes();
+                    cmGraph.resetNewEdgeDialog();
+                    cmGraph.updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
+                }
+
+            };
         }
 
-        addEdgeFormElem.appendChild(document.createElement('br'));
-
-        childElem = document.createElement('div');
-        addEdgeFormElem.appendChild(childElem);
-        utils.setElemAttributes(childElem, {
-            'id' : 'clickedNodesDiv'
-        });
-
-        var clickedNodesDivElem = document.getElementById('clickedNodesDiv');
-
-        // source
-        childElem = document.createElement('label');
-        clickedNodesDivElem.appendChild(childElem);
-        childElem.innerHTML = 'source';
-
-        childElem = document.createElement('textarea');
-        clickedNodesDivElem.appendChild(childElem);
-        utils.setElemAttributes(childElem, {
-            'id' : 'sourceTextArea',
-            'readonly' : 'readonly'
-        });
-
-        clickedNodesDivElem.appendChild(document.createElement('br'));
-
-        // target
-        childElem = document.createElement('label');
-        clickedNodesDivElem.appendChild(childElem);
-        childElem.innerHTML = 'target';
-
-        childElem = document.createElement('textarea');
-        clickedNodesDivElem.appendChild(childElem);
-        utils.setElemAttributes(childElem, {
-            'id' : 'targetTextArea',
-            'readonly' : 'readonly'
-        });
-
-        clickedNodesDivElem.appendChild(document.createElement('br'));
-
-        // add edge button
         childElem = document.createElement('input');
-        clickedNodesDivElem.appendChild(childElem);
+        formElem.appendChild(childElem);
         utils.setElemAttributes(childElem, {
-            'id' : "addEdgeButton",
-            'type' : "button",
-            'value' : "add new edge",
-            'name' : "addEdgeButton",
-            'class' : 'addControl',
-            'disabled' : 'disabled'
+            'id' : 'testButton',
+            'type' : 'button',
+            'value' : 'testButton',
+            'name' : 'testButton',
+            'class' : 'displayControl',
+            'title' : 'test'
         });
         childElem.onclick = function() {
-            var sourceIdx = clickedNodesArray[0];
-            var targetIdx = clickedNodesArray[1];
-            var relation = document.getElementById('edgeTypeSelect').value;
-            console.log(sourceIdx + ' ' + relation + ' ' + targetIdx);
-
-            if ((sourceIdx != targetIdx) && (relation != sbgn_config['edgeTypeOptions'][0]) && (clickedNodesArray.slice(-2).length == 2)) {
-                graph.addLink(new linkData({
-                    'sourceIdx' : sourceIdx,
-                    'targetIdx' : targetIdx,
-                    'relation' : relation
-                }));
-                clearClickedNodes();
-                resetNewEdgeDialog();
-                updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
-            }
-
+            // $(showDialogBox('my title', 'my text'));
+            // closeDialogBox();
+            //d3.select('#pathwayTextArea').text('text from testButton');
+            //$('#pathwayTextArea').val('text from the testButton');
+            console.log('mode:' + cmGraph.getNodeClickMode());
         };
-    }
+    };
 
     // TODO continue here
-    var showAddEdgeDialogBox = function(graph) {
+    cmGraph.showAddEdgeDialogBox = function() {
         var dialog = document.getElementById('addEdgeDialog');
         dialog.removeAttribute('title');
         dialog.style['font-size'] = 'smaller';
@@ -423,7 +448,7 @@ var circleMapGraph = circleMapGraph || {};
         dialog.appendChild(addEdgeFormElem);
     };
 
-    var showAddNodeDialogBox = function(graph) {
+    cmGraph.showAddNodeDialogBox = function() {
         var dialog = document.getElementById('addNodeDialog');
         dialog.removeAttribute('title');
         dialog.style['font-size'] = 'smaller';
@@ -448,7 +473,7 @@ var circleMapGraph = circleMapGraph || {};
     /**
      * Determine which dialog box should be displayed... EDGE or NODE
      */
-    var showElementDialogBox = function(type, graph, index) {
+    cmGraph.showElementDialogBox = function(type, graph, index) {
         var dialogElem = document.getElementById('elementDialog');
         dialogElem.removeAttribute('title');
         utils.removeChildElems(dialogElem);
@@ -467,7 +492,7 @@ var circleMapGraph = circleMapGraph || {};
                     "delete" : function() {
                         // delete edge
                         graph.deleteLinkByIndex(index);
-                        updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
+                        cmGraph.updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
                         $(this).dialog("close");
                     },
                     "close" : function() {
@@ -494,7 +519,7 @@ var circleMapGraph = circleMapGraph || {};
                     "delete" : function() {
                         // delete node
                         graph.deleteNodeByName(data.name);
-                        updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
+                        cmGraph.updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
                         $(this).dialog("close");
                     },
                     "close" : function() {
@@ -510,84 +535,23 @@ var circleMapGraph = circleMapGraph || {};
         }
     };
 
-    childElem = document.createElement('input');
-    formElem.appendChild(childElem);
-    utils.setElemAttributes(childElem, {
-        'id' : 'testButton',
-        'type' : 'button',
-        'value' : 'testButton',
-        'name' : 'testButton',
-        'class' : 'displayControl',
-        'title' : 'test'
-    });
-    childElem.onclick = function() {
-        // $(showDialogBox('my title', 'my text'));
-        // closeDialogBox();
-        //d3.select('#pathwayTextArea').text('text from testButton');
-        //$('#pathwayTextArea').val('text from the testButton');
-        console.log('mode:' + getNodeClickMode());
-    };
-
-    // var testButton = form.append('input').attr({
-    // id : 'testButton',
-    // type : 'button',
-    // value : 'testButton',
-    // name : 'testButton',
-    // 'class' : 'displayControl',
-    // title : 'test'
-    // }).on('click', function() {
-    // // $(showDialogBox('my title', 'my text'));
-    // // closeDialogBox();
-    // //d3.select('#pathwayTextArea').text('text from testButton');
-    // //$('#pathwayTextArea').val('text from the testButton');
-    // console.log('mode:' + getNodeClickMode());
-    // });
-
     /**
      * get the node click mode, which is selected from the possible types of edges to create
      */
-    function getNodeClickMode() {
+    cmGraph.getNodeClickMode = function() {
         var mode = 'none';
         var edgeTypeValue = document.getElementById('edgeTypeSelect').value;
         if (edgeTypeValue != null) {
             mode = edgeTypeValue;
         }
         return mode;
-    }
+    };
 
     // TODO draw graph
 
-    function throbberOn() {
-        var imageElem = document.createElement('image');
-        utils.setElemAttributes(imageElem, {
-            'id' : 'throbber',
-            'xlink:href' : throbberUrl,
-            'x' : (0.5 * svgWidth),
-            'y' : (0.5 * svgHeight),
-            'width' : 16,
-            'height' : 16
-        });
-
-        svg[0][0].appendChild(imageElem);
-
-        // svg.append('image').attr({
-        // id : 'throbber',
-        // 'xlink:href' : throbberUrl,
-        // x : (0.5 * svgWidth),
-        // y : (0.5 * svgHeight),
-        // 'width' : 16,
-        // 'height' : 16
-        // });
-    }
-
-    function throbberOff() {
-        // d3.select('#throbber').remove();
-        removeElemById('throbber');
-    }
-
-    var doit2 = function() {
+    cmGraph.doit2 = function() {
         // TODO render graph
-        updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
+        cmGraph.updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
 
         // entity types listbox
         var elem = document.getElementById('newNodeTypeListBox');
@@ -615,7 +579,7 @@ var circleMapGraph = circleMapGraph || {};
                 'group' : groups[0]
             }));
 
-            updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
+            cmGraph.updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
         };
 
         if (utils.getQueryStringParameterByName('test').toLowerCase() == 'true') {
@@ -641,7 +605,7 @@ var circleMapGraph = circleMapGraph || {};
                     'group' : group
                 }));
 
-                updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
+                cmGraph.updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
             };
 
             elem = document.getElementById('addConnectedButton');
@@ -666,7 +630,7 @@ var circleMapGraph = circleMapGraph || {};
                     }));
                 }
 
-                updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
+                cmGraph.updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
             };
 
             // graph as PID button
@@ -686,11 +650,11 @@ var circleMapGraph = circleMapGraph || {};
         }
     };
 
-    doit2();
+    // cmGraph.doit2();
     // TODO instance methods
 
     // requires svg, force, graph, cmg, circleDataLoaded, and various constants
-    function renderGraph(svg, force, graph, cmg, circleDataLoaded) {"use strict";
+    cmGraph.renderGraph = function(svg, force, graph, cmg, circleDataLoaded) {"use strict";
 
         var largeScale = 'scale(2)';
         var smallScale = 'scale(0.2)';
@@ -713,9 +677,6 @@ var circleMapGraph = circleMapGraph || {};
             for (var i in nodeNames) {
                 var feature = nodeNames[i];
                 var circleMapElement = cmg.drawCircleMap(feature, svgNodeLayer);
-                // var svgElem = circleMapElement[0][0];
-                // console.log('circleMapElement for', feature, svgElem.outerHTML);
-                // console.log('++++++++++++++');
             }
         }
 
@@ -729,7 +690,7 @@ var circleMapGraph = circleMapGraph || {};
         }).attr({
             'class' : "link"
         }).style("stroke", function(d) {
-            return colorMapper(d.relation);
+            return cmGraph.colorMapper(d.relation);
         });
 
         linkSelection.style("stroke-width", function(d) {
@@ -740,11 +701,11 @@ var circleMapGraph = circleMapGraph || {};
         linkSelection.on('mouseover', function(d, i) {
             // mouseover event for link
             var linkElement = document.getElementById('link' + i);
-            linkElement.setAttributeNS(null, 'style', 'stroke-width:' + (d.value * 3) + ' ; stroke:' + colorMapper(d.relation));
+            linkElement.setAttributeNS(null, 'style', 'stroke-width:' + (d.value * 3) + ' ; stroke:' + cmGraph.colorMapper(d.relation));
         }).on('mouseout', function(d, i) {
             // mouseout event for link
             var linkElement = document.getElementById('link' + i);
-            linkElement.setAttributeNS(null, 'style', 'stroke-width:' + d.value + ' ; stroke:' + colorMapper(d.relation));
+            linkElement.setAttributeNS(null, 'style', 'stroke-width:' + d.value + ' ; stroke:' + cmGraph.colorMapper(d.relation));
         });
 
         // context menu for link
@@ -753,7 +714,7 @@ var circleMapGraph = circleMapGraph || {};
             var linkDesc = d.source.name + ' ' + d.relation + ' ' + d.target.name;
             console.log('right click on link: ' + linkDesc + '(' + i + ')');
 
-            $(showElementDialogBox('edge', graph, i));
+            $(cmGraph.showElementDialogBox('edge', graph, i));
 
             d3.event.preventDefault();
             d3.event.stopPropagation();
@@ -787,12 +748,12 @@ var circleMapGraph = circleMapGraph || {};
                 // mouseover event for node
                 var nodeElement = document.getElementsByClassName("node " + d.name + ' ' + d.group);
                 var nodeSbgnElement = nodeElement[0].getElementsByClassName('sbgn');
-                nodeSbgnElement[0].setAttributeNS(null, 'style', 'stroke-width:4;fill:' + colorMapper(d.group));
+                nodeSbgnElement[0].setAttributeNS(null, 'style', 'stroke-width:4;fill:' + cmGraph.colorMapper(d.group));
             }).on('mouseout', function(d, i) {
                 // mouseout event for node
                 var nodeElement = document.getElementsByClassName("node " + d.name + ' ' + d.group);
                 var nodeSbgnElement = nodeElement[0].getElementsByClassName('sbgn');
-                nodeSbgnElement[0].setAttributeNS(null, 'style', 'stroke-width:1;fill:' + colorMapper(d.group));
+                nodeSbgnElement[0].setAttributeNS(null, 'style', 'stroke-width:1;fill:' + cmGraph.colorMapper(d.group));
             });
         }
         nodeSelection.call(force.drag);
@@ -802,7 +763,7 @@ var circleMapGraph = circleMapGraph || {};
             var position = d3.mouse(this);
             console.log('right click on node: ' + d.name + '(' + i + ')');
 
-            $(showElementDialogBox('node', graph, i));
+            $(cmGraph.showElementDialogBox('node', graph, i));
 
             d3.event.preventDefault();
             d3.event.stopPropagation();
@@ -813,20 +774,20 @@ var circleMapGraph = circleMapGraph || {};
             var position = d3.mouse(this);
             console.log('left click on node: ' + d.name + '(' + i + ')');
 
-            var nodeClickMode = getNodeClickMode();
+            var nodeClickMode = cmGraph.getNodeClickMode();
 
             console.log('click mode: ' + nodeClickMode);
 
             if (nodeClickMode == 'none' || nodeClickMode == sbgn_config['edgeTypeOptions'][0]) {
                 console.log('ignore click event');
             } else {
-                addClickedNodeToList(i);
-                for (var i in clickedNodesArray) {
-                    var idx = clickedNodesArray[i];
+                cmGraph.addClickedNodeToList(i);
+                for (var i in cmGraph.clickedNodesArray) {
+                    var idx = cmGraph.clickedNodesArray[i];
                     console.log(idx);
                 }
 
-                updateNewEdgeDialog();
+                cmGraph.updateNewEdgeDialog();
             }
 
             d3.event.preventDefault();
@@ -887,7 +848,7 @@ var circleMapGraph = circleMapGraph || {};
                 return newElement;
             }
         }).style("fill", function(d) {
-            return colorMapper(d.group);
+            return cmGraph.colorMapper(d.group);
         });
 
         nodeSelection.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(function(d) {
@@ -921,13 +882,13 @@ var circleMapGraph = circleMapGraph || {};
                 return 'translate(' + d.x + ',' + d.y + ')';
             });
         });
-    }
+    };
 
     /**
      *
      * @param {Object} currentGraphData
      */
-    function updateCurrentNodesListBox(currentGraphData) {
+    cmGraph.updateCurrentNodesListBox = function(currentGraphData) {
         var currentNodesListBox = document.getElementById('currentNodesListBox');
 
         // clear options starting from the bottom of the listbox
@@ -947,13 +908,13 @@ var circleMapGraph = circleMapGraph || {};
 
             currentNodesListBox.appendChild(optionElement);
         }
-    }
+    };
 
     /**
      *
      * @param {Object} currentGraphData
      */
-    function updateCurrentEdgesListBox(currentGraphData) {
+    cmGraph.updateCurrentEdgesListBox = function(currentGraphData) {
         var listbox = document.getElementById('currentEdgesListBox');
 
         // clear options starting from the bottom of the listbox
@@ -978,24 +939,24 @@ var circleMapGraph = circleMapGraph || {};
 
             listbox.appendChild(optionElement);
         }
-    }
+    };
 
     /**
      * Clear the text from the text areas in the new edge dialog box.
      */
-    function resetNewEdgeDialog() {
+    cmGraph.resetNewEdgeDialog = function() {
         d3.select('#clickedNodesDiv').select('#sourceTextArea').text('');
         d3.select('#clickedNodesDiv').select('#targetTextArea').text('');
         d3.select('#addEdgeButton').attr({
             'disabled' : 'disabled'
         });
-    }
+    };
 
     /**
      * fill in the text area with source node and target node for new edge.
      */
-    function updateNewEdgeDialog() {
-        var slice = clickedNodesArray.slice(-2);
+    cmGraph.updateNewEdgeDialog = function() {
+        var slice = cmGraph.clickedNodesArray.slice(-2);
         for (var i in slice) {
             var nodeData = graph['nodes'][slice[i]];
             var newText = nodeData.name + ': ' + nodeData.group;
@@ -1013,23 +974,23 @@ var circleMapGraph = circleMapGraph || {};
                 'disabled' : 'disabled'
             });
         }
-    }
+    };
 
     /**
      * clear the clickedNodesArray
      */
-    function clearClickedNodes() {
-        clickedNodesArray = new Array();
-    }
+    cmGraph.clearClickedNodes = function() {
+        cmGraph.clickedNodesArray = new Array();
+    };
 
     /**
      * add specified index to clicked nodes array.  Keeps only last 2 items.
      */
-    function addClickedNodeToList(nodeIdx) {
+    cmGraph.addClickedNodeToList = function(nodeIdx) {
         // check if node already exists
         var exists = false;
-        for (var i in clickedNodesArray) {
-            var idx = clickedNodesArray[i];
+        for (var i in cmGraph.clickedNodesArray) {
+            var idx = cmGraph.clickedNodesArray[i];
             if (idx === nodeIdx) {
                 exists = true;
                 break;
@@ -1037,30 +998,30 @@ var circleMapGraph = circleMapGraph || {};
         }
         if (!exists) {
             // add node
-            clickedNodesArray.push(nodeIdx);
+            cmGraph.clickedNodesArray.push(nodeIdx);
 
             // trim array to maximum 2 elements
-            if (clickedNodesArray.length > 2) {
+            if (cmGraph.clickedNodesArray.length > 2) {
                 // keep only last 2 elements
-                clickedNodesArray = clickedNodesArray.slice(-2);
+                cmGraph.clickedNodesArray = cmGraph.clickedNodesArray.slice(-2);
             }
         }
-        return clickedNodesArray;
-    }
+        return cmGraph.clickedNodesArray;
+    };
 
     /**
      * remove specified index from clicked nodes array
      */
-    function removeClickedNode(nodeIdx) {
+    cmGraph.removeClickedNode = function(nodeIdx) {
         var what, a = arguments, L = a.length, ax;
-        while (L > 1 && clickedNodesArray.length) {
+        while (L > 1 && cmGraph.clickedNodesArray.length) {
             what = a[--L];
-            while (( ax = clickedNodesArray.indexOf(what)) !== -1) {
-                clickedNodesArray.splice(ax, 1);
+            while (( ax = cmGraph.clickedNodesArray.indexOf(what)) !== -1) {
+                cmGraph.clickedNodesArray.splice(ax, 1);
             }
         }
-        return clickedNodesArray;
-    }
+        return cmGraph.clickedNodesArray;
+    };
 
     /**
      * Update to current graphData:
@@ -1070,12 +1031,12 @@ var circleMapGraph = circleMapGraph || {};
      * <li>currentEdgesListBox</li>
      * </ul>
      */
-    function updateToCurrentGraphData(svgElement, d3Force, currentGraphData, circleMapGenerator, circleDataLoaded) {
-        clearClickedNodes();
-        renderGraph(svgElement, d3Force, currentGraphData, circleMapGenerator, circleDataLoaded);
-        updateCurrentNodesListBox(currentGraphData);
-        updateCurrentEdgesListBox(currentGraphData);
+    cmGraph.updateToCurrentGraphData = function(svgElement, d3Force, currentGraphData, circleMapGenerator, circleDataLoaded) {
+        cmGraph.clearClickedNodes();
+        cmGraph.renderGraph(svgElement, d3Force, currentGraphData, circleMapGenerator, circleDataLoaded);
+        cmGraph.updateCurrentNodesListBox(currentGraphData);
+        cmGraph.updateCurrentEdgesListBox(currentGraphData);
         d3.select('#pathwayTextArea').text(currentGraphData.toPid());
-    }
+    };
 
 })(circleMapGraph);
