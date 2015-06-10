@@ -148,10 +148,10 @@ var graphData = {};
 
             // find links
             var linksToDelete = new Array();
-            for (var i in this.links) {
-                link = this.links[i];
-                source = link['source'];
-                target = link['target'];
+            for (var i = 0, length = this.links.length; i < length; i++) {
+                var link = this.links[i];
+                var source = link['source'];
+                var target = link['target'];
 
                 if (source == idx || target == idx) {
                     linksToDelete.push(link);
@@ -163,11 +163,11 @@ var graphData = {};
             }
 
             // delete stuff
-            for (var i in linksToDelete) {
-                link = linksToDelete[i];
+            for (var i = 0, length = linksToDelete.length; i < length; i++) {
+                var link = linksToDelete[i];
                 utils.removeA(this.links, link);
             }
-            node = this.nodes[idx];
+            var node = this.nodes[idx];
             utils.removeA(this.nodes, node);
         };
         /**

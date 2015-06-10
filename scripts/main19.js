@@ -95,7 +95,7 @@ var circleMapGraph = circleMapGraph || {};
         $.contextMenu({
             // selector : ".axis",
             selector : "#circleMaps",
-            trigger : 'left',
+            trigger : 'right',
             callback : function(key, options) {
                 // default callback
                 var elem = this[0];
@@ -169,6 +169,9 @@ var circleMapGraph = circleMapGraph || {};
 
         // setup more controls
         cmGraph.setupMoreControls(cmGraph.containerDivElem);
+
+        // TODO
+        cmGraph.doit2();
     };
 
     cmGraph.showPathwayDialog = function() {
@@ -199,6 +202,11 @@ var circleMapGraph = circleMapGraph || {};
 
     //TODO setup some more controls
     cmGraph.setupMoreControls = function(formContainerDivElem) {
+        var svg = cmGraph.svgElem;
+        var force = cmGraph.force;
+        var graph = cmGraph.graphDataObj;
+        var cmg = cmGraph.circleMapGeneratorObj;
+        var circleDataLoaded = cmGraph.circleMapMode;
 
         var formElem = document.createElement('form');
         utils.setElemAttributes(formElem, {
@@ -206,7 +214,7 @@ var circleMapGraph = circleMapGraph || {};
         });
         formElem.style['display'] = 'none';
         formContainerDivElem.appendChild(formElem);
-        var form = d3.select(formElem);
+        cmGraph.form = d3.select(formElem);
 
         var childElem = document.createElement('select');
         formElem.appendChild(childElem);
@@ -311,8 +319,7 @@ var circleMapGraph = circleMapGraph || {};
             'id' : 'addEdgeForm'
         });
 
-        var addEdgeFormElem = childElem;
-        {
+        var addEdgeFormElem = childElem; {
             // setup node selection mode controls
             childElem = document.createElement('p');
             addEdgeFormElem.appendChild(childElem);
@@ -401,8 +408,8 @@ var circleMapGraph = circleMapGraph || {};
                 var relation = document.getElementById('edgeTypeSelect').value;
                 console.log(sourceIdx + ' ' + relation + ' ' + targetIdx);
 
-                if ((sourceIdx != targetIdx) && (relation != sbgn_config['edgeTypeOptions'][0]) && (clickedNodesArray.slice(-2).length == 2)) {
-                    graph.addLink(new linkData({
+                if ((sourceIdx != targetIdx) && (relation != sbgn_config['edgeTypeOptions'][0]) && (cmGraph.clickedNodesArray.slice(-2).length == 2)) {
+                    graph.addLink(new graphData.linkData({
                         'sourceIdx' : sourceIdx,
                         'targetIdx' : targetIdx,
                         'relation' : relation
@@ -492,7 +499,7 @@ var circleMapGraph = circleMapGraph || {};
                     "delete" : function() {
                         // delete edge
                         graph.deleteLinkByIndex(index);
-                        cmGraph.updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
+                        cmGraph.updateToCurrentGraphData(cmGraph.svgElem, cmGraph.force, cmGraph.graphDataObj, cmGraph.circleMapGeneratorObj, cmGraph.circleMapMode);
                         $(this).dialog("close");
                     },
                     "close" : function() {
@@ -518,8 +525,9 @@ var circleMapGraph = circleMapGraph || {};
                 buttons : {
                     "delete" : function() {
                         // delete node
+                        console.log("delete", data);
                         graph.deleteNodeByName(data.name);
-                        cmGraph.updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
+                        cmGraph.updateToCurrentGraphData(cmGraph.svgElem, cmGraph.force, cmGraph.graphDataObj, cmGraph.circleMapGeneratorObj, cmGraph.circleMapMode);
                         $(this).dialog("close");
                     },
                     "close" : function() {
@@ -551,11 +559,17 @@ var circleMapGraph = circleMapGraph || {};
 
     cmGraph.doit2 = function() {
         // TODO render graph
+        var svg = cmGraph.svgElem;
+        var force = cmGraph.force;
+        var graph = cmGraph.graphDataObj;
+        var cmg = cmGraph.circleMapGeneratorObj;
+        var circleDataLoaded = cmGraph.circleMapMode;
+
         cmGraph.updateToCurrentGraphData(svg, force, graph, cmg, circleDataLoaded);
 
         // entity types listbox
         var elem = document.getElementById('newNodeTypeListBox');
-        for (var i = 0; i < sbgn_config['selectableEntityTypes'].length; i++) {
+        for (var i = 0, length = sbgn_config['selectableEntityTypes'].length; i < length; i++) {
             var entityType = sbgn_config['selectableEntityTypes'][i];
             var optionElement = document.createElementNS(htmlUri, 'option');
             optionElement.setAttributeNS(null, 'value', entityType);
@@ -567,14 +581,14 @@ var circleMapGraph = circleMapGraph || {};
 
         elem = document.getElementById('addNodeButton');
         elem.onclick = function() {
-            id = this.getAttribute("id");
-            value = this.getAttribute("value");
+            var id = this.getAttribute("id");
+            var value = this.getAttribute("value");
 
             var name = document.getElementById('newNodeNameTextBox').value;
 
             // get the group
-            groups = utils.getListBoxSelectedValues(document.getElementById('newNodeTypeListBox'));
-            graph.addNode(new nodeData({
+            var groups = utils.getListBoxSelectedValues(document.getElementById('newNodeTypeListBox'));
+            graph.addNode(new graphData.nodeData({
                 'name' : name,
                 'group' : groups[0]
             }));
@@ -583,7 +597,7 @@ var circleMapGraph = circleMapGraph || {};
         };
 
         if (utils.getQueryStringParameterByName('test').toLowerCase() == 'true') {
-            form.style({
+            cmGraph.form.style({
                 display : 'inline'
             });
 
@@ -596,11 +610,11 @@ var circleMapGraph = circleMapGraph || {};
             elem = document.getElementById('addRandomNodeButton');
             elem.style['display'] = 'inline';
             elem.onclick = function() {
-                id = this.getAttribute("id");
-                value = this.getAttribute("value");
+                var id = this.getAttribute("id");
+                var value = this.getAttribute("value");
 
-                group = Math.floor(Math.random() * 20);
-                graph.addNode(new nodeData({
+                var group = Math.floor(Math.random() * 20);
+                graph.addNode(new graphData.nodeData({
                     name : Math.random().toString(),
                     'group' : group
                 }));
@@ -611,20 +625,20 @@ var circleMapGraph = circleMapGraph || {};
             elem = document.getElementById('addConnectedButton');
             elem.style['display'] = 'inline';
             elem.onclick = function() {
-                id = this.getAttribute("id");
-                value = this.getAttribute("value");
+                var id = this.getAttribute("id");
+                var value = this.getAttribute("value");
 
-                group = Math.floor(Math.random() * 20);
-                graph.addNode(new nodeData({
+                var group = Math.floor(Math.random() * 20);
+                graph.addNode(new graphData.nodeData({
                     name : Math.random().toString(),
                     'group' : group
                 }));
 
-                sourceIdx = graph.nodes.length - 1;
-                targetIdx = Math.floor(Math.random() * graph.nodes.length);
+                var sourceIdx = graph.nodes.length - 1;
+                var targetIdx = Math.floor(Math.random() * graph.nodes.length);
 
                 if (sourceIdx != targetIdx) {
-                    graph.addLink(new linkData({
+                    graph.addLink(new graphData.linkData({
                         'sourceIdx' : sourceIdx,
                         'targetIdx' : targetIdx
                     }));
@@ -798,6 +812,9 @@ var circleMapGraph = circleMapGraph || {};
         var opacityVal = 0.6;
         nodeSelection.append(function(d) {
             var nodeName = d['name'];
+            if (d.group === undefined) {
+                console.log("d", d);
+            }
             var type = d.group.toString().toLowerCase();
             if ((circleDataLoaded ) && (nodeNames.indexOf(nodeName) >= 0)) {
                 // circleMap
