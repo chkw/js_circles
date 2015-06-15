@@ -1,7 +1,7 @@
 // http://bl.ocks.org/mbostock/929623 shows a nice way to build a graph with intuitive controls.
 // bl.ocks.org/rkirsling/5001347
 // context menu: https://medialize.github.io/jQuery-contextMenu/
-
+console.log("circleMapGraph loading");
 var circleMapGraph = circleMapGraph || {};
 (function(cmGraph) {"use strict";
 
@@ -27,7 +27,7 @@ var circleMapGraph = circleMapGraph || {};
         'linkStrength' : 0.2,
         'friction' : 0.8,
         'charge' : -500,
-        'gravity' : 0.01,
+        'gravity' : 0.03,
         'nodeRadius' : 20
     };
 
@@ -96,12 +96,53 @@ var circleMapGraph = circleMapGraph || {};
             }
         });
 
+        $.contextMenu({
+            // selector : ".axis",
+            selector : ".node",
+            trigger : 'right',
+            callback : function(key, options) {
+                // default callback
+                var elem = this[0];
+                console.log('elem', elem);
+            },
+            build : function($trigger, contextmenuEvent) {
+                console.log("trigger", $trigger);
+                var svgGroupElem = $trigger[0];
+                var items = {
+                    'title' : {
+                        name : function() {
+                            var nodeId = svgGroupElem['__data__']['name'];
+                            return "node: " + nodeId;
+                        },
+                        icon : null,
+                        disabled : false
+                        // ,
+                        // callback : function(key, opt) {
+                        // }
+                    },
+                    "sep1" : "---------",
+                    'toggle_pin' : {
+                        name : function() {
+                            return "toggle pin";
+                        },
+                        icon : null,
+                        disabled : false,
+                        callback : function(key, opt) {
+                        }
+                    },
+                };
+                return {
+                    'items' : items
+                };
+            }
+        });
+
         // clear container div element
         utils.removeChildElems(cmGraph.containerDivElem);
 
         // outer SVG element
-        var windowWidth = 0.5 * window.innerWidth;
-        var windowHeight = 0.5 * window.innerHeight;
+        var windowWidth = 1 * window.innerWidth;
+        var windowHeight = 1 * window.innerHeight;
 
         cmGraph.svgElem = d3.select(cmGraph.containerDivElem).append("svg").attr({
             'width' : windowWidth,
@@ -149,9 +190,6 @@ var circleMapGraph = circleMapGraph || {};
             }
         }
 
-        // start the layout
-        force.nodes(graph.nodes).links(graph.links).start();
-
         // links
         var svgLinkLayer = svg.select('#linkLayer');
         var linkSelection = svgLinkLayer.selectAll(".link").data(graph.links).enter().append("line").attr('id', function(d, i) {
@@ -178,29 +216,30 @@ var circleMapGraph = circleMapGraph || {};
         });
 
         // context menu for link
-        linkSelection.on("contextmenu", function(d, i) {
-            var position = d3.mouse(this);
-            var linkDesc = d.source.name + ' ' + d.relation + ' ' + d.target.name;
-            console.log('right click on link: ' + linkDesc + '(' + i + ')');
-
-            d3.event.preventDefault();
-            d3.event.stopPropagation();
-        });
+        // linkSelection.on("contextmenu", function(d, i) {
+        // var position = d3.mouse(this);
+        // var linkDesc = d.source.name + ' ' + d.relation + ' ' + d.target.name;
+        // console.log('right click on link: ' + linkDesc + '(' + i + ')');
+        //
+        // d3.event.preventDefault();
+        // d3.event.stopPropagation();
+        // });
 
         // link click
-        linkSelection.on("click", function(d, i) {
-            var position = d3.mouse(this);
-            var linkDesc = d.source.name + ' ' + d.relation + ' ' + d.target.name;
-            console.log('left click on link: ' + linkDesc + '(' + i + ')');
-
-            d3.event.preventDefault();
-            d3.event.stopPropagation();
-        });
+        // linkSelection.on("click", function(d, i) {
+        // var position = d3.mouse(this);
+        // var linkDesc = d.source.name + ' ' + d.relation + ' ' + d.target.name;
+        // console.log('left click on link: ' + linkDesc + '(' + i + ')');
+        //
+        // d3.event.preventDefault();
+        // d3.event.stopPropagation();
+        // });
 
         // nodes
         var nodeSelection = svgNodeLayer.selectAll(".node").data(graph.nodes).enter().append("g").attr('class', function(d, i) {
             return "node " + d.name + ' ' + d.group;
         });
+
         if (circleDataLoaded) {
             // mouse events for circleMap nodes
             nodeSelection.each(function(d) {
@@ -236,18 +275,20 @@ var circleMapGraph = circleMapGraph || {};
         nodeSelection.call(force.drag);
 
         // context menu for node
-        nodeSelection.on("contextmenu", function(d, i) {
-            var position = d3.mouse(this);
-            console.log('right click on node: ' + d.name + '(' + i + ')');
-
-            d3.event.preventDefault();
-            d3.event.stopPropagation();
-        });
+        // nodeSelection.on("contextmenu", function(d, i) {
+        // var position = d3.mouse(this);
+        // console.log('right click on node: ' + d.name + '(' + i + ')');
+        //
+        // d3.event.preventDefault();
+        // d3.event.stopPropagation();
+        // });
 
         // node click
         nodeSelection.on("click", function(d, i) {
             var position = d3.mouse(this);
-            console.log('left click on node: ' + d.name + '(' + i + ')');
+            console.log('left click on node: ' + d.name + '(' + i + ')', d);
+
+            // d.fixed = !(d.fixed);
 
             d3.event.preventDefault();
             d3.event.stopPropagation();
@@ -313,6 +354,7 @@ var circleMapGraph = circleMapGraph || {};
             return cmGraph.colorMapper(d.group);
         });
 
+        // node labels
         nodeSelection.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(function(d) {
             return d.name;
         });
@@ -344,6 +386,9 @@ var circleMapGraph = circleMapGraph || {};
                 return 'translate(' + d.x + ',' + d.y + ')';
             });
         });
+
+        // start the layout
+        force.nodes(graph.nodes).links(graph.links).start();
     };
 
 })(circleMapGraph);
