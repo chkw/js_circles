@@ -96,9 +96,12 @@ var circleMapGraph = circleMapGraph || {};
             }
         });
 
+        // clear container div element
+        utils.removeChildElems(cmGraph.containerDivElem);
+
         // outer SVG element
-        var windowWidth = 0.6 * window.innerWidth;
-        var windowHeight = 0.6 * window.innerHeight;
+        var windowWidth = 0.5 * window.innerWidth;
+        var windowHeight = 0.5 * window.innerHeight;
 
         cmGraph.svgElem = d3.select(cmGraph.containerDivElem).append("svg").attr({
             'width' : windowWidth,
