@@ -366,6 +366,10 @@ var circleMapGraph = circleMapGraph || {};
 
         // tick handler repositions graph elements
         force.on("tick", function() {
+            var maxAlpha = 0.05;
+
+            console.log("alpha", force.alpha());
+
             linkSelection.attr("x1", function(d) {
                 return d.source.x;
             }).attr("y1", function(d) {
@@ -379,10 +383,18 @@ var circleMapGraph = circleMapGraph || {};
             nodeSelection.attr("transform", function(d) {
                 return 'translate(' + d.x + ',' + d.y + ')';
             });
+
+            // don't run the layout indefinitely
+            if (force.alpha() < maxAlpha) {
+                force.stop();
+            }
         });
 
+        // set the nodes and links
+        force.nodes(graph.nodes).links(graph.links);
+
         // start the layout
-        force.nodes(graph.nodes).links(graph.links).start();
+        force.start();
     };
 
 })(circleMapGraph);
