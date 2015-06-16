@@ -135,8 +135,8 @@ var circleMapGraph = circleMapGraph || {};
         utils.removeChildElems(cmGraph.containerDivElem);
 
         // outer SVG element
-        var windowWidth = 1 * window.innerWidth;
-        var windowHeight = 1 * window.innerHeight;
+        var windowWidth = 0.8 * window.innerWidth;
+        var windowHeight = 0.8 * window.innerHeight;
 
         cmGraph.svgElem = d3.select(cmGraph.containerDivElem).append("svg").attr({
             'width' : windowWidth,
@@ -241,16 +241,16 @@ var circleMapGraph = circleMapGraph || {};
                 var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
                 var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
                 circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
-            }).on('mouseover', function(d, i) {
-                // mouseover event for node
-                var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
-                var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
-                circleMapGElement[0].setAttributeNS(null, 'transform', largeScale);
-            }).on('mouseout', function(d, i) {
-                // mouseout event for node
-                var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
-                var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
-                circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
+                // }).on('mouseover', function(d, i) {
+                // // mouseover event for node
+                // var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
+                // var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
+                // circleMapGElement[0].setAttributeNS(null, 'transform', largeScale);
+                // }).on('mouseout', function(d, i) {
+                // // mouseout event for node
+                // var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
+                // var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
+                // circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
             });
         } else {
             // mouse events for sbgn nodes
@@ -282,7 +282,16 @@ var circleMapGraph = circleMapGraph || {};
             var position = d3.mouse(this);
             console.log('left click on node: ' + d.name + '(' + i + ')', d);
 
-            // d.fixed = !(d.fixed);
+            if (circleDataLoaded) {
+                var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
+                var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
+                var scale = circleMapGElement[0].getAttribute("transform");
+                if (scale === smallScale) {
+                    circleMapGElement[0].setAttributeNS(null, 'transform', largeScale);
+                } else {
+                    circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
+                }
+            }
 
             d3.event.preventDefault();
             d3.event.stopPropagation();
@@ -349,7 +358,7 @@ var circleMapGraph = circleMapGraph || {};
         });
 
         // node labels
-        nodeSelection.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(function(d) {
+        nodeSelection.append("svg:text").attr("text-anchor", "middle").attr('dy', "2.35em").text(function(d) {
             return d.name;
         });
 
