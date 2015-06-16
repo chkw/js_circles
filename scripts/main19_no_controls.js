@@ -68,7 +68,6 @@ var circleMapGraph = circleMapGraph || {};
         // context menu
         // uses medialize's jQuery-contextMenu
         $.contextMenu({
-            // selector : ".axis",
             selector : ".node",
             trigger : 'right',
             callback : function(key, options) {
@@ -93,17 +92,38 @@ var circleMapGraph = circleMapGraph || {};
                     "sep1" : "---------",
                     'toggle_pin' : {
                         name : function() {
-                            return "toggle pin";
+                            return "toggle pin this node";
                         },
                         icon : null,
                         disabled : false,
                         callback : function(key, opt) {
-                            var d3selection = d3.select(utils.extractFromJq($trigger));
-                            d3selection.each(function(d, i) {
+                            d3.select(utils.extractFromJq($trigger)).each(function(d, i) {
                                 d.fixed = !d.fixed;
                             });
                         }
                     },
+                    'pin_all' : {
+                        name : "pin all nodes",
+                        icon : null,
+                        disabled : false,
+                        callback : function(key, opt) {
+                            d3.selectAll(".node").each(function(d, i) {
+                                d.fixed = true;
+                            });
+                            cmGraph.force.stop();
+                        }
+                    },
+                    'free_all' : {
+                        name : "unpin all nodes",
+                        icon : null,
+                        disabled : false,
+                        callback : function(key, opt) {
+                            d3.selectAll(".node").each(function(d, i) {
+                                d.fixed = false;
+                            });
+                            cmGraph.force.start();
+                        }
+                    }
                 };
                 return {
                     'items' : items
