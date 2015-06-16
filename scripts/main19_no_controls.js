@@ -69,35 +69,6 @@ var circleMapGraph = circleMapGraph || {};
         // uses medialize's jQuery-contextMenu
         $.contextMenu({
             // selector : ".axis",
-            selector : "#circleMaps",
-            trigger : 'right',
-            callback : function(key, options) {
-                // default callback
-                var elem = this[0];
-                console.log('elem', elem);
-            },
-            build : function($trigger, contextmenuEvent) {
-                var items = {
-                    'title' : {
-                        name : function() {
-                            return "circleMaps contextMenu";
-                        },
-                        icon : null,
-                        disabled : false
-                        // ,
-                        // callback : function(key, opt) {
-                        // }
-                    },
-                    "sep1" : "---------"
-                };
-                return {
-                    'items' : items
-                };
-            }
-        });
-
-        $.contextMenu({
-            // selector : ".axis",
             selector : ".node",
             trigger : 'right',
             callback : function(key, options) {
@@ -106,13 +77,12 @@ var circleMapGraph = circleMapGraph || {};
                 console.log('elem', elem);
             },
             build : function($trigger, contextmenuEvent) {
-                console.log("trigger", $trigger);
-                var svgGroupElem = $trigger[0];
+                var circleMapSvgElem = utils.extractFromJq($trigger).getElementsByTagName("svg")[0];
+                var nodeName = circleMapSvgElem.getAttribute("name");
                 var items = {
                     'title' : {
                         name : function() {
-                            var nodeId = svgGroupElem['__data__']['name'];
-                            return "node: " + nodeId;
+                            return "node: " + nodeName;
                         },
                         icon : null,
                         disabled : false
@@ -128,6 +98,10 @@ var circleMapGraph = circleMapGraph || {};
                         icon : null,
                         disabled : false,
                         callback : function(key, opt) {
+                            var d3selection = d3.select(utils.extractFromJq($trigger));
+                            d3selection.each(function(d, i) {
+                                d.fixed = !d.fixed;
+                            });
                         }
                     },
                 };
