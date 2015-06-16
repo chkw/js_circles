@@ -368,8 +368,6 @@ var circleMapGraph = circleMapGraph || {};
         force.on("tick", function() {
             var maxAlpha = 0.05;
 
-            console.log("alpha", force.alpha());
-
             linkSelection.attr("x1", function(d) {
                 return d.source.x;
             }).attr("y1", function(d) {
@@ -386,6 +384,7 @@ var circleMapGraph = circleMapGraph || {};
 
             // don't run the layout indefinitely
             if (force.alpha() < maxAlpha) {
+                console.log("stop layout with alpha=" + force.alpha());
                 force.stop();
             }
         });
