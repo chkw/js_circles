@@ -204,6 +204,11 @@ var circleMapGenerator = {};
                 'class' : 'circleMapG'
             });
 
+            // white center
+            circleMapGroup.appendChild(utils.createSvgCircleElement(0, 0, innerRadius, {
+                "fill" : "white"
+            }));
+
             var legendColorMapper;
 
             // iterate over rings
