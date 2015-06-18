@@ -139,6 +139,19 @@ var circleMapGraph = circleMapGraph || {};
                             });
                             cmGraph.force.start();
                         }
+                    },
+                    'toggle_opacity' : {
+                        name : "toggle opacity",
+                        icon : null,
+                        disabled : false,
+                        callback : function(key, opt) {
+                            var transparent = 0.3;
+                            var opacity = circleMapSvgElem.getAttribute("opacity");
+                            var newOpacity = (opacity == transparent) ? 1 : transparent;
+                            utils.setElemAttributes(circleMapSvgElem, {
+                                "opacity" : newOpacity
+                            });
+                        }
                     }
                 };
                 return {
@@ -201,6 +214,7 @@ var circleMapGraph = circleMapGraph || {};
         }
 
         // links
+        // TODO add markers here?
         var svgLinkLayer = svg.select('#linkLayer');
         var linkSelection = svgLinkLayer.selectAll(".link").data(graph.links).enter().append("line").attr('id', function(d, i) {
             return 'link' + i;
@@ -212,6 +226,16 @@ var circleMapGraph = circleMapGraph || {};
 
         linkSelection.style("stroke-width", function(d) {
             return d.value;
+        });
+
+        // http://www.w3.org/TR/SVG/painting.html#StrokeProperties
+        linkSelection.style("stroke-dasharray", function(d, i) {
+            var type = d.relation;
+            if (utils.beginsWith(type, "-a")) {
+                return "6,3";
+            } else {
+                return null;
+            }
         });
 
         // mouse events for links - thicken on mouseover
