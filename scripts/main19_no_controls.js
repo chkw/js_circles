@@ -224,6 +224,17 @@ var circleMapGraph = circleMapGraph || {};
             return cmGraph.colorMapper(d.relation);
         });
 
+        linkSelection.style('marker-end', function(d, i) {
+            var type = d.relation;
+            if (utils.beginsWith(type, "-") && utils.endsWith(type, ">")) {
+                return "url(#arrowMarker)";
+            } else if (utils.beginsWith(type, "-") && utils.endsWith(type, "|")) {
+                return "url(#barMarker)";
+            } else {
+                return null;
+            }
+        });
+
         linkSelection.style("stroke-width", function(d) {
             return d.value;
         });
@@ -404,7 +415,9 @@ var circleMapGraph = circleMapGraph || {};
 
         // edge tooltips
         linkSelection.append("title").text(function(d) {
-            var label = d.source.name + " " + d.relation + " " + d.target.name;
+            var sourceNode = cmGraph.graphDataObj.nodes[d.source];
+            var targetNode = cmGraph.graphDataObj.nodes[d.target];
+            var label = sourceNode.name + " " + d.relation + " " + targetNode.name;
             return label;
         });
 
