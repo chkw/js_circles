@@ -1,7 +1,23 @@
+/**
+ * circleMapGraph.js
+ * chrisw
+ *
+ * Draw CircleMap network graph
+ * requires:
+ * 1) jquery
+ * 2) jquery-contexmenu <https://medialize.github.io/jQuery-contextMenu/>
+ * 3) d3.js
+ * 4) jstat
+ * 5) utils.js
+ * 6) OD_eventData
+ * 7) graphData
+ * 8) medbook_data_load
+ * 9) circleMapGenerator
+ */
+
 // http://bl.ocks.org/mbostock/929623 shows a nice way to build a graph with intuitive controls.
 // bl.ocks.org/rkirsling/5001347
-// context menu: https://medialize.github.io/jQuery-contextMenu/
-console.log("circleMapGraph loading");
+
 var circleMapGraph = circleMapGraph || {};
 (function(cmGraph) {"use strict";
 
