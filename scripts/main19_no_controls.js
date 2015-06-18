@@ -172,6 +172,11 @@ var circleMapGraph = circleMapGraph || {};
             'height' : windowHeight,
             'id' : 'circleMaps'
         });
+
+        // http://www.w3.org/TR/SVG/painting.html#MarkerElement
+        var defsElem = cmGraph.svgElem.append('defs');
+        cmGraph.addMarkerDefs(defsElem);
+
         cmGraph.svgElem.append('g').attr({
             id : 'linkLayer'
         });
@@ -184,6 +189,39 @@ var circleMapGraph = circleMapGraph || {};
 
         // for d3 layout and rendering
         cmGraph.force = d3.layout.force().size([windowWidth, windowHeight]).linkDistance(d3_config['linkDistance']).linkStrength(d3_config['linkStrength']).friction(d3_config['friction']).gravity(d3_config['gravity']);
+    };
+
+    // addMarkerDefs
+    cmGraph.addMarkerDefs = function(d3svgDefsElem) {
+        var offset = 24;
+
+        var marker = d3svgDefsElem.append("marker").attr({
+            id : "Triangle",
+            viewBox : "0 0 10 10",
+            refX : 10 + offset,
+            refY : "5",
+            markerUnits : "strokeWidth",
+            markerWidth : "4",
+            markerHeight : "3",
+            orient : "auto"
+        });
+        marker.append("path").attr({
+            d : "M 0 0 L 10 5 L 0 10 z"
+        });
+
+        marker = d3svgDefsElem.append("marker").attr({
+            id : "Bar",
+            viewBox : "0 0 10 10",
+            refX : 0 + offset,
+            refY : "5",
+            markerUnits : "strokeWidth",
+            markerWidth : "4",
+            markerHeight : "3",
+            orient : "auto"
+        });
+        marker.append("path").attr({
+            d : "M 0 0 L 0 10 L 2 10 L 2 0 z"
+        });
     };
 
     // requires svg, force, graph, cmg, circleDataLoaded, and various constants
@@ -214,7 +252,6 @@ var circleMapGraph = circleMapGraph || {};
         }
 
         // links
-        // TODO add markers here?
         var svgLinkLayer = svg.select('#linkLayer');
         var linkSelection = svgLinkLayer.selectAll(".link").data(graph.links).enter().append("line").attr('id', function(d, i) {
             return 'link' + i;
@@ -227,9 +264,9 @@ var circleMapGraph = circleMapGraph || {};
         linkSelection.style('marker-end', function(d, i) {
             var type = d.relation;
             if (utils.beginsWith(type, "-") && utils.endsWith(type, ">")) {
-                return "url(#arrowMarker)";
+                return "url(#Triangle)";
             } else if (utils.beginsWith(type, "-") && utils.endsWith(type, "|")) {
-                return "url(#barMarker)";
+                return "url(#Bar)";
             } else {
                 return null;
             }
