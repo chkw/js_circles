@@ -192,6 +192,8 @@ var circleMapGraph = circleMapGraph || {};
     };
 
     // addMarkerDefs
+    // SVG 2 may allow setting fill="context-stroke" to match parent element
+    // https://svgwg.org/svg2-draft/painting.html#VertexMarkerProperties
     cmGraph.addMarkerDefs = function(d3svgDefsElem) {
         var offset = 24;
 
