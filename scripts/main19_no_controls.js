@@ -185,7 +185,7 @@ var circleMapGraph = circleMapGraph || {};
         });
 
         // for d3 color mapping.
-        cmGraph.colorMapper = d3.scale.category20();
+        cmGraph.colorMapper = d3.scale.category10();
 
         // for d3 layout and rendering
         cmGraph.force = d3.layout.force().size([windowWidth, windowHeight]).linkDistance(d3_config['linkDistance']).linkStrength(d3_config['linkStrength']).friction(d3_config['friction']).gravity(d3_config['gravity']);
