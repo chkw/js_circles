@@ -165,7 +165,7 @@ var circleMapGraph = circleMapGraph || {};
 
         // outer SVG element
         var windowWidth = 0.8 * window.innerWidth;
-        var windowHeight = 0.8 * window.innerHeight;
+        var windowHeight = 1.0 * window.innerHeight;
 
         cmGraph.svgElem = d3.select(cmGraph.containerDivElem).append("svg").attr({
             'width' : windowWidth,
@@ -465,7 +465,22 @@ var circleMapGraph = circleMapGraph || {};
 
         // tick handler repositions graph elements
         force.on("tick", function() {
-            var maxAlpha = 0.05;
+            var maxAlpha = 0.03;
+
+            // position limits
+            var offset = 20;
+
+            var minX = 0 + offset;
+            var minY = 0 + offset;
+
+            var maxX = parseFloat(cmGraph.svgElem.attr("width")) - offset;
+            var maxY = parseFloat(cmGraph.svgElem.attr("height")) - offset;
+
+            nodeSelection.attr("transform", function(d) {
+                d.x = utils.rangeLimit(d.x, minX, maxX);
+                d.y = utils.rangeLimit(d.y, minY, maxY);
+                return 'translate(' + d.x + ',' + d.y + ')';
+            });
 
             linkSelection.attr("x1", function(d) {
                 return d.source.x;
@@ -475,10 +490,6 @@ var circleMapGraph = circleMapGraph || {};
                 return d.target.x;
             }).attr("y2", function(d) {
                 return d.target.y;
-            });
-
-            nodeSelection.attr("transform", function(d) {
-                return 'translate(' + d.x + ',' + d.y + ')';
             });
 
             // don't run the layout indefinitely
