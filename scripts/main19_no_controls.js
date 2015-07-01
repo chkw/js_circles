@@ -106,6 +106,27 @@ var circleMapGraph = circleMapGraph || {};
                         // }
                     },
                     "sep1" : "---------",
+                    "toggle_size" : {
+                        name : function() {
+                            return "toggle node size";
+                        },
+                        icon : null,
+                        disabled : false,
+                        callback : function(key, opt) {
+                            var largeScale = 'scale(2)';
+                            var smallScale = 'scale(0.2)';
+                            if (circleDataLoaded) {
+                                // var circleMapSvgElem = document.getElementById('circleMapSvg' + d['name']);
+                                var circleMapGElement = circleMapSvgElem.getElementsByClassName("circleMapG");
+                                var scale = circleMapGElement[0].getAttribute("transform");
+                                if (scale === smallScale) {
+                                    circleMapGElement[0].setAttributeNS(null, 'transform', largeScale);
+                                } else {
+                                    circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
+                                }
+                            }
+                        }
+                    },
                     'toggle_pin' : {
                         name : function() {
                             return "toggle pin this node";
@@ -202,9 +223,10 @@ var circleMapGraph = circleMapGraph || {};
             viewBox : "0 0 10 10",
             refX : 10 + offset,
             refY : "5",
-            markerUnits : "strokeWidth",
-            markerWidth : "4",
-            markerHeight : "3",
+            // markerUnits : "strokeWidth",
+            markerUnits : "userSpaceOnUse",
+            markerWidth : "9",
+            markerHeight : "9",
             orient : "auto"
         });
         marker.append("path").attr({
@@ -216,9 +238,10 @@ var circleMapGraph = circleMapGraph || {};
             viewBox : "0 0 10 10",
             refX : 0 + offset,
             refY : "5",
-            markerUnits : "strokeWidth",
-            markerWidth : "4",
-            markerHeight : "3",
+            // markerUnits : "strokeWidth",
+            markerUnits : "userSpaceOnUse",
+            markerWidth : "9",
+            markerHeight : "9",
             orient : "auto"
         });
         marker.append("path").attr({
@@ -288,15 +311,50 @@ var circleMapGraph = circleMapGraph || {};
             }
         });
 
+        /**
+         * Get style properties for use as link decorations.
+         * @param {Object} relationType
+         */
+        var getLinkDecorations = function(relationType) {
+            var styles = {};
+            // marker-end
+            if (utils.beginsWith(relationType, "-") && utils.endsWith(relationType, ">")) {
+                styles["marker-end"] = "url(#Triangle)";
+            } else if (utils.beginsWith(relationType, "-") && utils.endsWith(relationType, "|")) {
+                styles["marker-end"] = "url(#Bar)";
+            }
+            // stroke-dasharray
+            if (utils.beginsWith(relationType, "-a")) {
+                styles["stroke-dasharray"] = "6,3";
+            }
+            return styles;
+        };
+
         // mouse events for links - thicken on mouseover
         linkSelection.on('mouseover', function(d, i) {
             // mouseover event for link
             var linkElement = document.getElementById('link' + i);
-            linkElement.setAttributeNS(null, 'style', 'stroke-width:' + (d.value * 3) + ' ; stroke:' + cmGraph.colorMapper(d.relation));
+            var decorations = getLinkDecorations(d.relation);
+            var styleString = 'stroke-width:' + (d.value * 3) + ' ; stroke:' + cmGraph.colorMapper(d.relation);
+
+            for (var key in decorations) {
+                var val = decorations[key];
+                styleString = styleString + ";" + key + ":" + val;
+            }
+
+            linkElement.setAttributeNS(null, 'style', styleString);
         }).on('mouseout', function(d, i) {
             // mouseout event for link
             var linkElement = document.getElementById('link' + i);
-            linkElement.setAttributeNS(null, 'style', 'stroke-width:' + d.value + ' ; stroke:' + cmGraph.colorMapper(d.relation));
+            var decorations = getLinkDecorations(d.relation);
+            var styleString = 'stroke-width:' + d.value + ' ; stroke:' + cmGraph.colorMapper(d.relation);
+
+            for (var key in decorations) {
+                var val = decorations[key];
+                styleString = styleString + ";" + key + ":" + val;
+            }
+
+            linkElement.setAttributeNS(null, 'style', styleString);
         });
 
         // context menu for link
@@ -331,16 +389,15 @@ var circleMapGraph = circleMapGraph || {};
                 var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
                 var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
                 circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
-                // }).on('mouseover', function(d, i) {
-                // // mouseover event for node
-                // var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
-                // var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
-                // circleMapGElement[0].setAttributeNS(null, 'transform', largeScale);
-                // }).on('mouseout', function(d, i) {
-                // // mouseout event for node
-                // var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
-                // var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
-                // circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
+            }).on('mouseover', function(d, i) {
+                // mouseover event for node
+
+                // pull node to front
+                var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
+                var nodeGelem = circleMapSvgElement.parentNode;
+                utils.pullElemToFront(nodeGelem);
+
+                // TODO highlight connecting edges
             });
         } else {
             // mouse events for sbgn nodes
@@ -369,19 +426,18 @@ var circleMapGraph = circleMapGraph || {};
 
         // node click
         nodeSelection.on("click", function(d, i) {
-            var position = d3.mouse(this);
             console.log('left click on node: ' + d.name + '(' + i + ')', d);
 
-            if (circleDataLoaded) {
-                var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
-                var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
-                var scale = circleMapGElement[0].getAttribute("transform");
-                if (scale === smallScale) {
-                    circleMapGElement[0].setAttributeNS(null, 'transform', largeScale);
-                } else {
-                    circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
-                }
-            }
+            // if (circleDataLoaded) {
+            // var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
+            // var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
+            // var scale = circleMapGElement[0].getAttribute("transform");
+            // if (scale === smallScale) {
+            // circleMapGElement[0].setAttributeNS(null, 'transform', largeScale);
+            // } else {
+            // circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
+            // }
+            // }
 
             d3.event.preventDefault();
             d3.event.stopPropagation();
