@@ -94,10 +94,11 @@ var circleMapGraph = circleMapGraph || {};
             build : function($trigger, contextmenuEvent) {
                 var circleMapSvgElem = utils.extractFromJq($trigger).getElementsByTagName("svg")[0];
                 var nodeName = circleMapSvgElem.getAttribute("name");
+                var nodeType = circleMapSvgElem.getAttribute("nodeType");
                 var items = {
                     'title' : {
                         name : function() {
-                            return "node: " + nodeName;
+                            return nodeType + ": " + nodeName;
                         },
                         icon : null,
                         disabled : false
@@ -272,7 +273,7 @@ var circleMapGraph = circleMapGraph || {};
         if (circleDataLoaded) {
             for (var i in nodeNames) {
                 var feature = nodeNames[i];
-                var circleMapElement = cmg.drawCircleMap(feature, svgNodeLayer);
+                var circleMapElement = cmg.drawCircleMap(feature, svgNodeLayer, 100, true);
             }
         }
 
@@ -387,6 +388,7 @@ var circleMapGraph = circleMapGraph || {};
             nodeSelection.each(function(d) {
                 // add attribute to the node data
                 var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
+                circleMapSvgElement.setAttributeNS(null, "nodeType", d.group);
                 var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
                 circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
             }).on('mouseover', function(d, i) {
@@ -426,7 +428,7 @@ var circleMapGraph = circleMapGraph || {};
 
         // node click
         nodeSelection.on("click", function(d, i) {
-            console.log('left click on node: ' + d.name + '(' + i + ')', d);
+            console.log('d3 detected left click on node: ' + d.name + '(' + i + ')', d);
 
             // if (circleDataLoaded) {
             // var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
