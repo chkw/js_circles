@@ -517,9 +517,9 @@ var circleMapGraph = circleMapGraph || {};
         });
 
         // node tooltips
-        nodeSelection.append("title").text(function(d) {
-            return d.name + ' : ' + d.group;
-        });
+        // nodeSelection.append("title").text(function(d) {
+        // return d.name + ' : ' + d.group;
+        // });
 
         // tick handler repositions graph elements
         force.on("tick", function() {

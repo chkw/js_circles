@@ -257,6 +257,7 @@ var circleMapGenerator = {};
                         var sampleName = val;
                         var hexColor = "grey";
 
+                        var score = null;
                         if ( sampleName in ringData) {
                             var score = ringData[sampleName];
                             if (eventStats != null) {
@@ -271,10 +272,23 @@ var circleMapGenerator = {};
 
                         var arc = createD3Arc(innerRadius, innerRadius + ringThickness, startDegrees, startDegrees + degreeIncrements);
                         var pathElem = document.createElementNS(utils.svgNamespaceUri, 'path');
+
                         utils.setElemAttributes(pathElem, {
                             'd' : arc(),
-                            'fill' : hexColor
+                            'fill' : hexColor,
+                            'sampleName' : sampleName,
+                            'ringName' : ringName,
+                            'feature' : feature,
+                            'score' : score
                         });
+
+                        // tooltip for arc
+                        score = (utils.isNumerical(score)) ? score.toFixed(3) : score;
+                        var titleText = "sample " + sampleName + "'s " + ringName + " score for " + feature + " is " + score + ".";
+                        var titleElem = document.createElementNS(utils.svgNamespaceUri, "title");
+                        titleElem.innerHTML = titleText;
+                        pathElem.appendChild(titleElem);
+
                         circleMapGroup.appendChild(pathElem);
 
                         // clockwise from 12 o clock
