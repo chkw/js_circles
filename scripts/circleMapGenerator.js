@@ -184,7 +184,8 @@ var circleMapGenerator = {};
         /**
          * Generate an svg:group DOM element to be appended to an svg element.
          */
-        this.generateCircleMapSvgGElem = function(feature, radius) {
+        this.generateCircleMapSvgGElem = function(feature, radius, interactive) {
+            var interactive = interactive || false;
             var ringsList = this.queryData['ringsList'];
 
             var fullRadius = ( typeof radius === 'undefined') ? 100 : radius;
@@ -282,12 +283,15 @@ var circleMapGenerator = {};
                             'score' : score
                         });
 
-                        // tooltip for arc
-                        score = (utils.isNumerical(score)) ? score.toFixed(3) : score;
-                        var titleText = "sample " + sampleName + "'s " + ringName + " score for " + feature + " is " + score + ".";
-                        var titleElem = document.createElementNS(utils.svgNamespaceUri, "title");
-                        titleElem.innerHTML = titleText;
-                        pathElem.appendChild(titleElem);
+                        // additional interactive features
+                        if (interactive) {
+                            // tooltip for arc
+                            score = (utils.isNumerical(score)) ? score.toFixed(3) : score;
+                            var titleText = "sample " + sampleName + "'s " + ringName + " score for " + feature + " is " + score + ".";
+                            var titleElem = document.createElementNS(utils.svgNamespaceUri, "title");
+                            titleElem.innerHTML = titleText;
+                            pathElem.appendChild(titleElem);
+                        }
 
                         circleMapGroup.appendChild(pathElem);
 
@@ -327,10 +331,13 @@ var circleMapGenerator = {};
          * handles multiple rings.
          * @param {Object} feature
          * @param {Object} d3SvgTagElement
+         * @param {Object} radius
+         * @param {Object} interactive  boolean to include additional interactive features
          */
-        this.drawCircleMap = function(feature, d3SvgTagElement) {
-
-            var svgGElem = this.generateCircleMapSvgGElem(feature);
+        this.drawCircleMap = function(feature, d3SvgTagElement, radius, interactive) {
+            var interactive = interactive || true;
+            var radius = radius || 100;
+            var svgGElem = this.generateCircleMapSvgGElem(feature, radius, interactive);
 
             var svgElem = document.createElementNS(utils.svgNamespaceUri, 'svg');
             // svgElem.setAttributeNS('null', 'xmlns', 'http://www.w3.org/2000/svg');
