@@ -47,6 +47,9 @@ var circleMapGraph = circleMapGraph || {};
         'nodeRadius' : 20
     };
 
+    cmGraph.largeScale = 'scale(2)';
+    cmGraph.smallScale = 'scale(0.2)';
+
     cmGraph.containerDivElem = null;
     cmGraph.graphDataObj = null;
     cmGraph.circleMapGeneratorObj = null;
@@ -114,16 +117,14 @@ var circleMapGraph = circleMapGraph || {};
                         icon : null,
                         disabled : false,
                         callback : function(key, opt) {
-                            var largeScale = 'scale(2)';
-                            var smallScale = 'scale(0.2)';
                             if (circleDataLoaded) {
                                 // var circleMapSvgElem = document.getElementById('circleMapSvg' + d['name']);
                                 var circleMapGElement = circleMapSvgElem.getElementsByClassName("circleMapG");
                                 var scale = circleMapGElement[0].getAttribute("transform");
-                                if (scale === smallScale) {
-                                    circleMapGElement[0].setAttributeNS(null, 'transform', largeScale);
+                                if (scale === cmGraph.smallScale) {
+                                    circleMapGElement[0].setAttributeNS(null, 'transform', cmGraph.largeScale);
                                 } else {
-                                    circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
+                                    circleMapGElement[0].setAttributeNS(null, 'transform', cmGraph.smallScale);
                                 }
                             }
                         }
@@ -256,14 +257,38 @@ var circleMapGraph = circleMapGraph || {};
         });
     };
 
+    /**
+     *Draw circleMap SVGs and attach to the node layer.
+     */
+    cmGraph.drawCircleMaps = function(nodeNames, d3SvgNodeLayer, radius, additionalInteraction) {
+        for (var i in nodeNames) {
+            var feature = nodeNames[i];
+            var circleMapElement = cmg.drawCircleMap(feature, d3SvgNodeLayer, radius, additionalInteraction);
+        }
+    };
+
+    /**
+     * Remove all circleMap SVG group elements.
+     */
+    cmGraph.clearCircleMaps = function() {
+        d3.select('#nodeLayer').selectAll('.circleMapG').remove();
+    };
+
+    cmGraph.attachCircleMaps = function() {
+        var svgNodeLayer = d3.select('#nodeLayer');
+        var radius = 100;
+        var interactive = true;
+        var circleMapSvgSelection = svgNodeLayer.selectAll(".node").selectAll(".circleMapSvg");
+        circleMapSvgSelection.each(function(d, i) {
+            var feature = d.name;
+            var svgGElem = cmGraph.circleMapGeneratorObj.generateCircleMapSvgGElem(feature, radius, interactive);
+            svgGElem.setAttributeNS(null, 'transform', cmGraph.smallScale);
+            this.appendChild(svgGElem);
+        });
+    };
+
     // requires svg, force, graph, cmg, circleDataLoaded, and various constants
-    cmGraph.renderGraph = function(svg, force, graph, cmg, circleDataLoaded) {"use strict";
-
-        var largeScale = 'scale(2)';
-        var smallScale = 'scale(0.2)';
-
-        // var largeScale = 'scale(1)';
-        // var smallScale = 'scale(1)';
+    cmGraph.renderGraph = function(svg, force, graph, cmg, circleDataLoaded) {
 
         // clear the current graph
         var removedLinks = svg.selectAll(".link").remove();
@@ -277,10 +302,7 @@ var circleMapGraph = circleMapGraph || {};
         var svgNodeLayer = svg.select('#nodeLayer');
         var nodeNames = graph.getAllNodeNames();
         if (circleDataLoaded) {
-            for (var i in nodeNames) {
-                var feature = nodeNames[i];
-                var circleMapElement = cmg.drawCircleMap(feature, svgNodeLayer, 100, true);
-            }
+            cmGraph.drawCircleMaps(nodeNames, svgNodeLayer, 100, true);
         }
 
         // links
@@ -364,26 +386,6 @@ var circleMapGraph = circleMapGraph || {};
             linkElement.setAttributeNS(null, 'style', styleString);
         });
 
-        // context menu for link
-        // linkSelection.on("contextmenu", function(d, i) {
-        // var position = d3.mouse(this);
-        // var linkDesc = d.source.name + ' ' + d.relation + ' ' + d.target.name;
-        // console.log('right click on link: ' + linkDesc + '(' + i + ')');
-        //
-        // d3.event.preventDefault();
-        // d3.event.stopPropagation();
-        // });
-
-        // link click
-        // linkSelection.on("click", function(d, i) {
-        // var position = d3.mouse(this);
-        // var linkDesc = d.source.name + ' ' + d.relation + ' ' + d.target.name;
-        // console.log('left click on link: ' + linkDesc + '(' + i + ')');
-        //
-        // d3.event.preventDefault();
-        // d3.event.stopPropagation();
-        // });
-
         // nodes
         var nodeSelection = svgNodeLayer.selectAll(".node").data(graph.nodes).enter().append("g").attr('class', function(d, i) {
             return "node " + d.name + ' ' + d.group;
@@ -396,7 +398,7 @@ var circleMapGraph = circleMapGraph || {};
                 var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
                 circleMapSvgElement.setAttributeNS(null, "nodeType", d.group);
                 var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
-                circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
+                circleMapGElement[0].setAttributeNS(null, 'transform', cmGraph.smallScale);
             }).on('mouseover', function(d, i) {
                 // mouseover event for node
 
@@ -422,34 +424,6 @@ var circleMapGraph = circleMapGraph || {};
             });
         }
         nodeSelection.call(force.drag);
-
-        // context menu for node
-        // nodeSelection.on("contextmenu", function(d, i) {
-        // var position = d3.mouse(this);
-        // console.log('right click on node: ' + d.name + '(' + i + ')');
-        //
-        // d3.event.preventDefault();
-        // d3.event.stopPropagation();
-        // });
-
-        // node click
-        nodeSelection.on("click", function(d, i) {
-            console.log('d3 detected left click on node: ' + d.name + '(' + i + ')', d);
-
-            // if (circleDataLoaded) {
-            // var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
-            // var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
-            // var scale = circleMapGElement[0].getAttribute("transform");
-            // if (scale === smallScale) {
-            // circleMapGElement[0].setAttributeNS(null, 'transform', largeScale);
-            // } else {
-            // circleMapGElement[0].setAttributeNS(null, 'transform', smallScale);
-            // }
-            // }
-
-            d3.event.preventDefault();
-            d3.event.stopPropagation();
-        });
 
         // node visualization
         var opacityVal = 0.6;
@@ -523,11 +497,6 @@ var circleMapGraph = circleMapGraph || {};
             var label = sourceNode.name + " " + d.relation + " " + targetNode.name;
             return label;
         });
-
-        // node tooltips
-        // nodeSelection.append("title").text(function(d) {
-        // return d.name + ' : ' + d.group;
-        // });
 
         // tick handler repositions graph elements
         force.on("tick", function() {
