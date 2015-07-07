@@ -128,40 +128,46 @@ var circleMapGraph = circleMapGraph || {};
                             }
                         }
                     },
-                    'toggle_pin' : {
-                        name : function() {
-                            return "toggle pin this node";
-                        },
-                        icon : null,
-                        disabled : false,
-                        callback : function(key, opt) {
-                            d3.select(utils.extractFromJq($trigger)).each(function(d, i) {
-                                d.fixed = !d.fixed;
-                            });
+                    "pin_fold" : {
+                        name : "pinning",
+                        items : {
+                            'toggle_pin' : {
+                                name : function() {
+                                    return "toggle pin this node";
+                                },
+                                icon : null,
+                                disabled : false,
+                                callback : function(key, opt) {
+                                    d3.select(utils.extractFromJq($trigger)).each(function(d, i) {
+                                        d.fixed = !d.fixed;
+                                    });
+                                }
+                            },
+                            'pin_all' : {
+                                name : "pin all nodes",
+                                icon : null,
+                                disabled : false,
+                                callback : function(key, opt) {
+                                    d3.selectAll(".node").each(function(d, i) {
+                                        d.fixed = true;
+                                    });
+                                    cmGraph.force.stop();
+                                }
+                            },
+                            'free_all' : {
+                                name : "unpin all nodes",
+                                icon : null,
+                                disabled : false,
+                                callback : function(key, opt) {
+                                    d3.selectAll(".node").each(function(d, i) {
+                                        d.fixed = false;
+                                    });
+                                    cmGraph.force.start();
+                                }
+                            }
                         }
                     },
-                    'pin_all' : {
-                        name : "pin all nodes",
-                        icon : null,
-                        disabled : false,
-                        callback : function(key, opt) {
-                            d3.selectAll(".node").each(function(d, i) {
-                                d.fixed = true;
-                            });
-                            cmGraph.force.stop();
-                        }
-                    },
-                    'free_all' : {
-                        name : "unpin all nodes",
-                        icon : null,
-                        disabled : false,
-                        callback : function(key, opt) {
-                            d3.selectAll(".node").each(function(d, i) {
-                                d.fixed = false;
-                            });
-                            cmGraph.force.start();
-                        }
-                    },
+
                     'toggle_opacity' : {
                         name : "toggle opacity",
                         icon : null,
