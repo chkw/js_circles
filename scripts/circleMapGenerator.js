@@ -202,7 +202,8 @@ var circleMapGenerator = {};
             // arc paths will be added to this SVG group
             var circleMapGroup = document.createElementNS(utils.svgNamespaceUri, 'g');
             utils.setElemAttributes(circleMapGroup, {
-                'class' : 'circleMapG'
+                'class' : 'circleMapG',
+                "feature" : feature
             });
 
             // white center
@@ -214,9 +215,7 @@ var circleMapGenerator = {};
 
             // iterate over rings
             for (var i = 0; i < ringsList.length; i++) {
-
                 var ringName = ringsList[i];
-
                 var dataName = null;
 
                 // find data name suffix at runtime
@@ -225,6 +224,14 @@ var circleMapGenerator = {};
                 } else {
                     dataName = ringName;
                 }
+
+                var ringGroupElem = document.createElementNS(utils.svgNamespaceUri, 'g');
+                utils.setElemAttributes(ringGroupElem, {
+                    'class' : 'circleMapRingG',
+                    'ringName' : ringName,
+                    'dataName' : dataName
+                });
+                circleMapGroup.appendChild(ringGroupElem);
 
                 var ringData = this.getRingData(dataName);
 
@@ -238,7 +245,7 @@ var circleMapGenerator = {};
                         'd' : arc(),
                         'fill' : legendColorMapper(dataName)
                     });
-                    circleMapGroup.appendChild(pathElem);
+                    ringGroupElem.appendChild(pathElem);
                 } else if (ringData == null) {
                     // draw a grey ring for no data.
                     var arc = createD3Arc(innerRadius, innerRadius + ringThickness, 0, 360);
@@ -247,7 +254,7 @@ var circleMapGenerator = {};
                         'd' : arc(),
                         'fill' : 'grey'
                     });
-                    circleMapGroup.appendChild(pathElem);
+                    ringGroupElem.appendChild(pathElem);
                 } else {
                     var allowedValues = this.eventAlbum.getEvent(dataName).metadata.allowedValues;
                     var eventStats = this.eventStats[dataName];
@@ -278,8 +285,6 @@ var circleMapGenerator = {};
                             'd' : arc(),
                             'fill' : hexColor,
                             'sampleName' : sampleName,
-                            'ringName' : ringName,
-                            'feature' : feature,
                             'score' : score
                         });
 
@@ -293,7 +298,7 @@ var circleMapGenerator = {};
                             pathElem.appendChild(titleElem);
                         }
 
-                        circleMapGroup.appendChild(pathElem);
+                        ringGroupElem.appendChild(pathElem);
 
                         // clockwise from 12 o clock
                         startDegrees = startDegrees + degreeIncrements;
