@@ -588,6 +588,11 @@ var circleMapGraph = circleMapGraph || {};
             // don't run the layout indefinitely
             if (force.alpha() < maxAlpha) {
                 console.log("stop layout with alpha=" + force.alpha());
+
+                d3.selectAll(".node").each(function(d, i) {
+                    d.fixed = true;
+                });
+
                 force.stop();
             }
         });
