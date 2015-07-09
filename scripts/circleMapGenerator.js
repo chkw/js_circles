@@ -101,26 +101,25 @@ var circleMapGenerator = {};
         };
 
         /**
-         * Get a sorted list of sampleIds
+         * sort samples
          */
-        this.getSortedSamples = function(sortingSteps) {
-            var sortedSampleIds = this.eventAlbum.multisortSamples(sortingSteps);
-            return sortedSampleIds;
+        this.sortSamples = function() {
+            // get sorted samples
+            var ss = new eventData.sortingSteps();
+            if (utils.hasOwnProperty(this.queryData, "orderFeature")) {
+                var features = [].concat(this.queryData["orderFeature"]);
+                features.reverse();
+                for (var i = 0; i < features.length; i++) {
+                    ss.addStep(features[i]);
+                }
+            } else {
+                ss.addStep(this.getQueryFeatures()[0]);
+            }
+            console.log('ring sorting steps', ss);
+            this.sortedSamples = this.eventAlbum.multisortSamples(ss);
         };
 
-        // get sorted samples
-        var ss = new eventData.sortingSteps();
-        if (utils.hasOwnProperty(this.queryData, "orderFeature")) {
-            var features = [].concat(this.queryData["orderFeature"]);
-            features.reverse();
-            for (var i = 0; i < features.length; i++) {
-                ss.addStep(features[i]);
-            }
-        } else {
-            ss.addStep(this.getQueryFeatures()[0]);
-        }
-        console.log('ring sorting steps', ss);
-        this.sortedSamples = this.getSortedSamples(ss);
+        this.sortSamples();
 
         /**
          * get a color for a score
@@ -180,6 +179,14 @@ var circleMapGenerator = {};
             var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius).startAngle(startDegrees * (Math.PI / 180)).endAngle(endDegrees * (Math.PI / 180));
             return arc;
         }
+
+        var testCallback = function(pathElem) {
+            var ringGroupElem = pathElem.parentNode;
+            var circleMapGroupElem = ringGroupElem.parentNode;
+            var ringName = ringGroupElem.getAttribute("ringName");
+            var feature = circleMapGroupElem.getAttribute("feature");
+            console.log("clicked pathElem: " + ringName + " for " + feature);
+        };
 
         /**
          * Generate an svg:group DOM element to be appended to an svg element.
@@ -303,6 +310,10 @@ var circleMapGenerator = {};
                             var titleElem = document.createElementNS(utils.svgNamespaceUri, "title");
                             titleElem.innerHTML = titleText;
                             pathElem.appendChild(titleElem);
+
+                            pathElem.onclick = function() {
+                                testCallback(this);
+                            };
                         }
 
                         ringGroupElem.appendChild(pathElem);

@@ -59,6 +59,13 @@ var circleMapGraph = circleMapGraph || {};
     cmGraph.colorMapper = null;
     cmGraph.force = null;
 
+    cmGraph.setNewCircleMapGeneratorSettings = function(newSettings) {
+        for (var key in newSettings) {
+            cmGraph.circleMapGeneratorObj.queryData[key] = newSettings[key];
+        }
+        cmGraph.circleMapGeneratorObj.sortSamples();
+    };
+
     /**
      * One method call to build the graph
      */
@@ -86,6 +93,57 @@ var circleMapGraph = circleMapGraph || {};
     cmGraph.setup = function() {
         // context menu
         // uses medialize's jQuery-contextMenu
+        $.contextMenu({
+            selector : ".circleMapRingG",
+            trigger : 'right',
+            callback : function(key, options) {
+                // default callback
+                var elem = this[0];
+                console.log('elem', elem);
+            },
+            build : function($trigger, contextmenuEvent) {
+                var circleMapRingGelem = utils.extractFromJq($trigger);
+                var circleMapGelem = circleMapRingGelem.parentNode;
+                var node = circleMapGelem.getAttribute("feature");
+                var ringName = circleMapRingGelem.getAttribute("ringName");
+                var items = {
+                    'title' : {
+                        name : function() {
+                            return "ring: " + ringName + " for " + node;
+                        },
+                        icon : null,
+                        disabled : true
+                        // ,
+                        // callback : function(key, opt) {
+                        // }
+                    },
+                    "sep1" : "---------",
+                    "sort_samples" : {
+                        name : function() {
+                            return "sort samples by this ring";
+                        },
+                        icon : null,
+                        disabled : false,
+                        callback : function(key, opt) {
+                            // clear circlemaps
+                            cmGraph.clearCircleMaps();
+                            // TODO set sorting ring
+                            console.log('circleMapRingGelem', circleMapRingGelem);
+                            cmGraph.setNewCircleMapGeneratorSettings({
+                                "orderFeature" : node,
+                                "sortingRing" : [ringName]
+                            });
+                            // attach new circlemaps
+                            cmGraph.attachCircleMaps();
+                        }
+                    }
+                };
+                return {
+                    'items' : items
+                };
+            }
+        });
+
         $.contextMenu({
             selector : ".node",
             trigger : 'right',
