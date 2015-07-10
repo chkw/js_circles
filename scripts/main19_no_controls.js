@@ -48,7 +48,7 @@ var circleMapGraph = circleMapGraph || {};
     };
 
     cmGraph.largeScale = 'scale(2)';
-    cmGraph.smallScale = 'scale(0.2)';
+    cmGraph.smallScale = 'scale(0.3)';
 
     cmGraph.containerDivElem = null;
     cmGraph.graphDataObj = null;
@@ -298,7 +298,7 @@ var circleMapGraph = circleMapGraph || {};
     // SVG 2 may allow setting fill="context-stroke" to match parent element
     // https://svgwg.org/svg2-draft/painting.html#VertexMarkerProperties
     cmGraph.addMarkerDefs = function(d3svgDefsElem) {
-        var offset = 24;
+        var offset = 34;
 
         var marker = d3svgDefsElem.append("marker").attr({
             id : "Triangle",
@@ -318,7 +318,7 @@ var circleMapGraph = circleMapGraph || {};
         marker = d3svgDefsElem.append("marker").attr({
             id : "Bar",
             viewBox : "0 0 10 10",
-            refX : 0 + offset,
+            refX : 3 + offset,
             refY : "5",
             // markerUnits : "strokeWidth",
             markerUnits : "userSpaceOnUse",
@@ -327,7 +327,7 @@ var circleMapGraph = circleMapGraph || {};
             orient : "auto"
         });
         marker.append("path").attr({
-            d : "M 0 0 L 0 10 L 2 10 L 2 0 z"
+            d : "M 0 0 L 0 10 L 3 10 L 3 0 z"
         });
     };
 
