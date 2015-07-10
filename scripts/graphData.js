@@ -59,7 +59,7 @@ var graphData = {};
          */
         this.getAllNodeNames = function() {
             var nodeNames = new Array();
-            for (var i in this.nodes) {
+            for (var i = 0, length = this.nodes.length; i < length; i++) {
                 var nodeData = this.nodes[i];
                 var nodeName = nodeData['name'];
                 nodeNames.push(nodeName);
@@ -79,7 +79,7 @@ var graphData = {};
 
             // check if node already exists
             var exists = false;
-            for (var i in this.nodes) {
+            for (var i = 0, length = this.nodes.length; i < length; i++) {
                 var node = this.nodes[i];
                 if (node.checkEquality(nodeData)) {
                     console.log('nodeData exists');
@@ -114,9 +114,9 @@ var graphData = {};
         this.getNodeIdsByName = function(name) {
             var idList = new Array();
             var nameUc = name.toUpperCase(name);
-            for (var i in this.nodes) {
+            for (var i = 0, length = this.nodes.length; i < length; i++) {
                 var node = this.nodes[i];
-                if (node['name'].toUpperCase() == nameUc) {
+                if (node['name'].toUpperCase() === nameUc) {
                     idList.push(i);
                 }
             }
@@ -135,7 +135,7 @@ var graphData = {};
 
             // find index of node
             var idx = -1;
-            for (var i in this.nodes) {
+            for (var i = 0, length = this.nodes.length; i < length; i++) {
                 if (this.nodes[i]['name'] == name) {
                     idx = i;
                     break;
@@ -188,7 +188,7 @@ var graphData = {};
 
             // nodes
             var nodeNameArray = new Array();
-            for (var i in lines) {
+            for (var i = 0, length = lines.length; i < length; i++) {
                 var fields = lines[i].split('\t');
                 if (fields.length >= 2) {
                     var sourceName = fields[0];
@@ -198,7 +198,7 @@ var graphData = {};
                 }
             }
             nodeNameArray = d3.set(nodeNameArray).values();
-            for (var i in nodeNameArray) {
+            for (var i = 0, length = nodeNameArray.length; i < length; i++) {
                 var nodeName = nodeNameArray[i];
                 this.addNode(new nodeData({
                     name : nodeName
@@ -206,7 +206,7 @@ var graphData = {};
             }
 
             // links
-            for (var i in lines) {
+            for (var i = 0, length = lines.length; i < length; i++) {
                 var fields = lines[i].split('\t');
                 if (fields.length >= 2) {
                     var sourceName = fields[0];
@@ -241,7 +241,7 @@ var graphData = {};
 
             // nodes
             var nodeNameArray = new Array();
-            for (var i in lines) {
+            for (var i = 0, length = lines.length; i < length; i++) {
                 var fields = lines[i].split('\t');
                 if (fields.length >= 3) {
                     var sourceName = fields[0];
@@ -251,7 +251,7 @@ var graphData = {};
                 }
             }
             nodeNameArray = d3.set(nodeNameArray).values();
-            for (var i in nodeNameArray) {
+            for (var i = 0, length = nodeNameArray.length; i < length; i++) {
                 var nodeName = nodeNameArray[i];
                 this.addNode(new gd.nodeData({
                     name : nodeName
@@ -259,7 +259,7 @@ var graphData = {};
             }
 
             // links
-            for (var i in lines) {
+            for (var i = 0, length = lines.length; i < length; i++) {
                 var fields = lines[i].split('\t');
                 if (fields.length >= 3) {
                     var sourceName = fields[0];
@@ -287,7 +287,7 @@ var graphData = {};
 
             var lines = text.split('\n');
             // nodes
-            for (var i in lines) {
+            for (var i = 0, length = lines.length; i < length; i++) {
                 var fields = lines[i].split('\t');
                 if (fields.length == 2) {
                     this.addNode(new nodeData({
@@ -297,7 +297,7 @@ var graphData = {};
                 }
             }
             // edges
-            for (var i in lines) {
+            for (var i = 0, length = lines.length; i < length; i++) {
                 var fields = lines[i].split('\t');
                 if (fields.length >= 3) {
                     // relation
@@ -307,7 +307,7 @@ var graphData = {};
 
                     var sourceIdx = -1;
                     var targetIdx = -1;
-                    for (var j in this.nodes) {
+                    for (var j = 0, length = this.nodes.length; j < length; j++) {
                         var nodeName = this.nodes[j]['name'];
                         if (nodeName == sourceName) {
                             sourceIdx = j;
@@ -338,14 +338,14 @@ var graphData = {};
             var pidString = '';
 
             // nodes
-            for (var i in this.nodes) {
+            for (var i = 0, length = this.nodes.length; i < length; i++) {
                 var node = this.nodes[i];
                 var nodeString = node['group'] + '\t' + node['name'] + '\n';
                 pidString = pidString + nodeString;
             }
 
             // relations
-            for (var i in this.links) {
+            for (var i = 0, length = this.links.length; i < length; i++) {
                 var link = this.links[i];
                 var relation = link['value'];
                 if ('relation' in link) {
@@ -369,7 +369,7 @@ var graphData = {};
             };
 
             // nodes
-            for (var i in this.nodes) {
+            for (var i = 0, length = this.nodes.length; i < length; i++) {
                 var node = this.nodes[i];
 
                 elements['nodes'].push({
@@ -381,7 +381,7 @@ var graphData = {};
             }
 
             // relations
-            for (var i in this.links) {
+            for (var i = 0, length = this.links.length; i < length; i++) {
                 var link = this.links[i];
 
                 // relation may be stored as value or relation
@@ -400,6 +400,33 @@ var graphData = {};
             }
 
             return elements;
+        };
+
+        /**
+         * Get this node's neighbors.
+         */
+        this.getNeighbors = function(nodeName, degree) {
+            var degree = degree || 1;
+            var neighborObjs = [];
+            var nodeIdxs = this.getNodeIdsByName(nodeName);
+
+            for (; degree > 0; degree--) {
+                var newNodeIdxs = [];
+                for (var i = 0, length = this.links.length; i < length; i++) {
+                    var linkData = this.links[i];
+                    var sourceNodeIdx = linkData.source.index;
+                    var targetNodeIdx = linkData.target.index;
+                    if ((!utils.isObjInArray(nodeIdxs, targetNodeIdx)) && utils.isObjInArray(nodeIdxs, sourceNodeIdx)) {
+                        newNodeIdxs.push(targetNodeIdx);
+                        neighborObjs.push(this.nodes[targetNodeIdx]);
+                    } else if ((!utils.isObjInArray(nodeIdxs, sourceNodeIdx)) && utils.isObjInArray(nodeIdxs, targetNodeIdx)) {
+                        newNodeIdxs.push(sourceNodeIdx);
+                        neighborObjs.push(this.nodes[sourceNodeIdx]);
+                    }
+                }
+                nodeIdxs = nodeIdxs.concat(newNodeIdxs);
+            }
+            return utils.eliminateDuplicates(neighborObjs);
         };
     };
 

@@ -228,6 +228,17 @@ var circleMapGraph = circleMapGraph || {};
                                     });
                                     cmGraph.force.start();
                                 }
+                            },
+                            "neighbors_test" : {
+                                name : "unpin neighbors",
+                                icon : null,
+                                disabled : false,
+                                callback : function(key, opt) {
+                                    var nodeDataObjs = cmGraph.graphDataObj.getNeighbors(nodeName, 1);
+                                    for (var i = 0, length = nodeDataObjs.length; i < length; i++) {
+                                        nodeDataObjs[i].fixed = false;
+                                    }
+                                }
                             }
                         }
                     },
@@ -549,7 +560,7 @@ var circleMapGraph = circleMapGraph || {};
         });
 
         // node labels
-        nodeSelection.append("svg:text").attr("text-anchor", "middle").attr('dy', "2.35em").text(function(d) {
+        nodeSelection.append("svg:text").attr("text-anchor", "middle").attr('dy', "2.7em").text(function(d) {
             return d.name;
         });
 
