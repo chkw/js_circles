@@ -105,11 +105,11 @@ var circleMapGraph = circleMapGraph || {};
                 var circleMapRingGelem = utils.extractFromJq($trigger);
                 var circleMapGelem = circleMapRingGelem.parentNode;
                 var node = circleMapGelem.getAttribute("feature");
-                var ringName = circleMapRingGelem.getAttribute("ringName");
+                var datasetName = circleMapRingGelem.getAttribute("ringName");
                 var items = {
                     'title' : {
                         name : function() {
-                            return "ring: " + ringName + " for " + node;
+                            return "ring: " + datasetName + " for " + node;
                         },
                         icon : null,
                         disabled : true
@@ -127,12 +127,17 @@ var circleMapGraph = circleMapGraph || {};
                         callback : function(key, opt) {
                             // clear circlemaps
                             cmGraph.clearCircleMaps();
-                            // TODO set sorting ring
-                            console.log('circleMapRingGelem', circleMapRingGelem);
+
+                            // set sorting ring
+                            var orderFeature = cmGraph.circleMapGeneratorObj.eventAlbum.getSuffixedEventId(node, datasetName);
+
+                            // if no suffix added, then use datatype as orderFeature (e.g. a categorical clinical feature)
+                            orderFeature = (orderFeature === node) ? datasetName : orderFeature;
                             cmGraph.setNewCircleMapGeneratorSettings({
-                                "orderFeature" : node,
-                                "sortingRing" : [ringName]
+                                "orderFeature" : orderFeature,
+                                "sortingRing" : [datasetName]
                             });
+
                             // attach new circlemaps
                             cmGraph.attachCircleMaps();
                         }

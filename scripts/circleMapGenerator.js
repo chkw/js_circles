@@ -115,7 +115,7 @@ var circleMapGenerator = {};
             } else {
                 ss.addStep(this.getQueryFeatures()[0]);
             }
-            console.log('ring sorting steps', ss);
+            // console.log('ring sorting steps', ss);
             this.sortedSamples = this.eventAlbum.multisortSamples(ss);
         };
 
