@@ -329,6 +329,23 @@ var circleMapGraph = circleMapGraph || {};
         marker.append("path").attr({
             d : "M 0 0 L 0 10 L 3 10 L 3 0 z"
         });
+
+        marker = d3svgDefsElem.append("marker").attr({
+            id : "Circle",
+            viewBox : "0 0 10 10",
+            refX : 10 + offset,
+            refY : "5",
+            // markerUnits : "strokeWidth",
+            markerUnits : "userSpaceOnUse",
+            markerWidth : "9",
+            markerHeight : "9",
+            orient : "auto"
+        });
+        marker.append("circle").attr({
+            cx : 5,
+            cy : 5,
+            r : 5
+        });
     };
 
     /**
