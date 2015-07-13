@@ -1,1 +1,1 @@
-../../observation_deck/observation_deck/scripts/medbook_data_load.js
+../../EventAlbum/medbook_data_load.js

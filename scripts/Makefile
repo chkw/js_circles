@@ -4,7 +4,7 @@ CLOSURE_COMPILER_JAR = ~/git/closure-compiler/build/compiler.jar
 COMPILATION_LEVEL = SIMPLE_OPTIMIZATIONS
 #COMPILATION_LEVEL = ADVANCED_OPTIMIZATIONS
 
-SCRIPTS= ../bower_components/jquery/dist/jquery.min.js ../bower_components/jQuery-contextMenu/src/jquery.contextMenu.js ../bower_components/jstat/dist/jstat.min.js ../bower_components/d3/d3.min.js utils.js OD_eventData.js graphData.js medbook_data_load.js circleMapGenerator.js circleMapGraph.js
+SCRIPTS= ../bower_components/jquery/dist/jquery.min.js ../bower_components/jQuery-contextMenu/src/jquery.contextMenu.js ../bower_components/jstat/dist/jstat.min.js ../bower_components/d3/d3.min.js utils.js eventData.js graphData.js medbook_data_load.js circleMapGenerator.js circleMapGraph.js
 
 test:
 
