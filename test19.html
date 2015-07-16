@@ -6,7 +6,7 @@
 		<link rel="stylesheet" href="css/main19.css" type="text/css" />
 		<link type="text/css" rel="stylesheet" href="bower_components/jQuery-contextMenu/src/jquery.contextmenu.css">
 
-		<!-- <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+		<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
 
 		<script type="text/javascript" src="bower_components/jQuery-contextMenu/src/jquery.contextMenu.js"></script>
 
@@ -18,9 +18,10 @@
 		<script type="text/javascript" src="scripts/medbook_data_load.js"></script>
 		<script type="text/javascript" src="scripts/circleMapGenerator.js"></script>
 
-		<script type="text/javascript" src="scripts/circleMapGraph.js"></script> -->
+		<script type="text/javascript" src="scripts/circleMapGraph.js"></script>
 
-		<script type="text/javascript" src="scripts/circleMapGraph_package.js"></script>
+		<!-- <script type="text/javascript" src="scripts/circleMapGraph_package.js"></script> -->
+
 		<noscript>
 			<div align="center">
 				<p style="color:black;background-color:red;font-size:18pt">
@@ -54,7 +55,7 @@
             // medbookDataLoader.mongoClinicalData(clinicalData, eventAlbum);
             //
             // circlemap settings
-            queryData = {
+            queryParams = {
                 // "ringsList" : ["core_subtype", "expression data", 'viper data'],
                 // "orderFeature" : ['core_subtype', "SUZ12_mRNA"],
                 // "sortingRing" : "expression data"
@@ -63,8 +64,7 @@
                 "sortingRing" : "expression data"
             };
 
-            cmg = new circleMapGenerator.circleMapGenerator(eventAlbum, queryData);
-            query = queryData;
+            cmg = new circleMapGenerator.circleMapGenerator(eventAlbum, queryParams);
 
             circleDataLoaded = (utils.getQueryStringParameterByName('circles').toLowerCase() === 'true') ? true : false;
             // circleDataLoaded = false;
