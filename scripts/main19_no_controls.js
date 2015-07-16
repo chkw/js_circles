@@ -61,7 +61,7 @@ var circleMapGraph = circleMapGraph || {};
 
     cmGraph.setNewCircleMapGeneratorSettings = function(newSettings) {
         for (var key in newSettings) {
-            cmGraph.circleMapGeneratorObj.queryData[key] = newSettings[key];
+            cmGraph.circleMapGeneratorObj.cmgParams[key] = newSettings[key];
         }
         cmGraph.circleMapGeneratorObj.sortSamples();
     };
@@ -127,6 +127,11 @@ var circleMapGraph = circleMapGraph || {};
                         callback : function(key, opt) {
                             // clear circlemaps
                             cmGraph.clearCircleMaps();
+
+                            // Sorting is performed via eventAlbum.multisortSamples().
+                            // It uses sortingStep objects to specify the events on which to base the sort.
+
+                            // Using something like "SUZ12" and "expression data" sort by SUZ12_mRNA event.
 
                             // set sorting ring
                             var orderFeature = cmGraph.circleMapGeneratorObj.eventAlbum.getSuffixedEventId(node, datasetName);

@@ -55,16 +55,16 @@
             // medbookDataLoader.mongoClinicalData(clinicalData, eventAlbum);
             //
             // circlemap settings
-            queryParams = {
+            cmgParams = {
                 // "ringsList" : ["core_subtype", "expression data", 'viper data'],
                 // "orderFeature" : ['core_subtype', "SUZ12_mRNA"],
                 // "sortingRing" : "expression data"
                 "ringsList" : ["core_subtype", "expression data", 'viper data'],
-                "orderFeature" : ["SUZ12_viper"],
-                "sortingRing" : "expression data"
+                "orderFeature" : ["core_subtype"],
+                // "sortingRing" : "viper data"
             };
 
-            cmg = new circleMapGenerator.circleMapGenerator(eventAlbum, queryParams);
+            cmg = new circleMapGenerator.circleMapGenerator(eventAlbum, cmgParams);
 
             circleDataLoaded = (utils.getQueryStringParameterByName('circles').toLowerCase() === 'true') ? true : false;
             // circleDataLoaded = false;

@@ -13,7 +13,7 @@
 var circleMapGenerator = {};
 (function(cmg) {"use strict";
 
-    cmg.examplequeryParams = {
+    cmg.examplecmgParams = {
         // "sampleGroupSummarySwitch" : false,
         // "ignoreMissingSamples" : false,
         // "features" : ["PEG10_mRNA", "PFKFB4_mRNA", "PPARG_mRNA", "PRR5_mRNA", "REEP6_mRNA", "RUNX1T1_mRNA", "SELL_mRNA", "SERTAD1_mRNA", "SLC30A4_mRNA", "SPINK1_mRNA", "ST8SIA4_mRNA", "TEAD2_mRNA", "TMPRSS2_mRNA"],
@@ -24,10 +24,10 @@ var circleMapGenerator = {};
         // "ringMergeSwitch" : false
     };
 
-    // constructor should take parameters: OD_eventData, queryParams
-    cmg.circleMapGenerator = function(eventAlbum, queryParams) {
+    // constructor should take parameters: OD_eventData, cmgParams
+    cmg.circleMapGenerator = function(eventAlbum, cmgParams) {
         this.eventAlbum = eventAlbum.fillInMissingSamples();
-        this.queryParams = queryParams;
+        this.cmgParams = cmgParams;
 
         this.eventStats = {};
         this.colorMappers = {};
@@ -50,8 +50,8 @@ var circleMapGenerator = {};
          * Get the query features... these should match up with eventIDs in the eventAlbum
          */
         this.getQueryFeatures = function() {
-            if ("features" in this.queryParams) {
-                return this.queryParams["features"];
+            if ("features" in this.cmgParams) {
+                return this.cmgParams["features"];
             } else {
                 return new Array();
             }
@@ -106,8 +106,8 @@ var circleMapGenerator = {};
         this.sortSamples = function() {
             // get sorted samples
             var ss = new eventData.sortingSteps();
-            if (utils.hasOwnProperty(this.queryParams, "orderFeature")) {
-                var features = [].concat(this.queryParams["orderFeature"]);
+            if (utils.hasOwnProperty(this.cmgParams, "orderFeature")) {
+                var features = [].concat(this.cmgParams["orderFeature"]);
                 features.reverse();
                 for (var i = 0; i < features.length; i++) {
                     ss.addStep(features[i]);
@@ -193,7 +193,7 @@ var circleMapGenerator = {};
          */
         this.generateCircleMapSvgGElem = function(feature, radius, interactive) {
             var interactive = interactive || false;
-            var ringsList = this.queryParams['ringsList'];
+            var ringsList = this.cmgParams['ringsList'];
 
             var fullRadius = ( typeof radius === 'undefined') ? 100 : radius;
 
