@@ -18,7 +18,12 @@
 // http://bl.ocks.org/mbostock/929623 shows a nice way to build a graph with intuitive controls.
 // bl.ocks.org/rkirsling/5001347
 
-var circleMapGraph = circleMapGraph || {};
+// expose utils to meteor
+u = utils;
+
+// expose circleMapGraph to meteor
+circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
+// var circleMapGraph = circleMapGraph || {};
 (function(cmGraph) {"use strict";
 
     var htmlUri = utils.htmlUri;
@@ -64,6 +69,32 @@ var circleMapGraph = circleMapGraph || {};
             cmGraph.circleMapGeneratorObj.cmgParams[key] = newSettings[key];
         }
         cmGraph.circleMapGeneratorObj.sortSamples();
+    };
+
+    cmGraph.build = function(config) {
+        // graph data
+        var medbookGraphData = config["medbookGraphData"];
+        var graphDataObj = new graphData.graphData();
+        graphDataObj.readMedbookGraphData(medbookGraphData);
+
+        // event data
+        var eventAlbum = new eventData.OD_eventAlbum();
+
+        // clnical data
+        medbookDataLoader.getClinicalData('data/subtype.tab', eventAlbum);
+
+        // expression data
+        if (utils.hasOwnProperty(config, "medbookExprData")) {
+            medbookDataLoader.mongoExpressionData(config["medbookExprData"], eventAlbum);
+        }
+
+        // circle map generator
+        var cmg = new circleMapGenerator.circleMapGenerator(eventAlbum, {
+            "ringsList" : ["core_subtype", "expression data", 'viper data'],
+            "orderFeature" : ["core_subtype"]
+        });
+
+        cmGraph.buildCircleMapGraph(config["containerDiv"], graphDataObj, cmg, config["circleDataLoaded"]);
     };
 
     /**
@@ -359,7 +390,7 @@ var circleMapGraph = circleMapGraph || {};
     cmGraph.drawCircleMaps = function(nodeNames, d3SvgNodeLayer, radius, additionalInteraction) {
         for (var i in nodeNames) {
             var feature = nodeNames[i];
-            var circleMapElement = cmg.drawCircleMap(feature, d3SvgNodeLayer, radius, additionalInteraction);
+            var circleMapElement = cmGraph.circleMapGeneratorObj.drawCircleMap(feature, d3SvgNodeLayer, radius, additionalInteraction);
         }
     };
 
@@ -536,7 +567,7 @@ var circleMapGraph = circleMapGraph || {};
             } else if (sbgn_config['nucleicAcidFeatureTypes'].indexOf(type) != -1) {
                 var newElement = document.createElementNS(svgNamespaceUri, 'path');
                 newElement.setAttributeNS(null, 'class', 'sbgn');
-                var path = bottomRoundedRectSvgPath(-20, -15, 40, 30, 10);
+                var path = utils.bottomRoundedRectSvgPath(-20, -15, 40, 30, 10);
                 newElement.setAttributeNS(null, 'd', path);
                 newElement.setAttributeNS(null, 'opacity', opacityVal);
                 newElement.setAttributeNS(null, 'stroke', 'black');
@@ -544,7 +575,7 @@ var circleMapGraph = circleMapGraph || {};
             } else if (sbgn_config['macromoleculeTypes'].indexOf(type) != -1) {
                 var newElement = document.createElementNS(svgNamespaceUri, 'path');
                 newElement.setAttributeNS(null, 'class', 'sbgn');
-                var path = allRoundedRectSvgPath(-20, -15, 40, 30, 10);
+                var path = utils.allRoundedRectSvgPath(-20, -15, 40, 30, 10);
                 newElement.setAttributeNS(null, 'd', path);
                 newElement.setAttributeNS(null, 'opacity', opacityVal);
                 newElement.setAttributeNS(null, 'stroke', 'black');
@@ -560,7 +591,7 @@ var circleMapGraph = circleMapGraph || {};
             } else if (sbgn_config['complexTypes'].indexOf(type) != -1) {
                 var newElement = document.createElementNS(svgNamespaceUri, 'path');
                 newElement.setAttributeNS(null, 'class', 'sbgn');
-                var path = allAngledRectSvgPath(-50, -30, 100, 60);
+                var path = utils.allAngledRectSvgPath(-50, -30, 100, 60);
                 newElement.setAttributeNS(null, 'd', path);
                 newElement.setAttributeNS(null, 'opacity', opacityVal);
                 newElement.setAttributeNS(null, 'stroke', 'black');
