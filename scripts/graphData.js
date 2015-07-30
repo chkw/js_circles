@@ -277,6 +277,61 @@ var graphData = {};
                 }
             }
         };
+
+        this.readMedbookGraphData = function(medbookGraphDataObj) {
+            // clear old graph
+            this.nodes = new Array();
+            this.links = new Array();
+
+            // nodes
+            var medbookElements = medbookGraphDataObj["network"]["elements"];
+            for (var i = 0, length = medbookElements.length; i < length; i++) {
+                var medbookElement = medbookElements[i];
+                var type = medbookElement["type"];
+                var name = medbookElement["name"];
+                this.addNode(new gd.nodeData({
+                    "name" : name,
+                    "group" : type
+                }));
+            }
+
+            // edges
+            var medbookInteractions = medbookGraphDataObj["network"]["interactions"];
+            console.log("medbookInteractions.length", medbookInteractions.length);
+            for (var i = 0, lengthi = medbookInteractions.length; i < lengthi; i++) {
+                var medbookInteraction = medbookInteractions[i];
+                var sourceName = medbookInteraction["source"];
+                var targetName = medbookInteraction["target"];
+                var relation = medbookInteraction["type"];
+
+                var sourceIdx = -1;
+                var targetIdx = -1;
+                for (var j = 0, lengthj = this.nodes.length; j < lengthj; j++) {
+                    var nodeName = this.nodes[j]['name'];
+                    if (nodeName == sourceName) {
+                        sourceIdx = j;
+                    }
+                    if (nodeName == targetName) {
+                        targetIdx = j;
+                    }
+                    if (targetIdx != -1 && sourceIdx != -1) {
+                        // got Idx for both... go save the edge
+                        break;
+                    }
+                }
+
+                // save edge
+                if (targetIdx != -1 && sourceIdx != -1) {
+                    this.addLink(new gd.linkData({
+                        'sourceIdx' : parseInt(sourceIdx),
+                        'targetIdx' : parseInt(targetIdx),
+                        'relation' : relation
+                    }));
+                }
+            };
+            return null;
+        };
+
         /**
          * read graph from PID text
          */
