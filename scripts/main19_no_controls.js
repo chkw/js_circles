@@ -19,8 +19,7 @@
 // bl.ocks.org/rkirsling/5001347
 
 // expose utils to meteor
-u = utils;
-
+u = ( typeof u === "undefined") ? utils : u;
 // expose circleMapGraph to meteor
 circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
 // var circleMapGraph = circleMapGraph || {};
@@ -81,17 +80,26 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         var eventAlbum = new eventData.OD_eventAlbum();
 
         // clnical data
-        medbookDataLoader.getClinicalData('data/subtype.tab', eventAlbum);
+        // medbookDataLoader.getClinicalData('data/subtype.tab', eventAlbum);
+
+        // medbookDataLoader.getExpressionData('data/expression.tab', eventAlbum);
+        // medbookDataLoader.getViperData('data/viper.tab', eventAlbum);
+
+        var ringsList = [];
 
         // expression data
         if (utils.hasOwnProperty(config, "medbookExprData")) {
             medbookDataLoader.mongoExpressionData(config["medbookExprData"], eventAlbum);
+            // eventAlbum.eventwiseMedianRescaling();
+            // eventAlbum.samplewiseMedianRescaling();
+            ringsList.push("expression data");
         }
 
         // circle map generator
         var cmg = new circleMapGenerator.circleMapGenerator(eventAlbum, {
-            "ringsList" : ["core_subtype", "expression data", 'viper data'],
-            "orderFeature" : ["core_subtype"]
+            // "ringsList" : ["core_subtype", "expression data", 'viper data'],
+            // "orderFeature" : ["expression data"]
+            "ringsList" : ringsList
         });
 
         cmGraph.buildCircleMapGraph(config["containerDiv"], graphDataObj, cmg, config["circleDataLoaded"]);
