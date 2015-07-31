@@ -224,7 +224,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                         icon : null,
                         disabled : false,
                         callback : function(key, opt) {
-                            if (circleDataLoaded) {
+                            if (cmGraph.circleMapMode) {
                                 // var circleMapSvgElem = document.getElementById('circleMapSvg' + d['name']);
                                 var circleMapGElement = circleMapSvgElem.getElementsByClassName("circleMapG");
                                 var scale = circleMapGElement[0].getAttribute("transform");
@@ -311,10 +311,11 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         utils.removeChildElems(cmGraph.containerDivElem);
 
         // outer SVG element
-        var windowWidth = 0.8 * window.innerWidth;
-        var windowHeight = 1.0 * window.innerHeight;
+        var windowWidth = window.innerWidth;
+        var windowHeight = window.innerHeight;
 
         cmGraph.svgElem = d3.select(cmGraph.containerDivElem).append("svg").attr({
+            // TODO need to get better dimensions
             'width' : windowWidth,
             'height' : windowHeight,
             'id' : 'circleMaps'
@@ -452,7 +453,9 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
 
         linkSelection.style('marker-end', function(d, i) {
             var type = d.relation;
-            if (utils.beginsWith(type, "-") && utils.endsWith(type, ">")) {
+            if (type === "component>") {
+                return "url(#Circle)";
+            } else if (utils.beginsWith(type, "-") && utils.endsWith(type, ">")) {
                 return "url(#Triangle)";
             } else if (utils.beginsWith(type, "-") && utils.endsWith(type, "|")) {
                 return "url(#Bar)";
