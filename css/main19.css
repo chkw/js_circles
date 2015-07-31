@@ -1,16 +1,5 @@
-html {
-    font-family: Verdana;
-}
-
-select {
-    width: 15em;
-}
-
-.ui-menu {
-    width: 150px;
-}
-
 svg {
+    font-family: Verdana;
     background-color: #FFF;
     cursor: default;
     -webkit-user-select: none;
@@ -26,8 +15,8 @@ svg:not(.active):not(.ctrl) path.link {
     cursor: pointer;
 }
 .node not(.circleMapG) {
-stroke:#fff;
-stroke-width:1.5px;
+    stroke:#fff;
+    stroke-width:1.5px;
 }
 .node .circleMapSvg {
     overflow: visible
@@ -40,17 +29,3 @@ stroke-width:1.5px;
     stroke: black;
     stroke-opacity: .6;
 }
-.deleteControl {
-    background-color: lightblue
-}
-.addControl {
-    background-color: salmon
-}
-.displayControl {
-    background-color: mediumseagreen
-}
-/*for d3 zoom*/
-/*.overlay {
- fill: none;
- pointer-events: visible;
- }*/
