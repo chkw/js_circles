@@ -13,8 +13,8 @@ SCRIPTS=$(BOWER_DIR)/jstat/dist/jstat.js utils.js eventData.js graphData.js medb
 
 test:
 
-sync_meteor: circleMapGraph_package.js
-	cp $< ~/workspace/MedBook-PatientCare/webapp/packages/circlemap-graph/. ;
+sync_meteor: circleMapGraph_package_dev.js
+	cp $< ~/workspace/MedBook-Packages/circlemap-graph/circleMapGraph_package.js ;
 	\
 
 circleMapGraph_package.js:

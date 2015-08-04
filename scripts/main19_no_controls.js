@@ -95,6 +95,14 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             ringsList.push("expression data");
         }
 
+        // medbookViperSignaturesData
+        if (utils.hasOwnProperty(config, "medbookViperSignaturesData")) {
+            medbookDataLoader.mongoViperSignaturesData(config["medbookViperSignaturesData"], eventAlbum);
+            // eventAlbum.eventwiseMedianRescaling();
+            // eventAlbum.samplewiseMedianRescaling();
+            ringsList.push("viper data");
+        }
+
         // circle map generator
         var cmg = new circleMapGenerator.circleMapGenerator(eventAlbum, {
             // "ringsList" : ["core_subtype", "expression data", 'viper data'],
