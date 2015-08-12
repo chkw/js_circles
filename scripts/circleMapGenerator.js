@@ -227,7 +227,7 @@ var circleMapGenerator = {};
             });
 
             // white center
-            circleMapGroup.appendChild(utils.createSvgCircleElement(0, 0, innerRadius, {
+            circleMapGroup.appendChild(utils.createSvgCircleElement(0, 0, fullRadius, {
                 "fill" : "white"
             }));
 

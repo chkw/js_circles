@@ -344,7 +344,11 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         cmGraph.colorMapper = d3.scale.category10();
 
         // for d3 layout and rendering
-        cmGraph.force = d3.layout.force().size([windowWidth, windowHeight]).linkDistance(d3_config['linkDistance']).linkStrength(d3_config['linkStrength']).friction(d3_config['friction']).gravity(d3_config['gravity']);
+        // cmGraph.force = d3.layout.force().size([windowWidth, windowHeight]).linkDistance(d3_config['linkDistance']).linkStrength(d3_config['linkStrength']).friction(d3_config['friction']).gravity(d3_config['gravity']);
+
+        // using cola layout package with d3 adapter
+        // var d3cola = cola.d3adaptor().linkDistance(30).size([width, height]);
+        cmGraph.force = cola.d3adaptor().linkDistance(d3_config['linkDistance']).size([windowWidth, windowHeight]);
     };
 
     // addMarkerDefs
@@ -674,15 +678,15 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             });
 
             // don't run the layout indefinitely
-            if (force.alpha() < maxAlpha) {
-                console.log("stop layout with alpha=" + force.alpha());
-
-                d3.selectAll(".node").each(function(d, i) {
-                    d.fixed = true;
-                });
-
-                force.stop();
-            }
+            // if (force.alpha() < maxAlpha) {
+                // console.log("stop layout with alpha=" + force.alpha());
+//
+                // d3.selectAll(".node").each(function(d, i) {
+                    // d.fixed = true;
+                // });
+//
+                // force.stop();
+            // }
         });
 
         // set the nodes and links
