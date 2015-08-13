@@ -13,6 +13,7 @@
  * 7) graphData
  * 8) medbook_data_load
  * 9) circleMapGenerator
+ * 10) WebCola layout package <https://github.com/tgdwyer/WebCola>
  */
 
 // http://bl.ocks.org/mbostock/929623 shows a nice way to build a graph with intuitive controls.
