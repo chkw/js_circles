@@ -502,6 +502,8 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                 styles["marker-end"] = "url(#Triangle)";
             } else if (utils.beginsWith(relationType, "-") && utils.endsWith(relationType, "|")) {
                 styles["marker-end"] = "url(#Bar)";
+            } else if (utils.beginsWith(relationType, "component") && utils.endsWith(relationType, ">")) {
+                styles["marker-end"] = "url(#Circle)";
             }
             // stroke-dasharray
             if (utils.beginsWith(relationType, "-a")) {
@@ -680,13 +682,13 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
 
             // don't run the layout indefinitely
             // if (force.alpha() < maxAlpha) {
-                // console.log("stop layout with alpha=" + force.alpha());
-//
-                // d3.selectAll(".node").each(function(d, i) {
-                    // d.fixed = true;
-                // });
-//
-                // force.stop();
+            // console.log("stop layout with alpha=" + force.alpha());
+            //
+            // d3.selectAll(".node").each(function(d, i) {
+            // d.fixed = true;
+            // });
+            //
+            // force.stop();
             // }
         });
 
