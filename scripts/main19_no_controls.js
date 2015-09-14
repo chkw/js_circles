@@ -464,6 +464,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             return cmGraph.colorMapper(d.relation);
         });
 
+        // initial setting of decoration styles
         linkSelection.style('marker-end', function(d, i) {
             var type = d.relation;
             if (type === "component>") {
