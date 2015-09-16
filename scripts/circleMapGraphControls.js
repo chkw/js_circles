@@ -10,7 +10,9 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
     cmgc.buildControls = function(containerElem, circleMapGraphContainerElem) {
         utils.removeChildElems(containerElem);
 
-        cmgc.options["circleMapGraphContainerElem"] = circleMapGraphContainerElem;
+        cmgc.options["containerDiv"] = circleMapGraphContainerElem;
+        cmgc.options["circleDataLoaded"] = (utils.getQueryStringParameterByName('circles').toLowerCase() === 'true');
+        // cmgc.options["circleDataLoaded"] = false;
 
         var sifTextAreaElem = document.createElement("textArea");
         containerElem.appendChild(sifTextAreaElem);
@@ -132,9 +134,7 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
      * Use the saved objects to build a new circleMapGraph.
      */
     cmgc.buildCircleMapGraph = function() {
-
-
-
+        circleMapGraph.build(cmgc.options);
     };
 
 })(circleMapGraphControls);

@@ -75,7 +75,6 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
     cmGraph.build = function(config) {
         // graph data
         var graphDataObj = new graphData.graphData();
-
         if (config.hasOwnProperty("medbookGraphData")) {
             var medbookGraphData = config["medbookGraphData"];
             graphDataObj.readMedbookGraphData(medbookGraphData);
@@ -85,33 +84,34 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         }
 
         // event data
-        var eventAlbum = new eventData.OD_eventAlbum();
+        var eventAlbum;
+        if (utils.hasOwnProperty(config, "eventAlbum")) {
+            eventAlbum = config["eventAlbum"];
+        } else {
+            eventAlbum = new eventData.OD_eventAlbum();
+        }
 
-        // clnical data
-        // medbookDataLoader.getClinicalData('data/subtype.tab', eventAlbum);
-
-        // medbookDataLoader.getExpressionData('data/expression.tab', eventAlbum);
-        // medbookDataLoader.getViperData('data/viper.tab', eventAlbum);
-
-        var ringsList = [];
+        // ring ordering
+        var ringsList;
+        if (utils.hasOwnProperty(config, "ringsList")) {
+            ringsList = config["ringsList"];
+        } else {
+            ringsList = [];
+        }
 
         // expression data
         if (utils.hasOwnProperty(config, "medbookExprData")) {
             medbookDataLoader.mongoExpressionData(config["medbookExprData"], eventAlbum);
-            // eventAlbum.eventwiseMedianRescaling();
-            // eventAlbum.samplewiseMedianRescaling();
             ringsList.push("expression data");
         }
 
         // medbookViperSignaturesData
         if (utils.hasOwnProperty(config, "medbookViperSignaturesData")) {
             medbookDataLoader.mongoViperSignaturesData(config["medbookViperSignaturesData"], eventAlbum);
-            // eventAlbum.eventwiseMedianRescaling();
-            // eventAlbum.samplewiseMedianRescaling();
             ringsList.push("viper data");
         }
 
-        // circle map generator
+        // new circle map generator
         var cmg = new circleMapGenerator.circleMapGenerator(eventAlbum, {
             // "ringsList" : ["core_subtype", "expression data", 'viper data'],
             // "orderFeature" : ["expression data"]
