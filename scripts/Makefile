@@ -7,7 +7,8 @@ COMPILATION_LEVEL = SIMPLE_OPTIMIZATIONS
 BOWER_DIR=../bower_components
 
 # cola.js contains an object function that is passed a "window" obect that Meteor claims is undefined. Change this to null to make it work.
-SCRIPTS=$(BOWER_DIR)/webcola/WebCola/cola.js $(BOWER_DIR)/jstat/dist/jstat.js utils.js eventData.js graphData.js medbook_data_load.js circleMapGenerator.js circleMapGraph.js
+#SCRIPTS=$(BOWER_DIR)/webcola/WebCola/cola.js $(BOWER_DIR)/jstat/dist/jstat.js utils.js eventData.js graphData.js medbook_data_load.js circleMapGenerator.js circleMapGraph.js
+SCRIPTS=$(BOWER_DIR)/underscore/underscore.js $(BOWER_DIR)/d3/d3.min.js $(BOWER_DIR)/jquery/dist/jquery.min.js $(BOWER_DIR)/jQuery-contextMenu/src/jquery.contextMenu.js $(BOWER_DIR)/webcola/WebCola/cola.js $(BOWER_DIR)/jstat/dist/jstat.js utils.js eventData.js graphData.js medbook_data_load.js circleMapGenerator.js circleMapGraph.js circleMapGraphControls.js
 
 test:
 

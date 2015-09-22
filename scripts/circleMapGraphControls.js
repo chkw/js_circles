@@ -11,8 +11,9 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
         utils.removeChildElems(containerElem);
 
         cmgc.options["containerDiv"] = circleMapGraphContainerElem;
-        cmgc.options["circleDataLoaded"] = (utils.getQueryStringParameterByName('circles').toLowerCase() === 'true');
+        // cmgc.options["circleDataLoaded"] = (utils.getQueryStringParameterByName('circles').toLowerCase() === 'true');
         // cmgc.options["circleDataLoaded"] = false;
+        cmgc.options["circleDataLoaded"] = true;
 
         var sifTextAreaElem = document.createElement("textArea");
         containerElem.appendChild(sifTextAreaElem);
