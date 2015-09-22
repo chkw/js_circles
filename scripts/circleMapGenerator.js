@@ -239,7 +239,7 @@ var circleMapGenerator = {};
                 var dataName = null;
 
                 // find data name suffix at runtime
-                if ( ringName in this.eventAlbum.datatypeSuffixMapping) {
+                if ( ringName in this.eventAlbum.datatypeSuffixMapping && (this.eventAlbum.datatypeSuffixMapping[ringName] !== "")) {
                     dataName = feature + this.eventAlbum.datatypeSuffixMapping[ringName];
                 } else {
                     dataName = ringName;

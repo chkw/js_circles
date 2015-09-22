@@ -118,7 +118,14 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             "ringsList" : ringsList
         });
 
-        cmGraph.buildCircleMapGraph(config["containerDiv"], graphDataObj, cmg, config["circleDataLoaded"]);
+        var circleDataLoaded;
+        if (ringsList.length < 1) {
+            circleDataLoaded = false;
+        } else {
+            circleDataLoaded = config["circleDataLoaded"];
+        }
+
+        cmGraph.buildCircleMapGraph(config["containerDiv"], graphDataObj, cmg, circleDataLoaded);
     };
 
     /**
