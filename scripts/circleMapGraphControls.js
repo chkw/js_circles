@@ -96,6 +96,16 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
         });
         radioButtonsDiv.innerHTML = radioButtonsDiv.innerHTML + "clinical data <BR>";
 
+        var centerRadio = document.createElement("input");
+        radioButtonsDiv.appendChild(centerRadio);
+        utils.setElemAttributes(centerRadio, {
+            "id" : "centerRadio",
+            "name" : "allowedValues",
+            "type" : "radio",
+            "value" : "center"
+        });
+        radioButtonsDiv.innerHTML = radioButtonsDiv.innerHTML + "node center <BR>";
+
         var matrixButtonElem = document.createElement("button");
         containerElem.appendChild(matrixButtonElem);
         utils.setElemAttributes(matrixButtonElem, {
@@ -130,6 +140,8 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
         // console.log("datasetAllowedVals", datasetAllowedVals);
         if (datasetAllowedVals === "clinical") {
             document.getElementById("matrixText").value = "clinical data";
+        } else if (datasetAllowedVals === "center") {
+            document.getElementById("matrixText").value = "node center";
         }
 
         var matrixTextAreaElem = document.getElementById("matrixTextArea");
@@ -148,8 +160,23 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
             return;
         }
 
-        // load ring data
-        cmgc.addRingData(matrixText, matrixString, datasetAllowedVals);
+        if (datasetAllowedVals === "center") {
+            // node center data, a dict of node:score where score is a 0-centered, normalized value [-1,1]
+            var parsedRows = d3.tsv.parseRows(matrixString);
+            var centerScores = {};
+            _.each(parsedRows, function(parsedRow) {
+                if (parsedRow.length >= 2) {
+                    var nodeName = parsedRow[0];
+                    var score = parsedRow[1];
+                    centerScores[nodeName] = score;
+                }
+            });
+            // console.log("centerScores", centerScores);
+            cmgc.options["centerScores"] = centerScores;
+        } else {
+            // load ring data
+            cmgc.addRingData(matrixText, matrixString, datasetAllowedVals);
+        }
 
         // draw graph
         cmgc.buildCircleMapGraph();

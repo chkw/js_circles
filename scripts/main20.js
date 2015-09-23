@@ -99,6 +99,15 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             ringsList = [];
         }
 
+        // node center scores is a dict of nodeName:score
+        var centerScores;
+        if (utils.hasOwnProperty(config, "centerScores")) {
+            centerScores = config["centerScores"];
+            console.log("centerScores", centerScores);
+        } else {
+            centerScores = {};
+        }
+
         // expression data
         if (utils.hasOwnProperty(config, "medbookExprData")) {
             medbookDataLoader.mongoExpressionData(config["medbookExprData"], eventAlbum);
@@ -115,7 +124,8 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         var cmg = new circleMapGenerator.circleMapGenerator(eventAlbum, {
             // "ringsList" : ["core_subtype", "expression data", 'viper data'],
             // "orderFeature" : ["expression data"]
-            "ringsList" : ringsList
+            "ringsList" : ringsList,
+            "centerScores" : centerScores
         });
 
         var circleDataLoaded;

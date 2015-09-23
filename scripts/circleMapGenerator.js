@@ -25,6 +25,8 @@ var circleMapGenerator = {};
     };
 
     // constructor should take parameters: OD_eventData, cmgParams
+    // cmgParams includes ringsList and possibly centerScores
+    // centerScores is an object of feature:score where score is taken to be a 0-centered normalized score.
     cmg.circleMapGenerator = function(eventAlbum, cmgParams) {
         this.eventAlbum = eventAlbum.fillInMissingSamples();
         this.cmgParams = cmgParams;
@@ -226,10 +228,43 @@ var circleMapGenerator = {};
                 "feature" : feature
             });
 
-            // white center
+            // white palete
             circleMapGroup.appendChild(utils.createSvgCircleElement(0, 0, fullRadius, {
                 "fill" : "white"
             }));
+
+            // node centers
+            var fill;
+            if (_.isUndefined(this.cmgParams["centerScores"]) || (_.keys(this.cmgParams["centerScores"]).length == 0 )) {
+                // no node center
+            } else {
+                var centerScore = this.cmgParams["centerScores"][feature];
+                if (_.isUndefined(centerScore)) {
+                    // check if node center data exists
+                    fill = "grey";
+                } else {
+                    // color center
+                    fill = getHexColor(centerScore, -1, 1);
+                }
+                var centerCircleElem = utils.createSvgCircleElement(0, 0, ringThickness, {
+                    "fill" : fill
+                });
+                // additional interactive features
+                if (interactive) {
+                    // tooltip for node center
+                    if (_.isUndefined(centerScore)) {
+                        centerScore = "N/A";
+                    } else {
+                        // use centerScore
+                    }
+                    var titleText = "node center score for " + feature + ": " + centerScore;
+                    var titleElem = document.createElementNS(utils.svgNamespaceUri, "title");
+                    titleElem.innerHTML = titleText;
+                    centerCircleElem.appendChild(titleElem);
+                }
+
+                circleMapGroup.appendChild(centerCircleElem);
+            }
 
             var legendColorMapper;
 
