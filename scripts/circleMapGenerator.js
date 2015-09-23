@@ -312,7 +312,7 @@ var circleMapGenerator = {};
                     ringGroupElem.appendChild(pathElem);
 
                     // tooltip for arc
-                    var titleText = "no data";
+                    var titleText = "no " + ringName + " scores";
                     var titleElem = document.createElementNS(utils.svgNamespaceUri, "title");
                     titleElem.innerHTML = titleText;
                     pathElem.appendChild(titleElem);
