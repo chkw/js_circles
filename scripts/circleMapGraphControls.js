@@ -21,7 +21,7 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
             "id" : "sifTextArea",
             "rows" : 3,
             "cols" : 25,
-            "placeholder" : "sif data for network graph"
+            "placeholder" : "paste in sif data for network graph"
         });
 
         var sifButtonElem = document.createElement("button");
@@ -41,7 +41,7 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
             "id" : "matrixTextArea",
             "rows" : 3,
             "cols" : 25,
-            "placeholder" : "matrix data for rings"
+            "placeholder" : "paste in matrix data for rings"
         });
 
         var matrixTextElem = document.createElement("input");
@@ -55,15 +55,15 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
         var radioButtonsDiv = document.createElement("div");
         containerElem.appendChild(radioButtonsDiv);
 
-        var exprRadio = document.createElement("input");
-        radioButtonsDiv.appendChild(exprRadio);
-        utils.setElemAttributes(exprRadio, {
-            "id" : "exprRadio",
-            "name" : "allowedValues",
-            "type" : "radio",
-            "value" : "expression data"
-        });
-        radioButtonsDiv.innerHTML = radioButtonsDiv.innerHTML + "expression data <BR>";
+        // var exprRadio = document.createElement("input");
+        // radioButtonsDiv.appendChild(exprRadio);
+        // utils.setElemAttributes(exprRadio, {
+        // "id" : "exprRadio",
+        // "name" : "allowedValues",
+        // "type" : "radio",
+        // "value" : "expression data"
+        // });
+        // radioButtonsDiv.innerHTML = radioButtonsDiv.innerHTML + "expression data <BR>";
 
         var numericRadio = document.createElement("input");
         radioButtonsDiv.appendChild(numericRadio);
@@ -74,17 +74,17 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
             "value" : "numeric",
             "checked" : true
         });
-        radioButtonsDiv.innerHTML = radioButtonsDiv.innerHTML + "other numeric data <BR>";
+        radioButtonsDiv.innerHTML = radioButtonsDiv.innerHTML + "numeric data <BR>";
 
-        var categoricRadio = document.createElement("input");
-        radioButtonsDiv.appendChild(categoricRadio);
-        utils.setElemAttributes(categoricRadio, {
-            "id" : "categoricRadio",
-            "name" : "allowedValues",
-            "type" : "radio",
-            "value" : "categoric"
-        });
-        radioButtonsDiv.innerHTML = radioButtonsDiv.innerHTML + "categoric data <BR>";
+        // var categoricRadio = document.createElement("input");
+        // radioButtonsDiv.appendChild(categoricRadio);
+        // utils.setElemAttributes(categoricRadio, {
+        // "id" : "categoricRadio",
+        // "name" : "allowedValues",
+        // "type" : "radio",
+        // "value" : "categoric"
+        // });
+        // radioButtonsDiv.innerHTML = radioButtonsDiv.innerHTML + "categoric data <BR>";
 
         var clinicalRadio = document.createElement("input");
         radioButtonsDiv.appendChild(clinicalRadio);
