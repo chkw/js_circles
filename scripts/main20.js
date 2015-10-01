@@ -250,10 +250,15 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                             return nodeType + ": " + nodeName;
                         },
                         icon : null,
-                        disabled : false
-                        // ,
-                        // callback : function(key, opt) {
-                        // }
+                        disabled : function(key, opt) {
+                            var disabled = (nodeType === "protein") ? false : true;
+                            return disabled;
+                        },
+                        callback : function(key, opt) {
+                            // TODO link-out to PatientCare geneReport
+                            console.log("nodeName", nodeName);
+                            window.open("/PatientCare/geneReport/" + nodeName, "_parent");
+                        }
                     },
                     "sep1" : "---------",
                     "toggle_size" : {
@@ -388,6 +393,11 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
 
         // for d3 color mapping.
         cmGraph.colorMapper = d3.scale.category10();
+        // preset color mapping for paradigm relations
+        var paradigmRelations = ["-t|", "-t>", "-a|", "-a>", "component>", "member>"];
+        _.each(paradigmRelations, function(relation) {
+            cmGraph.colorMapper(relation);
+        });
 
         // for d3 layout and rendering
         // cmGraph.force = d3.layout.force().size([windowWidth, windowHeight]).linkDistance(d3_config['linkDistance']).linkStrength(d3_config['linkStrength']).friction(d3_config['friction']).gravity(d3_config['gravity']);
@@ -696,7 +706,9 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         });
 
         // node labels
-        nodeSelection.append("svg:text").attr("text-anchor", "middle").attr('dy', "2.7em").text(function(d) {
+        // var textdy = "2.7em";
+        var textdy = "3em";
+        nodeSelection.append("svg:text").attr("text-anchor", "middle").attr('dy', textdy).text(function(d) {
             return d.name;
         });
 
