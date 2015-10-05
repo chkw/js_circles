@@ -114,6 +114,17 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
         matrixButtonElem.innerHTML = "set ring data";
 
         matrixButtonElem.onclick = matrixButtonClickHandler;
+
+        containerElem.appendChild(document.createElement("hr"));
+
+        var saveButtonElem = document.createElement("button");
+        containerElem.appendChild(saveButtonElem);
+        utils.setElemAttributes(saveButtonElem, {
+            "id" : "saveButton"
+        });
+        saveButtonElem.innerHTML = "download image file";
+
+        saveButtonElem.onclick = saveButtonClickHandler;
     };
 
     var sifButtonClickHandler = function() {
@@ -180,6 +191,24 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
 
         // draw graph
         cmgc.buildCircleMapGraph();
+    };
+
+    // use pablo.js to save a file
+    var saveButtonClickHandler = function() {
+        console.log("clicked saveButton");
+        var defaultFileName = "graph";
+        var supportDownload = Pablo.support.download;
+
+        if (supportDownload) {
+            // get a pablo collection
+            var pabloCirclMapsSvg = Pablo('#circleMaps');
+            console.log("pabloCirclMapsSvg", pabloCirclMapsSvg);
+
+            // save image as file
+            pabloCirclMapsSvg.download("svg", defaultFileName);
+        } else {
+            window.alert("Download not supported on this browser.");
+        }
     };
 
     /**
