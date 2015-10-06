@@ -380,6 +380,17 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             'id' : 'circleMaps'
         });
 
+        // styling the outer svg element
+        cmGraph.svgElem.style({
+            "font-family" : "Verdana",
+            "background-color" : "#FFF",
+            "-webkit-user-select" : "none",
+            "-moz-user-select" : "none",
+            "-ms-user-select" : "none",
+            "-o-user-select" : "none",
+            "user-select" : "none"
+        });
+
         // http://www.w3.org/TR/SVG/painting.html#MarkerElement
         var defsElem = cmGraph.svgElem.append('defs');
         cmGraph.addMarkerDefs(defsElem);
@@ -517,7 +528,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             'class' : "link"
         }).style("stroke", function(d) {
             return cmGraph.colorMapper(d.relation);
-        });
+        }).style("stroke-opacity", ".6");
 
         // initial setting of decoration styles
         linkSelection.style('marker-end', function(d, i) {
@@ -703,13 +714,16 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             }
         }).style("fill", function(d) {
             return cmGraph.colorMapper(d.group);
-        });
+        }).style("overflow", "visible");
 
         // node labels
         // var textdy = "2.7em";
         var textdy = "3em";
         nodeSelection.append("svg:text").attr("text-anchor", "middle").attr('dy', textdy).text(function(d) {
             return d.name;
+        }).style({
+            "stroke" : "darkslategrey",
+            "fill" : "darkslategrey"
         });
 
         // edge tooltips
