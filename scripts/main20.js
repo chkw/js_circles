@@ -416,6 +416,12 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         // using cola layout package with d3 adapter
         // var d3cola = cola.d3adaptor().linkDistance(30).size([width, height]);
         cmGraph.force = cola.d3adaptor().linkDistance(d3_config['linkDistance']).size([windowWidth, windowHeight]);
+
+        // add legend node
+        cmGraph.graphDataObj.addNode({
+            "name" : "legend",
+            "group" : "legend"
+        });
     };
 
     // addMarkerDefs

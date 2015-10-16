@@ -136,51 +136,23 @@ var circleMapGenerator = {};
 
         this.sortSamples();
 
-        /**
-         * get a color for a score that straddles 0
-         * @param {Object} score
-         * @param {Object} cohortMin
-         * @param {Object} cohortMax
-         */
         function getHexColor(score, cohortMin, cohortMax) {
-            if (! utils.isNumerical(score)) {
+            if (_.isUndefined(score) || ! utils.isNumerical(score)) {
                 return "grey";
             }
-            var isPositive = (score >= 0) ? true : false;
 
-            var maxR = 255;
-            var maxG = 0;
-            var maxB = 0;
+            cohortMin = (_.isNumber(cohortMin)) ? cohortMin : -1;
+            cohortMax = (_.isNumber(cohortMax)) ? cohortMax : 1;
 
-            var minR = 255;
-            var minG = 255;
-            var minB = 255;
+            var posColor = "red";
+            var negColor = "blue";
+            var zeroColor = "white";
 
-            var normalizedScore = (score / cohortMax);
+            var colorMapper = d3.scale.linear();
+            colorMapper.domain([cohortMin, 0, cohortMax]).range([negColor, zeroColor, posColor]);
+            var returnColor = colorMapper(score);
 
-            if (!isPositive) {
-                maxR = 0;
-                maxG = 0;
-                maxB = 255;
-
-                minR = 255;
-                minG = 255;
-                minB = 255;
-
-                normalizedScore = (score / cohortMin);
-            }
-
-            var newR = utils.linearInterpolation(normalizedScore, minR, maxR);
-            var newG = utils.linearInterpolation(normalizedScore, minG, maxG);
-            var newB = utils.linearInterpolation(normalizedScore, minB, maxB);
-
-            newR = utils.rangeLimit(newR, 0, 255);
-            newG = utils.rangeLimit(newG, 0, 255);
-            newB = utils.rangeLimit(newB, 0, 255);
-
-            var hexColor = utils.rgbToHex(Math.floor(newR), Math.floor(newG), Math.floor(newB));
-
-            return hexColor;
+            return returnColor;
         }
 
         /**
@@ -244,7 +216,7 @@ var circleMapGenerator = {};
                     fill = "grey";
                 } else {
                     // color center
-                    fill = getHexColor(centerScore, -1, 1);
+                    fill = getHexColor(centerScore);
                 }
                 var centerCircleElem = utils.createSvgCircleElement(0, 0, ringThickness, {
                     "fill" : fill
@@ -266,7 +238,27 @@ var circleMapGenerator = {};
                 circleMapGroup.appendChild(centerCircleElem);
             }
 
+            // TODO temporary.. delete this later
             var legendColorMapper;
+
+            var addScoreArcs = function(scores, ringGroupElem, colorMapper, innerRadius, ringThickness) {
+                var startDegrees = 0;
+                var degreeIncrements = 360 / scores.length;
+                _.each(scores, function(score) {
+                    var color = colorMapper(score);
+                    var arc = createD3Arc(innerRadius, innerRadius + ringThickness, startDegrees, startDegrees + degreeIncrements);
+                    var pathElem = document.createElementNS(utils.svgNamespaceUri, 'path');
+                    utils.setElemAttributes(pathElem, {
+                        'd' : arc(),
+                        'fill' : color
+                    });
+
+                    ringGroupElem.appendChild(pathElem);
+
+                    // clockwise from 12 o clock
+                    startDegrees = startDegrees + degreeIncrements;
+                });
+            };
 
             // iterate over rings
             for (var i = 0; i < ringsList.length; i++) {
@@ -290,17 +282,49 @@ var circleMapGenerator = {};
 
                 var ringData = this.getRingData(dataName);
 
+                // TODO legend node
                 if (feature.toLowerCase() === 'legend') {
                     if ( typeof legendColorMapper === 'undefined') {
                         legendColorMapper = d3.scale.category10();
                     }
-                    var arc = createD3Arc(innerRadius, innerRadius + ringThickness, 0, 360);
-                    var pathElem = document.createElementNS(utils.svgNamespaceUri, 'path');
-                    utils.setElemAttributes(pathElem, {
-                        'd' : arc(),
-                        'fill' : legendColorMapper(dataName)
-                    });
-                    ringGroupElem.appendChild(pathElem);
+
+                    // var eventVals = this.eventAlbum.getEvent(dataName).data.getValues(true);
+                    // console.log("eventVals for", dataName, eventVals);
+
+                    // TODO determine numeric, categoric, mutation, etc.
+                    var eventObj = this.eventAlbum.getEvent(dataName);
+                    if (_.isUndefined(eventObj)) {
+                        console.log("no eventObj for", dataName);
+                        var fields = dataName.split(/_/);
+                        var suffix = "_" + fields.pop();
+                        var foundKey = _.findKey(this.eventAlbum.datatypeSuffixMapping, function(val) {
+                            return (val === suffix);
+                        });
+                        console.log("foundKey for " + suffix + " is", foundKey);
+                        //var sampleNum = this.sortedSamples.length;
+                        var sampleNum = 20;
+                        console.log("sampleNum", sampleNum);
+
+                        var simulatedScores = [0];
+                        for (var k = 1, lengthk = sampleNum / 2; k < lengthk; k++) {
+                            var simulatedScore = k * (1 / lengthk);
+                            simulatedScore = simulatedScore.toPrecision(2);
+                            simulatedScores.push(simulatedScore);
+                            simulatedScores.push(-1 * simulatedScore);
+                        }
+                        simulatedScores = simulatedScores.sort(function(a, b) {
+                            return (a - b);
+                        });
+
+                        addScoreArcs(simulatedScores, ringGroupElem, getHexColor, innerRadius, ringThickness);
+                    } else {
+                        console.log("got an eventObj for", dataName);
+                        var scores = eventObj.data.getValues(true);
+                        var colorMapper = this.colorMappers[dataName];
+
+                        addScoreArcs(scores, ringGroupElem, colorMapper, innerRadius, ringThickness);
+                    }
+
                 } else if (ringData == null) {
                     // draw a grey ring for no data.
                     var arc = createD3Arc(innerRadius, innerRadius + ringThickness, 0, 360);
