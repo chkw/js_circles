@@ -543,6 +543,7 @@ var circleMapGenerator = {};
                     simulatedScores = simulatedScores.sort(function(a, b) {
                         return (a - b);
                     });
+                    simulatedScores.push("no data");
 
                     addLegendScoreArcs(simulatedScores, ringGroupElem, getHexColor, innerRadius, ringThickness);
                 } else {
