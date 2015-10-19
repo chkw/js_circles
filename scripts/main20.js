@@ -502,7 +502,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         var circleMapSvgSelection = svgNodeLayer.selectAll(".node").selectAll(".circleMapSvg");
         circleMapSvgSelection.each(function(d, i) {
             var feature = d.name;
-            var svgGElem = cmGraph.circleMapGeneratorObj.generateCircleMapSvgGElem(feature, radius, interactive);
+            var svgGElem = cmGraph.circleMapGeneratorObj.generateCircleMapSvgGElemWrapper(feature, radius, interactive);
             svgGElem.setAttributeNS(null, 'transform', cmGraph.smallScale);
             this.appendChild(svgGElem);
         });
