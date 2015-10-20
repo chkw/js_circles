@@ -424,7 +424,7 @@ var circleMapGenerator = {};
             };
 
             // TODO addLegendScoreArcs
-            var addLegendScoreArcs = function(scores, ringGroupElem, colorMapper, innerRadius, ringThickness, ringName, isContinuousScore, additionalPathElemAttribs) {
+            var addLegendScoreArcs = function(scores, ringGroupElem, colorMapper, innerRadius, ringThickness, ringName, isContinuousScore, ringNamePosition, additionalPathElemAttribs) {
                 var startDegrees = 0;
                 var degreeIncrements = (360 / scores.length);
                 var pathElemAttribs = (_.isUndefined(additionalPathElemAttribs)) ? {} : additionalPathElemAttribs;
@@ -513,16 +513,13 @@ var circleMapGenerator = {};
                 });
 
                 // add ringName label
-                var angle = Math.floor(0 + 3);
+                var angle = 360 * ringNamePosition;
                 while (_.contains(usedAngles, angle)) {
                     angle = Math.floor(angle + 3);
                 }
                 usedAngles.push(angle);
-                console.log("ringName label angle", angle);
                 var xyPos1 = radialPos2xyPos(innerRadius + (ringThickness * 0.5), angle);
-                console.log("xyPos1", xyPos1);
                 var xyPos2 = radialPos2xyPos(innerRadius + 100, angle);
-                console.log("xyPos2", xyPos2);
 
                 var lineElem = document.createElementNS(utils.svgNamespaceUri, 'line');
                 var lineAttribs = {
@@ -552,9 +549,11 @@ var circleMapGenerator = {};
             };
 
             // iterate over rings
-            for (var i = 0; i < ringsList.length; i++) {
+            for (var i = 0, lengthi = ringsList.length; i < lengthi; i++) {
                 var ringName = ringsList[i];
                 var dataName = null;
+
+                var ringNamePosition = (i + 1) / (lengthi + 2);
 
                 // find data name suffix at runtime
                 if ( ringName in this.eventAlbum.datatypeSuffixMapping && (this.eventAlbum.datatypeSuffixMapping[ringName] !== "")) {
@@ -594,7 +593,7 @@ var circleMapGenerator = {};
 
                     var isContinuousScore = true;
 
-                    addLegendScoreArcs(simulatedScores, ringGroupElem, getHexColor, innerRadius, ringThickness, ringName, isContinuousScore);
+                    addLegendScoreArcs(simulatedScores, ringGroupElem, getHexColor, innerRadius, ringThickness, ringName, isContinuousScore, ringNamePosition);
                 } else {
                     // console.log("got an eventObj for", dataName);
                     var scores = eventObj.data.getValues(true);
@@ -602,7 +601,7 @@ var circleMapGenerator = {};
 
                     var isContinuousScore = false;
 
-                    addLegendScoreArcs(scores, ringGroupElem, colorMapper, innerRadius, ringThickness, ringName, isContinuousScore);
+                    addLegendScoreArcs(scores, ringGroupElem, colorMapper, innerRadius, ringThickness, ringName, isContinuousScore, ringNamePosition);
                 }
 
                 innerRadius = innerRadius + ringThickness;
