@@ -409,12 +409,9 @@ var circleMapGenerator = {};
 
             /**
              * convert radial position to x,y position.
-             s             */
+             */
             var radialPos2xyPos = function(radius, angle) {
-                var pos = {
-                    "x" : 0,
-                    "y" : 0
-                };
+                var pos = {};
 
                 var radians = utils.toRadians(angle);
                 var oppo = radius * Math.sin(radians);
@@ -427,12 +424,20 @@ var circleMapGenerator = {};
             };
 
             // TODO addLegendScoreArcs
-            var addLegendScoreArcs = function(scores, ringGroupElem, colorMapper, innerRadius, ringThickness, additionalPathElemAttribs) {
+            var addLegendScoreArcs = function(scores, ringGroupElem, colorMapper, innerRadius, ringThickness, ringName, isContinuousScore, additionalPathElemAttribs) {
                 var startDegrees = 0;
-                var degreeIncrements = 360 / scores.length;
+                var degreeIncrements = (360 / scores.length);
                 var pathElemAttribs = (_.isUndefined(additionalPathElemAttribs)) ? {} : additionalPathElemAttribs;
 
+                var labelledScoreIndices = [];
+                labelledScoreIndices.push(0);
+                labelledScoreIndices.push(scores.length - 1);
+                labelledScoreIndices.push(scores.length - 2);
+                labelledScoreIndices.push(Math.floor((scores.length - 1) / 2));
+
                 _.each(scores, function(score) {
+                    var scoresIndex = _.indexOf(scores, score);
+
                     // arc
                     var color = colorMapper(score);
                     var arc = createD3Arc(innerRadius, innerRadius + ringThickness, startDegrees, startDegrees + degreeIncrements);
@@ -448,50 +453,52 @@ var circleMapGenerator = {};
                     ringGroupElem.appendChild(labelGroupElem);
 
                     // label swatch
-                    var angle = Math.floor(startDegrees + (degreeIncrements / 2));
-                    while (_.contains(usedAngles, angle)) {
-                        angle = Math.floor(angle + 3);
-                        if (angle >= startDegrees + degreeIncrements) {
-                            angle = Math.floor(startDegrees + 3);
+                    if ((isContinuousScore == false) || (_.contains(labelledScoreIndices, scoresIndex))) {
+                        var angle = Math.floor(startDegrees + (degreeIncrements / 2));
+                        while (_.contains(usedAngles, angle)) {
+                            angle = Math.floor(angle + 3);
+                            if (angle >= startDegrees + degreeIncrements) {
+                                angle = Math.floor(startDegrees + 3);
+                            }
                         }
+                        usedAngles.push(angle);
+
+                        var xyPos1 = radialPos2xyPos(innerRadius + (ringThickness * (2 / 3)), angle);
+
+                        var xyPos = radialPos2xyPos(innerRadius + (80), angle);
+                        // var testElem = utils.createSvgRectElement(xyPos["x"] - 4.5, -xyPos["y"] - 4.5, 0, 0, 9, 9, {
+                        // "fill" : color
+                        // // "stroke" : "black"
+                        // });
+                        // labelGroupElem.appendChild(testElem);
+
+                        // label line
+                        var lineElem = document.createElementNS(utils.svgNamespaceUri, 'line');
+                        var lineAttribs = {
+                            "stroke" : "darkgray",
+                            "x1" : xyPos1["x"],
+                            "y1" : -xyPos1["y"],
+                            "x2" : xyPos["x"],
+                            "y2" : -xyPos["y"]
+                        };
+                        utils.setElemAttributes(lineElem, lineAttribs);
+                        labelGroupElem.appendChild(lineElem);
+
+                        // label text
+                        var legendLabelElem = document.createElementNS(utils.svgNamespaceUri, 'text');
+                        var labelAttribs = {
+                            "fill" : "black",
+                            "font-size" : "8",
+                            "dx" : xyPos["x"],
+                            "dy" : -xyPos["y"]
+                        };
+                        if (xyPos["x"] < 0) {
+                            labelAttribs["text-anchor"] = "end";
+                        }
+                        utils.setElemAttributes(legendLabelElem, labelAttribs);
+                        legendLabelElem.innerHTML = score;
+                        labelGroupElem.appendChild(legendLabelElem);
                     }
-                    usedAngles.push(angle);
-
-                    var xyPos1 = radialPos2xyPos(innerRadius + (ringThickness * (2 / 3)), angle);
-
-                    var xyPos = radialPos2xyPos(innerRadius + (80), angle);
-                    // var testElem = utils.createSvgRectElement(xyPos["x"] - 4.5, -xyPos["y"] - 4.5, 0, 0, 9, 9, {
-                    // "fill" : color
-                    // // "stroke" : "black"
-                    // });
-                    // labelGroupElem.appendChild(testElem);
-
-                    // label line
-                    var lineElem = document.createElementNS(utils.svgNamespaceUri, 'line');
-                    var lineAttribs = {
-                        "stroke" : "darkgray",
-                        "x1" : xyPos1["x"],
-                        "y1" : -xyPos1["y"],
-                        "x2" : xyPos["x"],
-                        "y2" : -xyPos["y"]
-                    };
-                    utils.setElemAttributes(lineElem, lineAttribs);
-                    labelGroupElem.appendChild(lineElem);
-
-                    // label text
-                    var legendLabelElem = document.createElementNS(utils.svgNamespaceUri, 'text');
-                    var labelAttribs = {
-                        "fill" : "black",
-                        "font-size" : "8",
-                        "dx" : xyPos["x"],
-                        "dy" : -xyPos["y"]
-                    };
-                    if (xyPos["x"] < 0) {
-                        labelAttribs["text-anchor"] = "end";
-                    }
-                    utils.setElemAttributes(legendLabelElem, labelAttribs);
-                    legendLabelElem.innerHTML = score;
-                    labelGroupElem.appendChild(legendLabelElem);
 
                     // additional interactive features
                     // tooltip for arc
@@ -504,6 +511,44 @@ var circleMapGenerator = {};
                     // clockwise from 12 o clock
                     startDegrees = startDegrees + degreeIncrements;
                 });
+
+                // add ringName label
+                var angle = Math.floor(0 + 3);
+                while (_.contains(usedAngles, angle)) {
+                    angle = Math.floor(angle + 3);
+                }
+                usedAngles.push(angle);
+                console.log("ringName label angle", angle);
+                var xyPos1 = radialPos2xyPos(innerRadius + (ringThickness * (2 / 3)), angle);
+                console.log("xyPos1", xyPos1);
+                var xyPos2 = radialPos2xyPos(innerRadius + 100, angle);
+                console.log("xyPos2", xyPos2);
+
+                var lineElem = document.createElementNS(utils.svgNamespaceUri, 'line');
+                var lineAttribs = {
+                    "stroke" : "darkgray",
+                    "stroke-width" : 2,
+                    "x1" : xyPos1["x"],
+                    "y1" : -xyPos1["y"],
+                    "x2" : xyPos2["x"],
+                    "y2" : -xyPos2["y"]
+                };
+                utils.setElemAttributes(lineElem, lineAttribs);
+                ringGroupElem.appendChild(lineElem);
+
+                var legendLabelElem = document.createElementNS(utils.svgNamespaceUri, 'text');
+                var labelAttribs = {
+                    "fill" : "black",
+                    "font-size" : "10",
+                    "dx" : xyPos2["x"],
+                    "dy" : -xyPos2["y"]
+                };
+                if (xyPos2["x"] < 0) {
+                    labelAttribs["text-anchor"] = "end";
+                }
+                utils.setElemAttributes(legendLabelElem, labelAttribs);
+                legendLabelElem.innerHTML = ringName + " ring";
+                ringGroupElem.appendChild(legendLabelElem);
             };
 
             // iterate over rings
@@ -547,13 +592,17 @@ var circleMapGenerator = {};
                     });
                     simulatedScores.push("no data");
 
-                    addLegendScoreArcs(simulatedScores, ringGroupElem, getHexColor, innerRadius, ringThickness);
+                    var isContinuousScore = true;
+
+                    addLegendScoreArcs(simulatedScores, ringGroupElem, getHexColor, innerRadius, ringThickness, ringName, isContinuousScore);
                 } else {
                     // console.log("got an eventObj for", dataName);
                     var scores = eventObj.data.getValues(true);
                     var colorMapper = this.colorMappers[dataName];
 
-                    addLegendScoreArcs(scores, ringGroupElem, colorMapper, innerRadius, ringThickness);
+                    var isContinuousScore = false;
+
+                    addLegendScoreArcs(scores, ringGroupElem, colorMapper, innerRadius, ringThickness, ringName, isContinuousScore);
                 }
 
                 innerRadius = innerRadius + ringThickness;
@@ -563,7 +612,6 @@ var circleMapGenerator = {};
             var revRingsList = ringsList.slice();
             revRingsList.reverse();
             _.each(revRingsList, function(ringName) {
-                // console.log("ringName", ringName);
                 var elem = circleMapGroup.getElementsByClassName(ringName)[0];
                 utils.pullElemToFront(elem);
             });
