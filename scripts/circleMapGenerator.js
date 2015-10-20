@@ -519,7 +519,7 @@ var circleMapGenerator = {};
                 }
                 usedAngles.push(angle);
                 console.log("ringName label angle", angle);
-                var xyPos1 = radialPos2xyPos(innerRadius + (ringThickness * (2 / 3)), angle);
+                var xyPos1 = radialPos2xyPos(innerRadius + (ringThickness * 0.5), angle);
                 console.log("xyPos1", xyPos1);
                 var xyPos2 = radialPos2xyPos(innerRadius + 100, angle);
                 console.log("xyPos2", xyPos2);
@@ -565,7 +565,7 @@ var circleMapGenerator = {};
 
                 var ringGroupElem = document.createElementNS(utils.svgNamespaceUri, 'g');
                 utils.setElemAttributes(ringGroupElem, {
-                    'class' : 'circleMapRingG ' + ringName,
+                    'class' : ringName,
                     'ringName' : ringName,
                     'dataName' : dataName
                 });
