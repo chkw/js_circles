@@ -448,9 +448,12 @@ var circleMapGenerator = {};
                     ringGroupElem.appendChild(labelGroupElem);
 
                     // label swatch
-                    var angle = startDegrees + (degreeIncrements / 2);
+                    var angle = Math.floor(startDegrees + (degreeIncrements / 2));
                     while (_.contains(usedAngles, angle)) {
-                        angle = (angle + 3);
+                        angle = Math.floor(angle + 3);
+                        if (angle >= startDegrees + degreeIncrements) {
+                            angle = Math.floor(startDegrees + 3);
+                        }
                     }
                     usedAngles.push(angle);
 
@@ -466,7 +469,7 @@ var circleMapGenerator = {};
                     // label line
                     var lineElem = document.createElementNS(utils.svgNamespaceUri, 'line');
                     var lineAttribs = {
-                        "stroke" : "black",
+                        "stroke" : "darkgray",
                         "x1" : xyPos1["x"],
                         "y1" : -xyPos1["y"],
                         "x2" : xyPos["x"],
@@ -478,8 +481,7 @@ var circleMapGenerator = {};
                     // label text
                     var legendLabelElem = document.createElementNS(utils.svgNamespaceUri, 'text');
                     var labelAttribs = {
-                        "fill" : "#3CB371",
-                        // "fill" : "mediumseagreen",
+                        "fill" : "black",
                         "font-size" : "8",
                         "dx" : xyPos["x"],
                         "dy" : -xyPos["y"]
@@ -558,7 +560,9 @@ var circleMapGenerator = {};
             }
 
             // reorder placement of circleMapRingG elems
-            _.each(ringsList.reverse(), function(ringName) {
+            var revRingsList = ringsList.slice();
+            revRingsList.reverse();
+            _.each(revRingsList, function(ringName) {
                 // console.log("ringName", ringName);
                 var elem = circleMapGroup.getElementsByClassName(ringName)[0];
                 utils.pullElemToFront(elem);
