@@ -420,7 +420,11 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         // add legend node
         cmGraph.graphDataObj.addNode({
             "name" : "legend",
-            "group" : "legend"
+            "group" : "legend",
+            // to set starting position, set fixed to true and provide (x,y)
+            "fixed" : true,
+            "x" : 50,
+            "y" : 50
         });
     };
 
