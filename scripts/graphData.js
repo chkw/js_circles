@@ -55,6 +55,14 @@ var graphData = {};
         this.links = new Array();
 
         /**
+         * Get a list of link relations in this graph.
+         */
+        this.getRelations = function() {
+            var linkTypes = _.pluck(this.links, "relation");
+            return _.uniq(linkTypes);
+        };
+
+        /**
          * Get all the node names in the graph.
          */
         this.getAllNodeNames = function() {
