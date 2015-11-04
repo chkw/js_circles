@@ -427,12 +427,18 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             "y" : 50
         });
 
-        // add link legend
-        var legendG = cmGraph.svgElem.append('g').attr({
-            id : 'legendG'
+        var legendG = document.createElementNS(utils.svgNamespaceUri, 'g');
+        utils.setElemAttributes(legendG, {
+            "id" : "legendG"
         });
 
-        var legendBackground = legendG.append("rect").attr({
+        cmGraph.svgElem.append(function() {
+            return legendG;
+        });
+
+        var d3LegendG = d3.select(legendG);
+
+        var legendBackground = d3LegendG.append("rect").attr({
             "id" : "legendBackground"
             // ,
             // "width" : 20,
@@ -448,7 +454,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             var y = 10 + 25 * index;
             var x = 0;
             var length = 75;
-            var lineElem = legendG.append("line").attr({
+            var lineElem = d3LegendG.append("line").attr({
                 "x1" : x,
                 "y1" : y,
                 "x2" : x + length,
@@ -457,7 +463,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             var decorations = cmGraph.getLinkDecorations(relation, 3);
             lineElem.style(decorations);
 
-            var textElem = legendG.append("text").attr({
+            var textElem = d3LegendG.append("text").attr({
                 "x" : x + length,
                 "y" : y,
                 "dx" : "1em",
@@ -471,8 +477,8 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         });
 
         // set dimensions
-        var elem = document.getElementById(legendG.attr("id"));
-        var brect = elem.getBoundingClientRect();
+        // element must be attached to the document to get brect
+        var brect = legendG.getBoundingClientRect();
         legendBackground.attr({
             "width" : brect.width,
             "height" : brect.height
@@ -480,7 +486,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
 
         // dragging
         var drag = d3.behavior.drag();
-        legendG.call(drag);
+        d3LegendG.call(drag);
 
         drag.origin(function() {
             // d3.event.sourceEvent.preventDefault();
@@ -499,7 +505,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             var d3Mouse = d3.mouse(cmGraph.svgElem.node());
             var x = d3Mouse[0];
             var y = d3Mouse[1];
-            legendG.attr({
+            d3LegendG.attr({
                 "transform" : "translate(" + x + "," + y + ")"
             });
         });
