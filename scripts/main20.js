@@ -473,7 +473,22 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                 "stroke" : "darkslategrey",
                 "fill" : "darkslategrey",
                 "overflow" : "visible"
-            }).text(relation);
+            }).text(function() {
+                var displayNames = {
+                    "-t|" : "inhibit transcription",
+                    "-t>" : "activate transcription",
+                    "-a|" : "inhibit activity",
+                    "-a>" : "activate activity",
+                    "component>" : "component",
+                    "member>" : "member"
+                };
+                var displayName = displayNames[relation];
+                if (_.isUndefined(displayName)) {
+                    return relation;
+                } else {
+                    return displayName;
+                }
+            });
         });
 
         // set dimensions
