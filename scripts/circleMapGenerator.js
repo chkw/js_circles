@@ -435,7 +435,7 @@ var circleMapGenerator = {};
                 labelledScoreIndices.push(scores.length - 2);
                 labelledScoreIndices.push(Math.floor((scores.length - 1) / 2));
 
-                _.each(scores, function(score) {
+                _.each(scores, function(score, index) {
                     var scoresIndex = _.indexOf(scores, score);
 
                     // arc
@@ -449,6 +449,18 @@ var circleMapGenerator = {};
                     utils.setElemAttributes(pathElem, pathElemAttribs);
                     ringGroupElem.appendChild(pathElem);
 
+                    // separator to visually separate the rings in the legend
+                    arc = createD3Arc(innerRadius + ringThickness - 0.5, innerRadius + ringThickness, startDegrees, startDegrees + degreeIncrements);
+                    pathElem = document.createElementNS(utils.svgNamespaceUri, 'path');
+
+                    pathElemAttribs = {};
+                    pathElemAttribs["d"] = arc();
+                    pathElemAttribs["fill"] = "black";
+
+                    utils.setElemAttributes(pathElem, pathElemAttribs);
+                    ringGroupElem.appendChild(pathElem);
+
+                    // label
                     var labelGroupElem = document.createElementNS(utils.svgNamespaceUri, 'g');
                     ringGroupElem.appendChild(labelGroupElem);
 
@@ -496,6 +508,21 @@ var circleMapGenerator = {};
                             labelAttribs["text-anchor"] = "end";
                         }
                         utils.setElemAttributes(legendLabelElem, labelAttribs);
+
+                        switch (new String(score).valueOf()) {
+                            case "0":
+                                score = "0";
+                                break;
+                            case "1":
+                                score = "max";
+                                break;
+                            case "-1":
+                                score = "min";
+                                break;
+                            default:
+                                score = score;
+                        };
+
                         legendLabelElem.innerHTML = score;
                         labelGroupElem.appendChild(legendLabelElem);
                     }
