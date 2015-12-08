@@ -108,6 +108,11 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             centerScores = {};
         }
 
+        if (utils.hasOwnProperty(config, "patientSamples")) {
+            medbookDataLoader.patientSamplesData(config["patientSamples"], eventAlbum);
+            ringsList.push("patientSamples");
+        }
+
         // expression data
         if (utils.hasOwnProperty(config, "medbookExprData")) {
             medbookDataLoader.mongoExpressionData(config["medbookExprData"], eventAlbum);
