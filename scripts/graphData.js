@@ -286,6 +286,41 @@ var graphData = {};
             }
         };
 
+        /**
+         * Read targettingDrugsData into the graphData object.
+         * targettingDrugsData is an array of documents from a mongo collection with keys "gene","drugs","pubmed_id"
+         */
+        this.readClinicalEventsSummaryDocs = function(targettingDrugsData) {
+            _.each(targettingDrugsData, function(doc) {
+                var geneNodeData = new gd.nodeData({
+                    name : doc["gene"]
+                });
+                this.addNode(geneNodeData);
+                var targetIdx = _.indexOf(this.nodes, geneNodeData);
+
+                var pubmed_id = doc["pubmed_id"];
+
+                var drugStrings = doc["drugs"].split(/[;,]/);
+                _.each(drugStrings, function(drugString) {
+                    var drugNodeData = new gd.nodeData({
+                        name : drugString.trim(),
+                        group : "drug"
+                    });
+                    this.addNode(drugNodeData);
+                    var sourceIdx = _.indexOf(this.nodes, drugNodeData);
+
+                    this.addLink(new gd.linkData({
+                        'sourceIdx' : sourceIdx,
+                        'targetIdx' : targetIdx,
+                        'relation' : "-drug target|",
+                        'pubmed_id' : pubmed_id
+                    }));
+                }, this);
+            }, this);
+
+            return null;
+        };
+
         this.readMedbookGraphData = function(medbookGraphDataObj) {
             // clear old graph
             this.nodes = new Array();
