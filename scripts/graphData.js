@@ -75,6 +75,18 @@ var graphData = {};
             return nodeNames;
         };
 
+        this.getNodeIndex = function(nodeData) {
+            var index = -1;
+            for (var i = 0, length = this.nodes.length; i < length; i++) {
+                var node = this.nodes[i];
+                if (node.checkEquality(nodeData)) {
+                    index = i;
+                    break;
+                }
+            }
+            return index;
+        };
+
         /**
          * Add a node to the graph.
          */
@@ -86,17 +98,8 @@ var graphData = {};
             }
 
             // check if node already exists
-            var exists = false;
-            for (var i = 0, length = this.nodes.length; i < length; i++) {
-                var node = this.nodes[i];
-                if (node.checkEquality(nodeData)) {
-                    console.log('nodeData exists');
-                    exists = true;
-                    break;
-                }
-            }
-
-            if (!exists) {
+            var nodeIdx = this.getNodeIndex(nodeData);
+            if (nodeIdx == -1) {
                 // add node
                 this.nodes.push(nodeData);
                 return nodeData;
@@ -292,11 +295,13 @@ var graphData = {};
          */
         this.readClinicalEventsSummaryDocs = function(targettingDrugsData) {
             _.each(targettingDrugsData, function(doc) {
+                var gene = doc["gene"];
                 var geneNodeData = new gd.nodeData({
-                    name : doc["gene"]
+                    name : gene,
+                    group : "protein"
                 });
                 this.addNode(geneNodeData);
-                var targetIdx = _.indexOf(this.nodes, geneNodeData);
+                var targetIdx = this.getNodeIndex(geneNodeData);
 
                 var pubmed_id = doc["pubmed_id"];
 
@@ -307,7 +312,7 @@ var graphData = {};
                         group : "drug"
                     });
                     this.addNode(drugNodeData);
-                    var sourceIdx = _.indexOf(this.nodes, drugNodeData);
+                    var sourceIdx = this.getNodeIndex(drugNodeData);
 
                     this.addLink(new gd.linkData({
                         'sourceIdx' : sourceIdx,
