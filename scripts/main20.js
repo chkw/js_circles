@@ -665,7 +665,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
 
         // reset circleMapSvg class elements by creating circleMap elements for each query feature.
         var svgNodeLayer = svg.select('#nodeLayer');
-        var nodeNames = graph.getAllNodeNames();
+        var nodeNames = graph.getAllNodeNames(["drug"]);
         if (circleDataLoaded) {
             cmGraph.drawCircleMaps(nodeNames, svgNodeLayer, 100, true);
         }
@@ -745,6 +745,9 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             nodeSelection.each(function(d) {
                 // add attribute to the node data
                 var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
+                if (_.isNull(circleMapSvgElement)) {
+                    return;
+                }
                 circleMapSvgElement.setAttributeNS(null, "nodeType", d.group);
                 var circleMapGElement = circleMapSvgElement.getElementsByClassName("circleMapG");
                 circleMapGElement[0].setAttributeNS(null, 'transform', cmGraph.smallScale);
@@ -753,8 +756,14 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
 
                 // pull node to front
                 var circleMapSvgElement = document.getElementById('circleMapSvg' + d['name']);
-                var nodeGelem = circleMapSvgElement.parentNode;
-                utils.pullElemToFront(nodeGelem);
+                if (_.isNull(circleMapSvgElement)) {
+                    var name = d["name"];
+                    var elem = d3.selectAll(".node").filter("." + name)[0][0];
+                    utils.pullElemToFront(elem);
+                } else {
+                    var nodeGelem = circleMapSvgElement.parentNode;
+                    utils.pullElemToFront(nodeGelem);
+                }
             });
         } else {
             // mouse events for sbgn nodes
