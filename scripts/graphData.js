@@ -65,13 +65,16 @@ var graphData = {};
         /**
          * Get all the node names in the graph.
          */
-        this.getAllNodeNames = function() {
-            var nodeNames = new Array();
-            for (var i = 0, length = this.nodes.length; i < length; i++) {
-                var nodeData = this.nodes[i];
+        this.getAllNodeNames = function(excludeGroups) {
+            var excludeGroups = excludeGroups || [];
+            var nodeNames = [];
+            _.each(this.nodes, function(nodeData) {
                 var nodeName = nodeData['name'];
-                nodeNames.push(nodeName);
-            }
+                var group = nodeData['group'];
+                if (!_.contains(excludeGroups, group)) {
+                    nodeNames.push(nodeName);
+                }
+            });
             return nodeNames;
         };
 
