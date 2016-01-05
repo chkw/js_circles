@@ -255,7 +255,14 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             },
             build : function($trigger, contextmenuEvent) {
                 console.log("context menu for node");
-                var circleMapSvgElem = utils.extractFromJq($trigger).getElementsByTagName("svg")[0];
+                var trigger = utils.extractFromJq($trigger);
+                var circleMapSvgElem = trigger.getElementsByTagName("svg")[0];
+                var isCircleMap = true;
+                if (_.isUndefined(circleMapSvgElem)) {
+                    // what if no circleMap SVG ????
+                    circleMapSvgElem = trigger;
+                    isCircleMap = false;
+                }
                 var nodeName = circleMapSvgElem.getAttribute("name");
                 var nodeType = circleMapSvgElem.getAttribute("nodeType");
                 var items = {
@@ -265,13 +272,22 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                         },
                         icon : null,
                         disabled : function(key, opt) {
-                            var disabled = (nodeType === "protein") ? false : true;
+                            var disabled = (_.contains(["protein", "drug"], nodeType)) ? false : true;
                             return disabled;
                         },
                         callback : function(key, opt) {
-                            // TODO link-out to PatientCare geneReport
-                            console.log("nodeName", nodeName);
-                            window.open("/PatientCare/geneReport/" + nodeName, "_parent");
+                            var url;
+                            switch(nodeType) {
+                                case "drug":
+                                    url = "https://www.drugbank.ca/unearth/q?searcher=drugs&query=" + nodeName;
+                                    break;
+                                case "protein":
+                                    url = "/PatientCare/geneReport/" + nodeName;
+                                    break;
+                                default:
+                                    console.log("no url assigned!");
+                            }
+                            window.open(url, "_nodeLinkOut");
                         }
                     },
                     "sep1" : "---------",
@@ -280,7 +296,9 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                             return "toggle node size";
                         },
                         icon : null,
-                        disabled : false,
+                        disabled : function(key, opt) {
+                            return !isCircleMap;
+                        },
                         callback : function(key, opt) {
                             if (cmGraph.circleMapMode) {
                                 // var circleMapSvgElem = document.getElementById('circleMapSvg' + d['name']);
@@ -353,7 +371,9 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                     'toggle_opacity' : {
                         name : "toggle opacity",
                         icon : null,
-                        disabled : false,
+                        disabled : function(key, opt) {
+                            return !isCircleMap;
+                        },
                         callback : function(key, opt) {
                             var circleMapGElement = circleMapSvgElem.getElementsByClassName("circleMapG")[0];
                             var d3circleMapGElement = d3.select(circleMapGElement);
@@ -759,6 +779,8 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                 if (_.isNull(circleMapSvgElement)) {
                     var name = d["name"];
                     var elem = d3.selectAll(".node").filter("." + name)[0][0];
+                    elem.setAttributeNS(null, "name", d.name);
+                    elem.setAttributeNS(null, "nodeType", d.group);
                     utils.pullElemToFront(elem);
                 } else {
                     var nodeGelem = circleMapSvgElement.parentNode;
