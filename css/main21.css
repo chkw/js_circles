@@ -1,0 +1,24 @@
+svg {
+    cursor: default;
+}
+svg:not(.active):not(.ctrl) {
+    cursor: crosshair;
+}
+svg:not(.active):not(.ctrl) path.link {
+    cursor: pointer;
+}
+.node not(.circleMapG) {
+    stroke:#fff;
+    stroke-width:1.5px;
+}
+/*.node .circleMapSvg {
+    overflow: visible
+}*/
+/*.node text {
+    stroke: darkslategrey;
+    fill: darkslategrey;
+}*/
+/*.link {
+    stroke: black;
+    stroke-opacity: .6;
+}*/
