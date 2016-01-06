@@ -203,12 +203,24 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                             return label;
                         },
                         icon : null,
-                        disabled : false
-                        // ,
-                        // callback : function(key, opt) {
-                        // }
-                    },
-                    "sep1" : "---------"
+                        disabled : function() {
+                            var isNotDisabled = (linkData.relation === "-drug target|");
+                            return !isNotDisabled;
+                        },
+                        callback : function(key, opt) {
+                            var url;
+                            switch(linkData.relation) {
+                                case "-drug target|":
+                                    url = "https://www.ncbi.nlm.nih.gov/pubmed/?term=" + linkData.pubmed;
+                                    break;
+                                default:
+                                    console.log("no url assigned!");
+                            }
+                            window.open(url, "_edgeLinkOut");
+                        }
+                    }
+                    // ,
+                    // "sep1" : "---------"
                 };
                 return {
                     "items" : items
