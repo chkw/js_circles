@@ -40,10 +40,14 @@ var graphData = {};
         if ('value' in data) {
             this.value = parseFloat(data['value']);
         } else {
-            this.value = 3;
+            this.value = 1;
         }
         if ('relation' in data) {
             this.relation = data['relation'];
+        }
+
+        if ("pubmed_id" in data) {
+            this.pubmed = data["pubmed_id"];
         }
     };
 

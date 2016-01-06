@@ -193,10 +193,14 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                 console.log('elem', elem);
             },
             build : function($trigger, contextmenuEvent) {
+                var d3Trigger = d3.select($trigger[0]);
+                var linkData = d3Trigger.data()[0];
+                console.log("linkData", linkData);
                 var items = {
                     'title' : {
                         name : function() {
-                            return "link title";
+                            var label = linkData.source.name + " " + linkData.relation + " " + linkData.target.name;
+                            return label;
                         },
                         icon : null,
                         disabled : false
@@ -746,7 +750,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         });
 
         linkSelection.style("stroke-width", function(d) {
-            return d.value;
+            return (3 * d.value);
         });
 
         // http://www.w3.org/TR/SVG/painting.html#StrokeProperties
@@ -763,7 +767,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         linkSelection.on('mouseover', function(d, i) {
             // mouseover event for link
             var linkElement = document.getElementById('link' + i);
-            var decorations = cmGraph.getLinkDecorations(d.relation, d.value * 3);
+            var decorations = cmGraph.getLinkDecorations(d.relation, d.value * 3 * 3);
             var styleString = "";
 
             for (var key in decorations) {
@@ -775,7 +779,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         }).on('mouseout', function(d, i) {
             // mouseout event for link
             var linkElement = document.getElementById('link' + i);
-            var decorations = cmGraph.getLinkDecorations(d.relation, d.value);
+            var decorations = cmGraph.getLinkDecorations(d.relation, d.value * 3);
             var styleString = "";
 
             for (var key in decorations) {
