@@ -181,6 +181,37 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
     cmGraph.setup = function() {
         // context menu
         // uses medialize's jQuery-contextMenu
+
+        // TODO contextMenu for "link" elements
+        $.contextMenu({
+            selector : ".link",
+            trigger : 'right',
+            // trigger : 'left',
+            callback : function(key, options) {
+                // default callback
+                var elem = this[0];
+                console.log('elem', elem);
+            },
+            build : function($trigger, contextmenuEvent) {
+                var items = {
+                    'title' : {
+                        name : function() {
+                            return "link title";
+                        },
+                        icon : null,
+                        disabled : false
+                        // ,
+                        // callback : function(key, opt) {
+                        // }
+                    },
+                    "sep1" : "---------"
+                };
+                return {
+                    "items" : items
+                };
+            }
+        });
+
         $.contextMenu({
             selector : ".circleMapRingG",
             trigger : 'right',
