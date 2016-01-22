@@ -21,6 +21,9 @@
     "jstat": "~1.1.2",
     "cytoscape-qtip": "~2.0.1",
     "qtip2": "~2.2.1",
-    "jQuery-contextMenu": "~1.6.7"
+    "jQuery-contextMenu": "~1.6.7",
+    "webcola": "~3.1.0",
+    "underscore": "~1.8.3",
+    "pablo": "~0.5.0"
   }
 }
