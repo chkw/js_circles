@@ -479,7 +479,28 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                             setCookieVal(cookieObj);
                             d3circleMapGElement.transition().duration(500).attr("opacity", newOpacity);
                         }
-                    }
+                    },
+                    "sep2" : "---------",
+                    "reset_fold" : {
+                        name : "reset...",
+                        items : {
+                            "reset_zoom_and_opacity" : {
+                                "name" : "all nodes",
+                                "icon" : null,
+                                "disabled" : function(key, opt) {
+                                    return !isCircleMap;
+                                },
+                                "callback" : function(key, opt) {
+                                    utils.deleteCookie(cookieName);
+                                    cmGraph.clearCircleMaps();
+
+                                    // attach new circlemaps
+                                    var configObj = getCookieVal();
+                                    cmGraph.attachCircleMaps(configObj);
+                                }
+                            }
+                        }
+                    },
                 };
                 return {
                     'items' : items
@@ -721,6 +742,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
     };
 
     cmGraph.attachCircleMaps = function(configObj) {
+        configObj = configObj || {};
         var svgNodeLayer = d3.select('#nodeLayer');
         var radius = 100;
         var interactive = true;
