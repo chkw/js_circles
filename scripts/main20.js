@@ -456,19 +456,26 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                         callback : function(key, opt) {
                             var circleMapGElement = circleMapSvgElem.getElementsByClassName("circleMapG")[0];
                             var d3circleMapGElement = d3.select(circleMapGElement);
+                            var feature = d3circleMapGElement.attr("feature");
 
                             var isTransparent = d3circleMapGElement.attr("isTransparent");
                             var newOpacity;
+                            var cookieObj = getCookieVal();
+                            var oldList = cookieObj["transparentNodes"] || [];
                             if (_.isNull(isTransparent) || isTransparent === "false") {
                                 if (_.isNull(isTransparent)) {
                                     d3circleMapGElement.attr("opacity", 1);
                                 }
                                 newOpacity = 0.3;
                                 d3circleMapGElement.attr("isTransparent", "true");
+                                oldList.push(feature);
+                                cookieObj["transparentNodes"] = _.uniq(oldList);
                             } else {
                                 newOpacity = 1;
                                 d3circleMapGElement.attr("isTransparent", "false");
+                                cookieObj["transparentNodes"] = _.without(oldList, feature);
                             }
+                            setCookieVal(cookieObj);
                             d3circleMapGElement.transition().duration(500).attr("opacity", newOpacity);
                         }
                     }
