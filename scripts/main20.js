@@ -299,7 +299,8 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                             });
 
                             // attach new circlemaps
-                            cmGraph.attachCircleMaps();
+                            var configObj = getCookieVal();
+                            cmGraph.attachCircleMaps(configObj);
                         }
                     }
                 };
@@ -719,7 +720,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         d3.select('#nodeLayer').selectAll('.circleMapG').remove();
     };
 
-    cmGraph.attachCircleMaps = function() {
+    cmGraph.attachCircleMaps = function(configObj) {
         var svgNodeLayer = d3.select('#nodeLayer');
         var radius = 100;
         var interactive = true;
@@ -727,7 +728,16 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         circleMapSvgSelection.each(function(d, i) {
             var feature = d.name;
             var svgGElem = cmGraph.circleMapGeneratorObj.generateCircleMapSvgGElemWrapper(feature, radius, interactive);
-            svgGElem.setAttributeNS(null, 'transform', cmGraph.smallScale);
+            var zoomScale = cmGraph.smallScale;
+            if (_.contains(configObj["zoomedNodes"], feature)) {
+                zoomScale = cmGraph.largeScale;
+            }
+            svgGElem.setAttributeNS(null, 'transform', zoomScale);
+
+            if (_.contains(configObj["transparentNodes"], feature)) {
+                svgGElem.setAttributeNS(null, "opacity", "0.3");
+            }
+
             this.appendChild(svgGElem);
         });
     };
@@ -842,6 +852,10 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         });
 
         // nodes
+        // var nodeSelection = svgNodeLayer.selectAll(".node").data(graph.nodes).enter().append("g").attr('class', function(d, i) {
+        // return "node " + d.name + ' ' + d.group;
+        // });
+        var cookieObj = getCookieVal();
         var nodeSelection = svgNodeLayer.selectAll(".node").data(graph.nodes).enter().append("g").attr('class', function(d, i) {
             return "node " + d.name + ' ' + d.group;
         });
@@ -898,7 +912,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             }
             var type = d.group.toString().toLowerCase();
             if ((type != "drug") && (circleDataLoaded ) && (nodeNames.indexOf(nodeName) >= 0)) {
-                // circleMap
+                //TODO circleMap
                 var stagedElement = document.getElementById('circleMapSvg' + nodeName);
                 return stagedElement;
             } else if (sbgn_config['nucleicAcidFeatureTypes'].indexOf(type) != -1) {
@@ -962,6 +976,20 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         }).style("fill", function(d) {
             return cmGraph.colorMapper(d.group);
         }).style("overflow", "visible");
+
+        // apply node zoom and transparency on loading
+        d3.selectAll(".circleMapG").each(function(d, i) {
+            var circleMapGElem = this;
+            var feature = this.getAttribute("feature");
+            if (_.contains(cookieObj["zoomedNodes"], feature)) {
+                circleMapGElem.setAttributeNS(null, 'transform', cmGraph.largeScale);
+                circleMapGElem.setAttributeNS(null, 'zoomed', "true");
+            }
+            if (_.contains(cookieObj["transparentNodes"], feature)) {
+                circleMapGElem.setAttributeNS(null, "opacity", "0.3");
+                circleMapGElem.setAttributeNS(null, "isTransparent", "true");
+            }
+        });
 
         // node labels
         // var textdy = "2.7em";
