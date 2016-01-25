@@ -65,6 +65,24 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
     cmGraph.colorMapper = null;
     cmGraph.force = null;
 
+    var cookieName = "cmGraph";
+
+    /**
+     * Set the obs-deck cookie. Value is an object that is stringified for the cookie.
+     */
+    var setCookieVal = function(value) {
+        utils.setCookie(cookieName, JSON.stringify(value));
+    };
+
+    /**
+     * Get the obs-deck cookie. Return empty object if no cookie.s
+     */
+    var getCookieVal = function() {
+        var cookie = utils.getCookie(cookieName);
+        var parsedCookie = utils.parseJson(cookie) || {};
+        return parsedCookie;
+    };
+
     cmGraph.setNewCircleMapGeneratorSettings = function(newSettings) {
         for (var key in newSettings) {
             cmGraph.circleMapGeneratorObj.cmgParams[key] = newSettings[key];
@@ -359,14 +377,21 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                                 var circleMapGElement = circleMapSvgElem.getElementsByClassName("circleMapG")[0];
                                 var d3circleMapGElement = d3.select(circleMapGElement);
                                 var zoomed = d3circleMapGElement.attr("zoomed");
+                                var feature = d3circleMapGElement.attr("feature");
                                 var newScale;
+                                var cookieObj = getCookieVal();
+                                var oldList = cookieObj["zoomedNodes"] || [];
                                 if (_.isNull(zoomed) || zoomed === "false") {
                                     newScale = cmGraph.largeScale;
                                     d3circleMapGElement.attr("zoomed", "true");
+                                    oldList.push(feature);
+                                    cookieObj["zoomedNodes"] = _.uniq(oldList);
                                 } else {
                                     newScale = cmGraph.smallScale;
                                     d3circleMapGElement.attr("zoomed", "false");
+                                    cookieObj["zoomedNodes"] = _.without(oldList, feature);
                                 }
+                                setCookieVal(cookieObj);
                                 d3circleMapGElement.transition().duration(300).attr('transform', newScale);
                             }
                         }
