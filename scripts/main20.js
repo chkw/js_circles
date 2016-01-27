@@ -500,7 +500,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                                 }
                             }
                         }
-                    },
+                    }
                 };
                 return {
                     'items' : items
@@ -1001,15 +1001,15 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
 
         // apply node zoom and transparency on loading
         d3.selectAll(".circleMapG").each(function(d, i) {
-            var circleMapGElem = this;
-            var feature = this.getAttribute("feature");
+            var d3circleMapGElem = d3.select(this);
+            var feature = d3circleMapGElem.attr("feature");
             if (_.contains(cookieObj["zoomedNodes"], feature)) {
-                circleMapGElem.setAttributeNS(null, 'transform', cmGraph.largeScale);
-                circleMapGElem.setAttributeNS(null, 'zoomed', "true");
+                d3circleMapGElem.attr('transform', cmGraph.largeScale);
+                d3circleMapGElem.attr('zoomed', "true");
             }
             if (_.contains(cookieObj["transparentNodes"], feature)) {
-                circleMapGElem.setAttributeNS(null, "opacity", "0.3");
-                circleMapGElem.setAttributeNS(null, "isTransparent", "true");
+                d3circleMapGElem.attr("opacity", "0.3");
+                d3circleMapGElem.attr("isTransparent", "true");
             }
         });
 
