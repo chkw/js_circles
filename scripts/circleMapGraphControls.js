@@ -198,14 +198,27 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
         console.log("clicked saveButton");
         var defaultFileName = "graph";
         var supportDownload = Pablo.support.download;
+        var type = cmgc.options["imageFileFormat"] || "svg";
 
         if (supportDownload) {
             // get a pablo collection
-            var pabloCirclMapsSvg = Pablo('#circleMaps');
-            console.log("pabloCirclMapsSvg", pabloCirclMapsSvg);
+            var pabloCircleMapsSvg = Pablo('#circleMaps');
 
-            // save image as file
-            pabloCirclMapsSvg.download("svg", defaultFileName);
+            type = type.toLowerCase();
+            if (_.contains(["jpeg", "jpg"], type)) {
+                type = "jpeg";
+            } else if (type === "png") {
+                type = "png";
+            } else {
+                type = "svg";
+            }
+
+            // save image file
+            pabloCircleMapsSvg.download(type, defaultFileName, function(result) {
+                var gotError = result.error ? true : false;
+                console.log(type, "download worked?", !gotError);
+            });
+
         } else {
             window.alert("Download not supported on this browser.");
         }
