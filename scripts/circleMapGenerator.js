@@ -334,8 +334,28 @@ var circleMapGenerator = {};
                     });
                 }
 
+                // ring separator
+                var arc = createD3Arc(innerRadius, innerRadius + 0.5, 0, 360);
+                var pathElem = document.createElementNS(utils.svgNamespaceUri, 'path');
+                utils.setElemAttributes(pathElem, {
+                    'd' : arc(),
+                    'fill' : "black"
+                });
+
+                circleMapGroup.appendChild(pathElem);
+
                 innerRadius = innerRadius + ringThickness;
             }
+
+            // outermost ring separator
+            var arc = createD3Arc(fullRadius, fullRadius + 0.5, 0, 360);
+            var pathElem = document.createElementNS(utils.svgNamespaceUri, 'path');
+            utils.setElemAttributes(pathElem, {
+                'd' : arc(),
+                'fill' : "black"
+            });
+
+            circleMapGroup.appendChild(pathElem);
 
             // add a label
             // circleMapGroup.append("svg:text").attr("text-anchor", "middle").attr('dy', ".35em").text(feature);

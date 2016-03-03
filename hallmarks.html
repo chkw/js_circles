@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>hallmarks.html</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="css/main21.css" type="text/css" />
+        <link type="text/css" rel="stylesheet" href="bower_components/jQuery-contextMenu/src/jquery.contextmenu.css">
+
+        <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+        <script type="text/javascript" src="bower_components/jQuery-contextMenu/src/jquery.contextMenu.js"></script>
+        <script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
+        <script type="text/javascript" src="bower_components/underscore/underscore.js"></script>
+
+        <script type="text/javascript" src="bower_components/webcola/WebCola/cola.min.js"></script>
+        <script type="text/javascript" src="bower_components/jstat/dist/jstat.min.js"></script>
+        <script type="text/javascript" src="scripts/utils.js"></script>
+        <script type="text/javascript" src="scripts/eventData.js"></script>
+        <script type="text/javascript" src="scripts/graphData.js"></script>
+        <script type="text/javascript" src="scripts/medbook_data_load.js"></script>
+        <script type="text/javascript" src="scripts/circleMapGenerator.js"></script>
+        <script type="text/javascript" src="scripts/circleMapGraph.js"></script>
+
+        <!-- <script type="text/javascript" src="scripts/circleMapGraph_package_dev.js"></script> -->
+
+        <noscript>
+            <div align="center">
+                <p style="color:black;background-color:red;font-size:18pt">
+                    This website requires JavaScript.  Please turn on JavaScript and then <a href="">try it again</a>.
+                </p>
+            </div>
+        </noscript>
+    </head>
+    <body>
+        <div id='graphDiv' style="background-color: goldenrod">
+            Network graph.
+        </div>
+        <script>
+            var sifString = "RBL2	-PPI>	SUV39H1\nRB1	-PPI>	SUV39H1\nPTK6	-PPI>	EGFR\nMAPK1	-kinase_regulator>	MAPK1\nMDC1	-PPI>	ATM\nTP53	-PPI>	CREBBP\nNCOR1	-PPI>	AR\nEGFR	-PPI>	AR\nPTK2	-PPI>	TP53\nPARP1	-PPI>	NCOA6\nPRKDC	-PPI>	AR\nPML	-PPI>	CREBBP\nNCOR1	-PPI>	SNW1\nTP53	-PPI>	EIF2AK2\nNCOR1	-PPI>	TRIM28\nNCOR1	-PPI>	PHB\nDAXX	-phos>	PRKCZ\nPHB	-PPI>	RB1\nNCOR2	-PPI>	SNW1\nNCOR2	-PPI>	AKT1\nCREBBP	-PPI>	AR\nPRKDC	-PPI>	RPA1\nTFDP1	-PPI>	RBL2\nAKT1	-PPI>	PRKCZ\nCREBBP	-PPI>	MYC\nPRDM2	-PPI>	RB1\nAR	-PPI>	NCOA6\nMLL	-PPI>	CTNNB1\nNCOR2	-PPI>	CREBBP\nMAP2K2	-kinase_regulator>	MAP2K2\nGAK	-phos>	TFDP1\nTP53	-PPI>	PARP1\nTP53	-PPI>	MLL\nAR	-PPI>	NCOA2\nPELP1	-PPI>	RB1\nNCOA6	-PPI>	NCOR2\nCUX1	-PPI>	RB1\nDNMT3A	-PPI>	EZH2\nDNMT1	-PPI>	UHRF1\nAR	-PPI>	NCOR1\nARID4A	-PPI>	RB1\nTRIM28	-PPI>	PARP1\nAKT1	-PPI>	CREBBP\nAR	-PPI>	RB1\nDNMT1	-PPI>	SUV39H1\nMLL	-PPI>	MAP3K5\nSUV39H1	-PPI>	DNMT1\nAKT1	-PPI>	DNMT1\nRBL2	-PPI>	EZH2\nIKBKB	-PPI>	AKT1\nPML	-PPI>	DAXX\nCTNNB1	-PPI>	AR";
+            var sampleData = "Gene	Kinases	Mutations	Amps	Dels	TFs\nPTK2	0	1	0	0	0	0\nPTK6	0	1	0	0	0	0\nATM	0	1	0	0	0	0\nEGFR	0	1	0	0	0	0\nPRKDC	0	1	0	0	0	0\nCTNNB1	0	0	0	0	0	0\nAKT1	0	0	1	0	0	0\nEZH2	0	0	0	0	0	0\nARID4A	0	0	0	0	0	0\nNCOR2	0	0	0	1	0	0\nNCOR1	0	0	0	0	0	0\nNCOA2	0	0	0	0	0	0\nDAXX	0	0	0	0	0	0\nNCOA6	0	0	0	0	0	0\nDNMT1	0	0	0	0	0	0\nRB1	0	0	0	0	0	0\nMAP3K5	0	0	0	0	0	0\nMAPK1	0	0	0	0	0	0\nGAK	0	1	0	0	0	0\nPML	0	0	0	0	1	0\nMYC	0	0	0	0	0	0\nDNMT3A	0	0	0	1	0	0\nTRIM28	0	0	0	0	0	0\nRBL2	0	0	0	0	0	0\nSUV39H1	0	0	0	0	0	1\nMDC1	0	1	0	0	0	0\nPARP1	0	0	0	0	0	0\nMLL	0	0	0	0	0	0\nCUX1	0	0	0	0	0	0\nAR	0	0	0	1	0	1\nPELP1	0	0	0	0	0	0\nUHRF1	0	0	0	0	0	0\nIKBKB	0	0	0	0	0	0\nSNW1	0	0	0	0	0	0\nTP53	0	0	1	0	0	0\nMAP2K2	0	0	0	0	0	0\nPHB	0	0	0	0	0	0\nEIF2AK2	0	0	0	0	0	0\nRPA1	0	0	0	0	0	0\nPRKCZ	0	0	0	0	0	0\nTFDP1	0	0	0	0	0	0\nPRDM2	0	0	0	0	0	0\nCREBBP	0	0	0	0	0	0";
+
+            var parsedSampleData = d3.tsv.parse(sampleData);
+            console.log("parsedSampleData", parsedSampleData);
+            var centerScores = {};
+            _.each(parsedSampleData, function(obj) {
+                centerScores[obj["Gene"]] = obj["Kinases"];
+            });
+
+            circleDataLoaded = (utils.getQueryStringParameterByName('circles').toLowerCase() === 'true') ? true : false;
+            circleMapGraph.build({
+                "sifGraphData" : sifString,
+                "hallmarksModeSampleData" : sampleData,
+                "centerScores" : centerScores,
+                "containerDiv" : document.getElementById('graphDiv'),
+                "circleDataLoaded" : circleDataLoaded
+            });
+        </script>
+    </body>
+</html>

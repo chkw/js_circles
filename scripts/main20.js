@@ -140,6 +140,12 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             }
         }
 
+        // hallmarks sample data
+        if (utils.hasOwnProperty(config, "hallmarksModeSampleData")) {
+            medbookDataLoader.hallmarksSampleData(config["hallmarksModeSampleData"], eventAlbum);
+            ringsList.push("hallmarks");
+        }
+
         // expression data
         if (utils.hasOwnProperty(config, "medbookExprData")) {
             medbookDataLoader.mongoExpressionData(config["medbookExprData"], eventAlbum);
