@@ -829,9 +829,11 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             var type = d.relation;
             if (type === "component>") {
                 return "url(#Circle)";
-            } else if (utils.beginsWith(type, "-") && utils.endsWith(type, ">")) {
+                // } else if (utils.beginsWith(type, "-") && utils.endsWith(type, ">")) {
+            } else if (utils.endsWith(type, ">")) {
                 return "url(#Triangle)";
-            } else if (utils.beginsWith(type, "-") && utils.endsWith(type, "|")) {
+                // } else if (utils.beginsWith(type, "-") && utils.endsWith(type, "|")) {
+            } else if (utils.endsWith(type, "|")) {
                 return "url(#Bar)";
             } else {
                 return null;

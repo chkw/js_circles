@@ -364,9 +364,158 @@ var circleMapGenerator = {};
         };
 
         /**
-         * Generate an svg:group DOM element to be appended to an svg element.
+         * Generate the required circleMapGroup for a legend.
          */
         this.generateCircleMapSvgGElem_legend = function(radius, interactive) {
+            // detect hallmarks events
+            var hallmarksFound = _.contains(_.keys(this.eventAlbum.getEventIdsByType()), "hallmarks");
+
+            if (hallmarksFound) {
+                var circleMapGroup = this.generateCircleMapSvgGElem_hallmarks_legend(radius, interactive);
+                return circleMapGroup;
+            } else {
+                var circleMapGroup = this.generateCircleMapSvgGElem_standard_legend(radius, interactive);
+                return circleMapGroup;
+            }
+        };
+
+        /**
+         * circleMapGroup for hallmarks mode
+         */
+        this.generateCircleMapSvgGElem_hallmarks_legend = function(radius, interactive) {
+            // circleMapGroup for hallmarks mode
+            console.log("BEGIN generateCircleMapSvgGElem_hallmarks_legend");
+
+            var feature = "legend";
+            var interactive = interactive || false;
+            var ringsList = this.cmgParams['ringsList'];
+            console.log("ringsList", ringsList);
+
+            var fullRadius = ( typeof radius === 'undefined') ? 100 : radius;
+
+            var numDatasets = ringsList.length;
+
+            // +1 for the center
+            var ringThickness = fullRadius / (numDatasets + 1);
+            var innerRadius = ringThickness;
+
+            // arc paths will be added to this SVG group
+            var circleMapGroup = document.createElementNS(utils.svgNamespaceUri, 'g');
+            utils.setElemAttributes(circleMapGroup, {
+                'class' : 'circleMapG',
+                "feature" : feature
+            });
+
+            // background canvas
+            // var sampleIds = this.eventAlbum.getAllSampleIds();
+            var sampleIds = this.sortedSamples.slice();
+            var arcWidth = 360 / sampleIds.length;
+
+            var innerRadius = radius / 2;
+            var outerRadius = radius;
+
+            // size
+            var canvasW = 2 * (sampleIds.length + 1) * radius;
+            var canvasH = 2 * radius;
+
+            // position
+            var canvasX = -canvasW / 2;
+            var canvasY = -canvasH / 2;
+
+            // round corners
+            var canvasRx = 20;
+            var canvasRy = canvasRx;
+
+            var offsetV = 150;
+            var offsetW = 10;
+
+            circleMapGroup.appendChild(utils.createSvgRectElement(canvasX - offsetW / 2, canvasY - offsetV / 2, canvasRx, canvasRy, canvasW + offsetW, canvasH + offsetV, {
+                "fill" : "white",
+                "stroke" : "black"
+            }));
+
+            sampleIds.push("Kinases");
+            _.each(sampleIds, function(sampleId, index) {
+
+                //  draw a circle for each sampleId in the sampleGroup
+                var posX = canvasX + radius + (2 * radius * index);
+                var posY = 0;
+
+                var sampleGroup = document.createElementNS(utils.svgNamespaceUri, 'g');
+                utils.setElemAttributes(sampleGroup, {
+                    'class' : 'legendSampleG',
+                    "feature" : feature,
+                    "sampleId" : sampleId,
+                    "transform" : "translate(" + posX + ")"
+                });
+                circleMapGroup.appendChild(sampleGroup);
+
+                //  white circle
+                var circleSvg = utils.createSvgCircleElement(0, 0, radius, {
+                    "fill" : "white"
+                });
+                sampleGroup.appendChild(circleSvg);
+
+                //  red arc
+                var startAngle = index * arcWidth;
+                var endAngle = startAngle + arcWidth;
+
+                if (sampleId === "Kinases") {
+                    var circleSvg = utils.createSvgCircleElement(0, 0, radius / 2, {
+                        "fill" : "red"
+                    });
+                    sampleGroup.appendChild(circleSvg);
+                } else {
+                    var arc = createD3Arc(innerRadius, outerRadius, startAngle, endAngle);
+                    var pathElem = document.createElementNS(utils.svgNamespaceUri, 'path');
+                    utils.setElemAttributes(pathElem, {
+                        'd' : arc(),
+                        'fill' : "red"
+                    });
+                    sampleGroup.appendChild(pathElem);
+                }
+
+                //  inner separator
+                arc = createD3Arc(innerRadius - 0.5, innerRadius, 0, 360);
+                pathElem = document.createElementNS(utils.svgNamespaceUri, 'path');
+                utils.setElemAttributes(pathElem, {
+                    'd' : arc(),
+                    'fill' : "black"
+                });
+                sampleGroup.appendChild(pathElem);
+
+                //  outer separator
+                arc = createD3Arc(outerRadius, outerRadius - 0.5, 0, 360);
+                pathElem = document.createElementNS(utils.svgNamespaceUri, 'path');
+                utils.setElemAttributes(pathElem, {
+                    'd' : arc(),
+                    'fill' : "black"
+                });
+                sampleGroup.appendChild(pathElem);
+
+                // sample label (sampleId)
+                var legendLabelElem = document.createElementNS(utils.svgNamespaceUri, 'text');
+                var labelAttribs = {
+                    "fill" : "black",
+                    "font-size" : "32",
+                    "text-anchor" : "middle",
+                    "x" : 0,
+                    "y" : -radius - 20
+                };
+                utils.setElemAttributes(legendLabelElem, labelAttribs);
+                legendLabelElem.innerHTML = sampleId;
+                sampleGroup.appendChild(legendLabelElem);
+
+            });
+
+            console.log("END generateCircleMapSvgGElem_hallmarks_legend");
+            return circleMapGroup;
+        };
+
+        /**
+         * Generate an svg:group DOM element to be appended to an svg element.
+         */
+        this.generateCircleMapSvgGElem_standard_legend = function(radius, interactive) {
             var feature = "legend";
             var interactive = interactive || false;
             var ringsList = this.cmgParams['ringsList'];
