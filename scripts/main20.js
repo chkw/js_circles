@@ -340,7 +340,11 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                 var items = {
                     'title' : {
                         name : function() {
-                            return nodeType + ": " + nodeName;
+                            var s = nodeName;
+                            if (nodeType !== "unspecified entity") {
+                                s = nodeType + ": " + s;
+                            }
+                            return s;
                         },
                         icon : null,
                         disabled : function(key, opt) {
@@ -571,14 +575,14 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             "group" : "legend",
             // to set starting position, set fixed to true and provide (x,y)
             "fixed" : true,
-            "x" : 50,
-            "y" : 50
+            "x" : 155,
+            "y" : 55
         });
 
         var legendG = document.createElementNS(utils.svgNamespaceUri, 'g');
         utils.setElemAttributes(legendG, {
             "id" : "legendG",
-            "transform" : "translate(150,5)"
+            "transform" : "translate(325,5)"
         });
 
         cmGraph.svgElem.append(function() {
