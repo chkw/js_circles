@@ -781,12 +781,12 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
     cmGraph.getLinkDecorations = function(relationType, value) {
         var styles = {};
         // marker-end
-        if (utils.beginsWith(relationType, "-") && utils.endsWith(relationType, ">")) {
-            styles["marker-end"] = "url(#Triangle)";
-        } else if (utils.beginsWith(relationType, "-") && utils.endsWith(relationType, "|")) {
-            styles["marker-end"] = "url(#Bar)";
-        } else if (utils.beginsWith(relationType, "component") && utils.endsWith(relationType, ">")) {
+        if (utils.beginsWith(relationType, "component") && utils.endsWith(relationType, ">")) {
             styles["marker-end"] = "url(#Circle)";
+        } else if (utils.endsWith(relationType, ">")) {
+            styles["marker-end"] = "url(#Triangle)";
+        } else if (utils.endsWith(relationType, "|")) {
+            styles["marker-end"] = "url(#Bar)";
         }
         // stroke-dasharray
         if (utils.beginsWith(relationType, "-a")) {
