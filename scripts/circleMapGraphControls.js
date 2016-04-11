@@ -99,6 +99,43 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
 
         containerElem.appendChild(document.createElement("hr"));
 
+        // radio buttons for color mapping option
+        var colorMappingOptionDiv = document.createElement("div");
+        containerElem.appendChild(colorMappingOptionDiv);
+
+        colorMappingOptionDiv.innerHTML = colorMappingOptionDiv.innerHTML + "Compute sample min/max values for color mapping ... <BR>";
+
+        var perNodeRadio = document.createElement("input");
+        colorMappingOptionDiv.appendChild(perNodeRadio);
+        utils.setElemAttributes(perNodeRadio, {
+            "id" : "perNodeRadio",
+            "name" : "colorMappingOption",
+            "type" : "radio",
+            "value" : "perNode",
+            "checked" : true
+        });
+        colorMappingOptionDiv.innerHTML = colorMappingOptionDiv.innerHTML + "per node <BR>";
+
+        var perGraphRadio = document.createElement("input");
+        colorMappingOptionDiv.appendChild(perGraphRadio);
+        utils.setElemAttributes(perGraphRadio, {
+            "id" : "perGraphRadio",
+            "name" : "colorMappingOption",
+            "type" : "radio",
+            "value" : "perGraph"
+        });
+        colorMappingOptionDiv.innerHTML = colorMappingOptionDiv.innerHTML + "per graph <BR>";
+
+        $('input[name="colorMappingOption"]').change(function(eventObj) {
+            var name = eventObj.target.name;
+            var radioVal = $('input[name="' + name + '"]:checked').val();
+            console.log(name + " changed to:", radioVal);
+            cmgc.options["colorMappingOption"] = radioVal;
+            cmgc.buildCircleMapGraph();
+        });
+
+        containerElem.appendChild(document.createElement("hr"));
+
         // radio buttons for download image file type
         var fileTypeRadioDiv = document.createElement("div");
         containerElem.appendChild(fileTypeRadioDiv);
@@ -284,6 +321,7 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
      * Use the saved objects to build a new circleMapGraph.
      */
     cmgc.buildCircleMapGraph = function() {
+        console.log("options", cmgc.options);
         circleMapGraph.build(cmgc.options);
     };
 
