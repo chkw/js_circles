@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Stuart Lab CircleMap Network Graph Tool</title>
-		<meta charset="utf-8">
-		<link rel="stylesheet" href="css/main19.css" type="text/css" />
-		<link type="text/css" rel="stylesheet" href="bower_components/jQuery-contextMenu/src/jquery.contextmenu.css">
+    <head>
+        <title>Stuart Lab CircleMap Network Graph Tool</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="css/main19.css" type="text/css" />
+        <link type="text/css" rel="stylesheet" href="bower_components/jQuery-contextMenu/src/jquery.contextmenu.css">
 
-		<script>
+        <script>
             (function(i, s, o, g, r, a, m) {
                 i['GoogleAnalyticsObject'] = r;
                 i[r] = i[r] ||
@@ -21,46 +21,51 @@
 
             ga('create', 'UA-68047807-1', 'auto');
             ga('send', 'pageview');
-		</script>
+        </script>
 
-		<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
-		<script type="text/javascript" src="bower_components/jQuery-contextMenu/src/jquery.contextMenu.js"></script>
-		<script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
-		<script type="text/javascript" src="bower_components/underscore/underscore.js"></script>
+        <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+        <script type="text/javascript" src="bower_components/jQuery-contextMenu/src/jquery.contextMenu.js"></script>
+        <script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
+        <script type="text/javascript" src="bower_components/underscore/underscore.js"></script>
 
-		<script type="text/javascript" src="bower_components/webcola/WebCola/cola.min.js"></script>
-		<script type="text/javascript" src="bower_components/jstat/dist/jstat.min.js"></script>
-		<script type="text/javascript" src="scripts/utils.js"></script>
-		<script type="text/javascript" src="scripts/eventData.js"></script>
-		<script type="text/javascript" src="scripts/graphData.js"></script>
-		<script type="text/javascript" src="scripts/medbook_data_load.js"></script>
-		<script type="text/javascript" src="scripts/circleMapGenerator.js"></script>
-		<script type="text/javascript" src="scripts/circleMapGraph.js"></script>
+        <script type="text/javascript" src="bower_components/webcola/WebCola/cola.min.js"></script>
+        <script type="text/javascript" src="bower_components/jstat/dist/jstat.min.js"></script>
+        <script type="text/javascript" src="scripts/utils.js"></script>
+        <script type="text/javascript" src="scripts/eventData.js"></script>
+        <script type="text/javascript" src="scripts/graphData.js"></script>
+        <script type="text/javascript" src="scripts/medbook_data_load.js"></script>
+        <script type="text/javascript" src="scripts/circleMapGenerator.js"></script>
+        <script type="text/javascript" src="scripts/circleMapGraph.js"></script>
 
-		<script type="text/javascript" src="bower_components/pablo/pablo.js"></script>
+        <script type="text/javascript" src="bower_components/pablo/pablo.js"></script>
 
-		<script type="text/javascript" src="scripts/circleMapGraphControls.js"></script>
+        <script type="text/javascript" src="scripts/circleMapGraphControls.js"></script>
 
-		<!-- <script type="text/javascript" src="scripts/circleMapGraph_webtool.js"></script> -->
+        <!-- <script type="text/javascript" src="scripts/circleMapGraph_webtool.js"></script> -->
 
-		<noscript>
-			<div align="center">
-				<p style="color:black;background-color:red;font-size:18pt">
-					This website requires JavaScript.  Please turn on JavaScript and then <a href="">try it again</a>.
-				</p>
-			</div>
-		</noscript>
-	</head>
-	<body>
-		<img src="images/baskin-logo-banner.jpg" alt="baskin-logo-banner" height="32">
-		<br>
-		<div id="controlsDiv" style="background-color: lightBlue">
-			controls go in this space
-		</div>
-		<div id='graphDiv' style="background-color: goldenrod">
-			Network graph goes in this space.
-		</div>
-		<script>
+        <noscript>
+            <div align="center">
+                <p style="color:black;background-color:red;font-size:18pt">
+                    This website requires JavaScript.  Please turn on JavaScript and then <a href="">try it again</a>.
+                </p>
+            </div>
+        </noscript>
+    </head>
+    <body>
+        <img src="images/baskin-logo-banner.jpg" alt="baskin-logo-banner" height="32">
+        <br>
+        <div>
+            <button id="collapse_button" onClick="$('#controlsDiv').toggle(200);">
+                toggle controls
+            </button>
+        </div>
+        <div id="controlsDiv" style="display: none;background-color: lightBlue">
+            controls go in this space, hidden by default to increase graph space
+        </div>
+        <div id='graphDiv' style="background-color: goldenrod">
+            Network graph goes in this space.
+        </div>
+        <script>
             controlsDivElement = document.getElementById("controlsDiv");
             circleMapGraphDivElem = document.getElementById('graphDiv');
             circleMapGraphControls.buildControls(controlsDivElement, circleMapGraphDivElem);
@@ -73,6 +78,6 @@
             // "containerDiv" : document.getElementById('graphDiv'),
             // "circleDataLoaded" : circleDataLoaded
             // });
-		</script>
-	</body>
+        </script>
+    </body>
 </html>

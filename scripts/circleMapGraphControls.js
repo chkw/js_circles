@@ -52,18 +52,9 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
             "placeholder" : "ring name"
         });
 
+        // radio buttons for matrix data type
         var radioButtonsDiv = document.createElement("div");
         containerElem.appendChild(radioButtonsDiv);
-
-        // var exprRadio = document.createElement("input");
-        // radioButtonsDiv.appendChild(exprRadio);
-        // utils.setElemAttributes(exprRadio, {
-        // "id" : "exprRadio",
-        // "name" : "allowedValues",
-        // "type" : "radio",
-        // "value" : "expression data"
-        // });
-        // radioButtonsDiv.innerHTML = radioButtonsDiv.innerHTML + "expression data <BR>";
 
         var numericRadio = document.createElement("input");
         radioButtonsDiv.appendChild(numericRadio);
@@ -75,16 +66,6 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
             "checked" : true
         });
         radioButtonsDiv.innerHTML = radioButtonsDiv.innerHTML + "numeric data <BR>";
-
-        // var categoricRadio = document.createElement("input");
-        // radioButtonsDiv.appendChild(categoricRadio);
-        // utils.setElemAttributes(categoricRadio, {
-        // "id" : "categoricRadio",
-        // "name" : "allowedValues",
-        // "type" : "radio",
-        // "value" : "categoric"
-        // });
-        // radioButtonsDiv.innerHTML = radioButtonsDiv.innerHTML + "categoric data <BR>";
 
         var clinicalRadio = document.createElement("input");
         radioButtonsDiv.appendChild(clinicalRadio);
@@ -106,6 +87,7 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
         });
         radioButtonsDiv.innerHTML = radioButtonsDiv.innerHTML + "node center <BR>";
 
+        // button to submit matrix data
         var matrixButtonElem = document.createElement("button");
         containerElem.appendChild(matrixButtonElem);
         utils.setElemAttributes(matrixButtonElem, {
@@ -117,6 +99,42 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
 
         containerElem.appendChild(document.createElement("hr"));
 
+        // radio buttons for download image file type
+        var fileTypeRadioDiv = document.createElement("div");
+        containerElem.appendChild(fileTypeRadioDiv);
+
+        var svgFileTypeRadio = document.createElement("input");
+        fileTypeRadioDiv.appendChild(svgFileTypeRadio);
+        utils.setElemAttributes(svgFileTypeRadio, {
+            "id" : "svgFileTypeRadio",
+            "name" : "fileTypeRadio",
+            "type" : "radio",
+            "value" : "svg",
+            "checked" : true
+        });
+        fileTypeRadioDiv.innerHTML = fileTypeRadioDiv.innerHTML + "svg <BR>";
+
+        var pngFileTypeRadio = document.createElement("input");
+        fileTypeRadioDiv.appendChild(pngFileTypeRadio);
+        utils.setElemAttributes(pngFileTypeRadio, {
+            "id" : "pngFileTypeRadio",
+            "name" : "fileTypeRadio",
+            "type" : "radio",
+            "value" : "png"
+        });
+        fileTypeRadioDiv.innerHTML = fileTypeRadioDiv.innerHTML + "png <BR>";
+
+        var jpgFileTypeRadio = document.createElement("input");
+        fileTypeRadioDiv.appendChild(jpgFileTypeRadio);
+        utils.setElemAttributes(jpgFileTypeRadio, {
+            "id" : "jpgFileTypeRadio",
+            "name" : "fileTypeRadio",
+            "type" : "radio",
+            "value" : "jpg"
+        });
+        fileTypeRadioDiv.innerHTML = fileTypeRadioDiv.innerHTML + "jpg <BR>";
+
+        // button to download image file
         var saveButtonElem = document.createElement("button");
         containerElem.appendChild(saveButtonElem);
         utils.setElemAttributes(saveButtonElem, {
@@ -196,6 +214,11 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
     // use pablo.js to save a file
     var saveButtonClickHandler = function() {
         console.log("clicked saveButton");
+
+        var fileTypeRadioVal = $('input[name="fileTypeRadio"]:checked').val();
+        console.log("fileTypeRadioVal", fileTypeRadioVal);
+        cmgc.options["imageFileFormat"] = fileTypeRadioVal;
+
         var defaultFileName = "graph";
         var supportDownload = Pablo.support.download;
         var type = cmgc.options["imageFileFormat"] || "svg";
