@@ -168,6 +168,13 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             "centerScores" : centerScores
         });
 
+        // color mapping option
+        if ("colorMappingOption" in config) {
+            cmGraph.setNewCircleMapGeneratorSettings({
+                "colorMappingOption" : config["colorMappingOption"]
+            });
+        }
+
         var circleDataLoaded;
         if (ringsList.length < 1) {
             circleDataLoaded = false;
