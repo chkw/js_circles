@@ -31,6 +31,11 @@ var circleMapGenerator = {};
         this.eventAlbum = eventAlbum.fillInMissingSamples();
         this.cmgParams = cmgParams;
 
+        console.log("cmgParams", cmgParams);
+
+        var datatypeStats = this.eventAlbum.getDatatypeStats();
+        console.log("datatypeStats", datatypeStats);
+
         // rescale expression data
         var exprRescalingData = this.eventAlbum.eventwiseMedianRescaling();
 
