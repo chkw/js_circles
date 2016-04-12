@@ -160,20 +160,20 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             ringsList.push("viper data");
         }
 
-        // new circle map generator
-        var cmg = new circleMapGenerator.circleMapGenerator(eventAlbum, {
+        var cmgSetup = {
             // "ringsList" : ["core_subtype", "expression data", 'viper data'],
             // "orderFeature" : ["expression data"]
             "ringsList" : ringsList,
             "centerScores" : centerScores
-        });
+        };
 
         // color mapping option
         if ("colorMappingOption" in config) {
-            cmGraph.setNewCircleMapGeneratorSettings({
-                "colorMappingOption" : config["colorMappingOption"]
-            });
+            cmgSetup["colorMappingOption"] = config["colorMappingOption"];
         }
+
+        // new circle map generator
+        var cmg = new circleMapGenerator.circleMapGenerator(eventAlbum, cmgSetup);
 
         var circleDataLoaded;
         if (ringsList.length < 1) {

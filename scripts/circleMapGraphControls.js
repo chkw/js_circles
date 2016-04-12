@@ -116,15 +116,15 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
         });
         colorMappingOptionDiv.innerHTML = colorMappingOptionDiv.innerHTML + "per node <BR>";
 
-        var perGraphRadio = document.createElement("input");
-        colorMappingOptionDiv.appendChild(perGraphRadio);
-        utils.setElemAttributes(perGraphRadio, {
-            "id" : "perGraphRadio",
+        var perDatatypeRadio = document.createElement("input");
+        colorMappingOptionDiv.appendChild(perDatatypeRadio);
+        utils.setElemAttributes(perDatatypeRadio, {
+            "id" : "perDatatypeRadio",
             "name" : "colorMappingOption",
             "type" : "radio",
-            "value" : "perGraph"
+            "value" : "perDatatype"
         });
-        colorMappingOptionDiv.innerHTML = colorMappingOptionDiv.innerHTML + "per graph <BR>";
+        colorMappingOptionDiv.innerHTML = colorMappingOptionDiv.innerHTML + "per datatype <BR>";
 
         $('input[name="colorMappingOption"]').change(function(eventObj) {
             var name = eventObj.target.name;
