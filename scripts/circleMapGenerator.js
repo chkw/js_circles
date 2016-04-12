@@ -31,16 +31,23 @@ var circleMapGenerator = {};
         this.eventAlbum = eventAlbum.fillInMissingSamples();
         this.cmgParams = cmgParams;
 
-        console.log("cmgParams", cmgParams);
+        console.log("cmgParams", this.cmgParams);
 
-        var datatypeStats = this.eventAlbum.getDatatypeStats();
+        var colorMappingOption = this.cmgParams["colorMappingOption"];
+
+        var datatypeStats = (colorMappingOption === "perDatatype") ? this.eventAlbum.getDatatypeStats() : null;
         console.log("datatypeStats", datatypeStats);
+
+        if (_.isUndefined(colorMappingOption) || (colorMappingOption === "perNode")) {
+            console.log("colorMappingOption", colorMappingOption);
+        }
 
         // rescale expression data
         var exprRescalingData = this.eventAlbum.eventwiseMedianRescaling();
 
         var expressionColorMapper = utils.centeredRgbaColorMapper(false);
-        if (exprRescalingData != null) {
+        if (_.isObject(exprRescalingData)) {
+            console.log("aaaaaaaa");
             var minExpVal = exprRescalingData['minVal'];
             var maxExpVal = exprRescalingData['maxVal'];
             var expressionColorMapper = utils.centeredRgbaColorMapper(false, 0, minExpVal, maxExpVal);
@@ -49,10 +56,8 @@ var circleMapGenerator = {};
         this.eventStats = {};
         this.colorMappers = {};
         var eventIdsByGroup = this.eventAlbum.getEventIdsByType();
-        for (var group in eventIdsByGroup) {
-            var eventIds = eventIdsByGroup[group];
-            for (var i = 0; i < eventIds.length; i++) {
-                var eventId = eventIds[i];
+        _.each(eventIdsByGroup, function(eventIds, datatype) {
+            _.each(eventIds, function(eventId) {
                 var eventObj = this.eventAlbum.getEvent(eventId);
                 if (eventObj.metadata.datatype === 'expression data') {
                     // shared expression color mapper
@@ -61,10 +66,15 @@ var circleMapGenerator = {};
                     // define a discrete color mapper
                     this.colorMappers[eventId] = d3.scale.category10();
                 } else {
-                    this.eventStats[eventId] = eventObj.data.getStats();
+                    if (_.contains(_.keys(datatypeStats), datatype)) {
+                        console.log(datatype, datatypeStats[datatype]);
+                        this.eventStats[eventId] = datatypeStats[datatype];
+                    } else {
+                        this.eventStats[eventId] = eventObj.data.getStats();
+                    }
                 }
-            }
-        }
+            }, this);
+        }, this);
 
         /**
          * Get the query features... these should match up with eventIDs in the eventAlbum
