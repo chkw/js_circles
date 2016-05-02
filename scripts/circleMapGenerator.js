@@ -67,7 +67,7 @@ var circleMapGenerator = {};
                     this.colorMappers[eventId] = d3.scale.category10();
                 } else {
                     if (_.contains(_.keys(datatypeStats), datatype)) {
-                        console.log(datatype, datatypeStats[datatype]);
+                        // console.log(datatype, datatypeStats[datatype]);
                         this.eventStats[eventId] = datatypeStats[datatype];
                     } else {
                         this.eventStats[eventId] = eventObj.data.getStats();
@@ -136,14 +136,13 @@ var circleMapGenerator = {};
         this.sortSamples = function() {
             // get sorted samples
             var ss = new eventData.sortingSteps();
+            var noReverse = true;
             if (utils.hasOwnProperty(this.cmgParams, "orderFeature")) {
                 var features = [].concat(this.cmgParams["orderFeature"]);
-                features.reverse();
-                for (var i = 0; i < features.length; i++) {
-                    ss.addStep(features[i]);
-                }
-            } else {
-                ss.addStep(this.getQueryFeatures()[0]);
+                // features.reverse();
+                _.each(features, function(feature) {
+                    ss.addStep(feature, noReverse);
+                });
             }
             // console.log('ring sorting steps', ss);
             this.sortedSamples = this.eventAlbum.multisortSamples(ss);

@@ -83,10 +83,12 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         return parsedCookie;
     };
 
-    cmGraph.setNewCircleMapGeneratorSettings = function(newSettings) {
-        for (var key in newSettings) {
-            cmGraph.circleMapGeneratorObj.cmgParams[key] = newSettings[key];
+    cmGraph.addCircleMapGeneratorOrderFeatures = function(feature) {
+        if (!_.contains(_.keys(cmGraph.circleMapGeneratorObj.cmgParams), "orderFeature")) {
+            cmGraph.circleMapGeneratorObj.cmgParams["orderFeature"] = [];
         }
+        cmGraph.circleMapGeneratorObj.cmgParams["orderFeature"].push(feature);
+        // console.log('cmGraph.circleMapGeneratorObj.cmgParams["orderFeature"]', cmGraph.circleMapGeneratorObj.cmgParams["orderFeature"]);
         cmGraph.circleMapGeneratorObj.sortSamples();
     };
 
@@ -301,15 +303,12 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
 
                             // Using something like "SUZ12" and "expression data" sort by SUZ12_mRNA event.
 
-                            // set sorting ring
+                            // set sorting
                             var orderFeature = cmGraph.circleMapGeneratorObj.eventAlbum.getSuffixedEventId(node, datasetName);
 
                             // if no suffix added, then use datatype as orderFeature (e.g. a categorical clinical feature)
                             orderFeature = (orderFeature === node) ? datasetName : orderFeature;
-                            cmGraph.setNewCircleMapGeneratorSettings({
-                                "orderFeature" : orderFeature,
-                                "sortingRing" : [datasetName]
-                            });
+                            cmGraph.addCircleMapGeneratorOrderFeatures(orderFeature);
 
                             // attach new circlemaps
                             var configObj = getCookieVal();
