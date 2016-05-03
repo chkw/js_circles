@@ -174,6 +174,11 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             cmgSetup["colorMappingOption"] = config["colorMappingOption"];
         }
 
+        // discrete color mapping
+        if ("discreteColorMapping" in config) {
+            cmgSetup["discreteColorMapping"] = config["discreteColorMapping"];
+        }
+
         // new circle map generator
         var cmg = new circleMapGenerator.circleMapGenerator(eventAlbum, cmgSetup);
 

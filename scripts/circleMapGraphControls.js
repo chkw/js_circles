@@ -99,6 +99,32 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
 
         containerElem.appendChild(document.createElement("hr"));
 
+        // TODO controls for inputing discrete color mapping
+        var discreteColorMappingDiv = document.createElement("div");
+        containerElem.appendChild(discreteColorMappingDiv);
+
+        discreteColorMappingDiv.innerHTML = discreteColorMappingDiv.innerHTML + "custom color mapping for clinical data ... <BR>";
+
+        var discreteColorMappingTextAreaElem = document.createElement("textArea");
+        containerElem.appendChild(discreteColorMappingTextAreaElem);
+        utils.setElemAttributes(discreteColorMappingTextAreaElem, {
+            "id" : "discreteColorMappingTextArea",
+            "rows" : 3,
+            "cols" : 25,
+            "placeholder" : "category - tab - color"
+        });
+
+        var discreteColorMappingButtonElem = document.createElement("button");
+        containerElem.appendChild(discreteColorMappingButtonElem);
+        utils.setElemAttributes(discreteColorMappingButtonElem, {
+            "id" : "discreteColorMappingButton"
+        });
+        discreteColorMappingButtonElem.innerHTML = "set colors";
+
+        discreteColorMappingButtonElem.onclick = colorMappingButtonClickHandler;
+
+        containerElem.appendChild(document.createElement("hr"));
+
         // radio buttons for color mapping option
         var colorMappingOptionDiv = document.createElement("div");
         containerElem.appendChild(colorMappingOptionDiv);
@@ -180,6 +206,39 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
         saveButtonElem.innerHTML = "download image file";
 
         saveButtonElem.onclick = saveButtonClickHandler;
+
+        // handle tab keydown events in textareas
+        _.each(document.querySelectorAll("textarea"), function(textAreaElem) {
+            textAreaElem.addEventListener("keydown", utils.handleTabsAsText, false);
+        });
+    };
+
+    // TODO
+    var colorMappingButtonClickHandler = function() {
+        console.log("clicked discreteColorMappingButton");
+        var discreteColorMappingTextAreaElem = document.getElementById("discreteColorMappingTextArea");
+        var colorMappingString = discreteColorMappingTextAreaElem.value;
+
+        if (colorMappingString === "") {
+            window.alert("no mapping string");
+            return;
+        }
+
+        var colorMapping = {};
+        var lines = colorMappingString.split('\n');
+        _.each(lines, function(line) {
+            line = line.trim();
+            var fields = line.split("\t", 2);
+            colorMapping[fields[0]] = fields[1];
+        });
+
+        console.log("parsed colorMapping", colorMapping);
+
+        // load graph data
+        cmgc.options["discreteColorMapping"] = colorMapping;
+
+        // draw graph
+        cmgc.buildCircleMapGraph();
     };
 
     var sifButtonClickHandler = function() {

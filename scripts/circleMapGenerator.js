@@ -35,14 +35,6 @@ var circleMapGenerator = {};
     // centerScores is an object of feature:score where score is taken to be a 0-centered normalized score.
     cmg.circleMapGenerator = function(eventAlbum, cmgParams) {
         this.eventAlbum = eventAlbum.fillInMissingSamples();
-
-        cmgParams["discreteColorMapping"] = {
-            "category1" : "red",
-            "categoryb" : "green",
-            "core_small_cell" : "black",
-            "non_core" : "orange"
-        };
-
         this.cmgParams = cmgParams;
 
         console.log("cmgParams", this.cmgParams);
