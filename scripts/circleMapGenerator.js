@@ -20,8 +20,14 @@ var circleMapGenerator = {};
         "features" : ['ABTB2_mRNA', 'APOBEC3F_mRNA', 'APP_mRNA', 'AR_mRNA', 'DZIP1_mRNA', 'EPAS1_mRNA', 'ERG_mRNA', 'ESR2_mRNA', 'FGD1_mRNA', 'FKBP9_mRNA', 'IL6_mRNA', 'MYOM2_mRNA', 'NCOA1_mRNA', 'P2RY10_mRNA', 'PPP2R5C_mRNA', 'PTGER3_mRNA', 'SLC16A1_mRNA', 'ST5_mRNA', 'TBC1D16_mRNA', 'TBX21_mRNA', 'TGFB1_mRNA', 'TGFB2_mRNA', 'UGDH_mRNA', 'USP20_mRNA', 'VEGFA_mRNA', 'ZFPM2_mRNA'],
         "ringsList" : ["core_subtype", "expression data", 'viper data'],
         "orderFeature" : ['core_subtype', "AR_mRNA"],
-        "sortingRing" : "expression data"
+        "sortingRing" : "expression data",
         // "ringMergeSwitch" : false
+        "discreteColorMapping" : {
+            "category1" : "red",
+            "categoryb" : "green",
+            "core_small_cell" : "black",
+            "non_core" : "orange"
+        }
     };
 
     // constructor should take parameters: OD_eventData, cmgParams
@@ -29,6 +35,14 @@ var circleMapGenerator = {};
     // centerScores is an object of feature:score where score is taken to be a 0-centered normalized score.
     cmg.circleMapGenerator = function(eventAlbum, cmgParams) {
         this.eventAlbum = eventAlbum.fillInMissingSamples();
+
+        cmgParams["discreteColorMapping"] = {
+            "category1" : "red",
+            "categoryb" : "green",
+            "core_small_cell" : "black",
+            "non_core" : "orange"
+        };
+
         this.cmgParams = cmgParams;
 
         console.log("cmgParams", this.cmgParams);
@@ -64,7 +78,13 @@ var circleMapGenerator = {};
                     this.colorMappers[eventId] = expressionColorMapper;
                 } else if (!utils.isObjInArray(['numeric'], eventObj.metadata.allowedValues)) {
                     // define a discrete color mapper
-                    this.colorMappers[eventId] = d3.scale.category10();
+                    if (_.contains(_.keys(this.cmgParams), "discreteColorMapping")) {
+                        var colorMapper = d3.scale.category10();
+                        cmg.premapColors(colorMapper, this.cmgParams["discreteColorMapping"]);
+                        this.colorMappers[eventId] = colorMapper;
+                    } else {
+                        this.colorMappers[eventId] = d3.scale.category10();
+                    }
                 } else {
                     if (_.contains(_.keys(datatypeStats), datatype)) {
                         // console.log(datatype, datatypeStats[datatype]);
@@ -800,17 +820,13 @@ var circleMapGenerator = {};
                         return (a - b);
                     });
                     simulatedScores.push("no data");
-
                     var isContinuousScore = true;
-
                     addLegendScoreArcs(simulatedScores, ringGroupElem, getHexColor, innerRadius, ringThickness, ringName, isContinuousScore, ringNamePosition);
                 } else {
                     // console.log("got an eventObj for", dataName);
                     var scores = eventObj.data.getValues(true);
                     var colorMapper = this.colorMappers[dataName];
-
                     var isContinuousScore = false;
-
                     addLegendScoreArcs(scores, ringGroupElem, colorMapper, innerRadius, ringThickness, ringName, isContinuousScore, ringNamePosition);
                 }
 
@@ -886,6 +902,64 @@ var circleMapGenerator = {};
 
             return svgElem;
         };
+    };
+
+    /**
+     * premap some colors to the d3ScaleColormapper
+     */
+    cmg.premapColors = function(d3ScaleColormapper, colorMap) {
+        // color range of d3.scale.category10().range()
+        var colorNames = {
+            "blue" : "#1f77b4",
+            "orange" : "#ff7f0e",
+            "green" : "#2ca02c",
+            "red" : "#d62728",
+            "purple" : "#9467bd",
+            "brown" : "#8c564b",
+            "pink" : "#e377c2",
+            "gray" : "#7f7f7f",
+            "chartreuse" : "#bcbd22",
+            "cyan" : "#17becf"
+        };
+
+        // var mapping = (_.isUndefined(colorSets[colorSet])) ? {} : colorSets[colorSet];
+        var mapping = colorMap;
+
+        // map named colors to color code
+        var collidingColors = [];
+        var inputMappings = {};
+        if (!_.isUndefined(mapping)) {
+            _.each(mapping, function(mappedColor, key) {
+                inputMappings[key] = mappedColor;
+                if (_.contains(_.keys(colorNames), mappedColor)) {
+                    // color named in colorNames
+                    var colorCode = colorNames[mappedColor];
+                    collidingColors.push(colorCode);
+                } else if (_.contains(_.values(colorNames), mappedColor)) {
+                    // color code found in colorNames
+                    var colorCode = mappedColor;
+                    collidingColors.push(colorCode);
+                }
+            });
+        }
+
+        //  assign pre-mapped colors
+        var range = _.values(inputMappings);
+        var domain = _.keys(inputMappings);
+
+        // fill in remaining color range
+        _.each(_.values(colorNames), function(colorCode) {
+            if (!_.contains(collidingColors, colorCode)) {
+                range.push(colorCode);
+            }
+        });
+
+        // assign domain and range to color mapper
+        d3ScaleColormapper.domain(domain);
+        d3ScaleColormapper.range(range);
+
+        // console.log("range", d3ScaleColormapper.range());
+        // console.log("domain", d3ScaleColormapper.domain());
     };
 
 })(circleMapGenerator);
