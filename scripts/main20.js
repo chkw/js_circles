@@ -21,36 +21,37 @@
 // bl.ocks.org/rkirsling/5001347
 
 // expose utils to meteor
-u = ( typeof u === "undefined") ? utils : u;
+u = (typeof u === "undefined") ? utils : u;
 // expose circleMapGraph to meteor
-circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
+circleMapGraph = (typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
 // var circleMapGraph = circleMapGraph || {};
-(function(cmGraph) {"use strict";
+(function(cmGraph) {
+    "use strict";
 
     var htmlUri = utils.htmlUri;
     var svgNamespaceUri = utils.svgNamespaceUri;
     var xlinkUri = utils.xlinkUri;
 
     var sbgn_config = {
-        'macromoleculeTypes' : ['macromolecule', 'protein', 'gene', 'mrna', 'mirna', 'shrna', 'dna', 'transcription factor'],
-        'nucleicAcidFeatureTypes' : ['nucleic acid feature', 'promoter'],
-        'unspecifiedEntityTypes' : ['unspecified entity', 'family', 'abstract'],
-        'simpleChemicalTypes' : ['simple chemical', 'small molecule'],
-        'perturbingAgentTypes' : ['perturbing agent'],
-        'complexTypes' : ['complex'],
-        'selectableEntityTypes' : ['unspecified entity', 'protein', 'gene', 'mRNA', 'miRNA', 'nucleic acid feature', 'small molecule', 'perturbing agent', 'complex'],
-        'edgeTypeOptions' : ['stop adding edges', 'positive regulation', 'negative regulation', 'activate transcription', 'inhibit transcription', 'component of', 'member of'],
-        'edgeTypeSymbols' : ['stop adding edges', '-a>', '-a|', '-t>', '-t|', 'component>', 'member>']
+        'macromoleculeTypes': ['macromolecule', 'protein', 'gene', 'mrna', 'mirna', 'shrna', 'dna', 'transcription factor'],
+        'nucleicAcidFeatureTypes': ['nucleic acid feature', 'promoter'],
+        'unspecifiedEntityTypes': ['unspecified entity', 'family', 'abstract'],
+        'simpleChemicalTypes': ['simple chemical', 'small molecule'],
+        'perturbingAgentTypes': ['perturbing agent'],
+        'complexTypes': ['complex'],
+        'selectableEntityTypes': ['unspecified entity', 'protein', 'gene', 'mRNA', 'miRNA', 'nucleic acid feature', 'small molecule', 'perturbing agent', 'complex'],
+        'edgeTypeOptions': ['stop adding edges', 'positive regulation', 'negative regulation', 'activate transcription', 'inhibit transcription', 'component of', 'member of'],
+        'edgeTypeSymbols': ['stop adding edges', '-a>', '-a|', '-ap>', '-ap|', '-t>', '-t|', 'component>', 'member>']
     };
 
     var d3_config = {
         // vars for d3.layout.force
-        'linkDistance' : 120,
-        'linkStrength' : 0.2,
-        'friction' : 0.8,
-        'charge' : -500,
-        'gravity' : 0.03,
-        'nodeRadius' : 20
+        'linkDistance': 120,
+        'linkStrength': 0.2,
+        'friction': 0.8,
+        'charge': -500,
+        'gravity': 0.03,
+        'nodeRadius': 20
     };
 
     cmGraph.largeScale = 'scale(2)';
@@ -165,8 +166,8 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         var cmgSetup = {
             // "ringsList" : ["core_subtype", "expression data", 'viper data'],
             // "orderFeature" : ["expression data"]
-            "ringsList" : ringsList,
-            "centerScores" : centerScores
+            "ringsList": ringsList,
+            "centerScores": centerScores
         };
 
         // color mapping option
@@ -222,32 +223,32 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
 
         // TODO contextMenu for "link" elements
         $.contextMenu({
-            selector : ".link",
-            trigger : 'right',
+            selector: ".link",
+            trigger: 'right',
             // trigger : 'left',
-            callback : function(key, options) {
+            callback: function(key, options) {
                 // default callback
                 var elem = this[0];
                 console.log('elem', elem);
             },
-            build : function($trigger, contextmenuEvent) {
+            build: function($trigger, contextmenuEvent) {
                 var d3Trigger = d3.select($trigger[0]);
                 var linkData = d3Trigger.data()[0];
                 console.log("linkData", linkData);
                 var items = {
-                    'title' : {
-                        name : function() {
+                    'title': {
+                        name: function() {
                             var label = linkData.source.name + " " + linkData.relation + " " + linkData.target.name;
                             return label;
                         },
-                        icon : null,
-                        disabled : function() {
+                        icon: null,
+                        disabled: function() {
                             var isNotDisabled = (linkData.relation === "-drug target|");
                             return !isNotDisabled;
                         },
-                        callback : function(key, opt) {
+                        callback: function(key, opt) {
                             var url;
-                            switch(linkData.relation) {
+                            switch (linkData.relation) {
                                 case "-drug target|":
                                     url = "https://www.ncbi.nlm.nih.gov/pubmed/?term=" + linkData.pubmed;
                                     break;
@@ -261,45 +262,45 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                     // "sep1" : "---------"
                 };
                 return {
-                    "items" : items
+                    "items": items
                 };
             }
         });
 
         $.contextMenu({
-            selector : ".circleMapRingG",
-            trigger : 'right',
+            selector: ".circleMapRingG",
+            trigger: 'right',
             // trigger : 'left',
-            callback : function(key, options) {
+            callback: function(key, options) {
                 // default callback
                 var elem = this[0];
                 console.log('elem', elem);
             },
-            build : function($trigger, contextmenuEvent) {
+            build: function($trigger, contextmenuEvent) {
                 console.log("context menu for circleMapRingG");
                 var circleMapRingGelem = utils.extractFromJq($trigger);
                 var circleMapGelem = circleMapRingGelem.parentNode;
                 var node = circleMapGelem.getAttribute("feature");
                 var datasetName = circleMapRingGelem.getAttribute("ringName");
                 var items = {
-                    'title' : {
-                        name : function() {
+                    'title': {
+                        name: function() {
                             return "ring: " + datasetName + " for " + node;
                         },
-                        icon : null,
-                        disabled : true
-                        // ,
-                        // callback : function(key, opt) {
-                        // }
+                        icon: null,
+                        disabled: true
+                            // ,
+                            // callback : function(key, opt) {
+                            // }
                     },
-                    "sep1" : "---------",
-                    "sort_samples" : {
-                        name : function() {
+                    "sep1": "---------",
+                    "sort_samples": {
+                        name: function() {
                             return "sort samples by this ring";
                         },
-                        icon : null,
-                        disabled : false,
-                        callback : function(key, opt) {
+                        icon: null,
+                        disabled: false,
+                        callback: function(key, opt) {
                             // clear circlemaps
                             cmGraph.clearCircleMaps();
 
@@ -322,21 +323,21 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                     }
                 };
                 return {
-                    'items' : items
+                    'items': items
                 };
             }
         });
 
         $.contextMenu({
-            selector : ".node",
-            trigger : 'right',
+            selector: ".node",
+            trigger: 'right',
             // trigger : 'left',
-            callback : function(key, options) {
+            callback: function(key, options) {
                 // default callback
                 var elem = this[0];
                 console.log('elem', elem);
             },
-            build : function($trigger, contextmenuEvent) {
+            build: function($trigger, contextmenuEvent) {
                 console.log("context menu for node");
                 var trigger = utils.extractFromJq($trigger);
                 var circleMapSvgElem = trigger.getElementsByTagName("svg")[0];
@@ -349,22 +350,22 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                 var nodeName = circleMapSvgElem.getAttribute("name");
                 var nodeType = circleMapSvgElem.getAttribute("nodeType");
                 var items = {
-                    'title' : {
-                        name : function() {
+                    'title': {
+                        name: function() {
                             var s = nodeName;
                             if (nodeType !== "unspecified entity") {
                                 s = nodeType + ": " + s;
                             }
                             return s;
                         },
-                        icon : null,
-                        disabled : function(key, opt) {
+                        icon: null,
+                        disabled: function(key, opt) {
                             var disabled = (_.contains(["protein", "drug"], nodeType)) ? false : true;
                             return disabled;
                         },
-                        callback : function(key, opt) {
+                        callback: function(key, opt) {
                             var url;
-                            switch(nodeType) {
+                            switch (nodeType) {
                                 case "drug":
                                     url = "https://www.drugbank.ca/unearth/q?searcher=drugs&query=" + nodeName;
                                     break;
@@ -374,7 +375,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                                     var queryString = currentUrl.split("?", 2)[1];
                                     // console.log("queryString", queryString);
                                     url = "/PatientCare/geneReport/" + nodeName;
-                                    if (! _.isUndefined(queryString)) {
+                                    if (!_.isUndefined(queryString)) {
                                         url = url + "?" + queryString;
                                     }
                                     break;
@@ -384,16 +385,16 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                             window.open(url, "_nodeLinkOut");
                         }
                     },
-                    "sep1" : "---------",
-                    "toggle_size" : {
-                        name : function() {
+                    "sep1": "---------",
+                    "toggle_size": {
+                        name: function() {
                             return "toggle node size";
                         },
-                        icon : null,
-                        disabled : function(key, opt) {
+                        icon: null,
+                        disabled: function(key, opt) {
                             return !isCircleMap;
                         },
-                        callback : function(key, opt) {
+                        callback: function(key, opt) {
                             if (cmGraph.circleMapMode) {
                                 // var circleMapSvgElem = document.getElementById('circleMapSvg' + d['name']);
                                 var circleMapGElement = circleMapSvgElem.getElementsByClassName("circleMapG")[0];
@@ -418,48 +419,48 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                             }
                         }
                     },
-                    "pin_fold" : {
-                        name : "pinning",
-                        items : {
-                            'toggle_pin' : {
-                                name : function() {
+                    "pin_fold": {
+                        name: "pinning",
+                        items: {
+                            'toggle_pin': {
+                                name: function() {
                                     return "toggle pin this node";
                                 },
-                                icon : null,
-                                disabled : false,
-                                callback : function(key, opt) {
+                                icon: null,
+                                disabled: false,
+                                callback: function(key, opt) {
                                     d3.select(utils.extractFromJq($trigger)).each(function(d, i) {
                                         d.fixed = !d.fixed;
                                     });
                                 }
                             },
-                            'pin_all' : {
-                                name : "pin all nodes",
-                                icon : null,
-                                disabled : false,
-                                callback : function(key, opt) {
+                            'pin_all': {
+                                name: "pin all nodes",
+                                icon: null,
+                                disabled: false,
+                                callback: function(key, opt) {
                                     d3.selectAll(".node").each(function(d, i) {
                                         d.fixed = true;
                                     });
                                     cmGraph.force.stop();
                                 }
                             },
-                            'free_all' : {
-                                name : "unpin all nodes",
-                                icon : null,
-                                disabled : false,
-                                callback : function(key, opt) {
+                            'free_all': {
+                                name: "unpin all nodes",
+                                icon: null,
+                                disabled: false,
+                                callback: function(key, opt) {
                                     d3.selectAll(".node").each(function(d, i) {
                                         d.fixed = false;
                                     });
                                     cmGraph.force.start();
                                 }
                             },
-                            "neighbors_test" : {
-                                name : "unpin neighbors",
-                                icon : null,
-                                disabled : false,
-                                callback : function(key, opt) {
+                            "neighbors_test": {
+                                name: "unpin neighbors",
+                                icon: null,
+                                disabled: false,
+                                callback: function(key, opt) {
                                     var nodeDataObjs = cmGraph.graphDataObj.getNeighbors(nodeName, 1);
                                     for (var i = 0, length = nodeDataObjs.length; i < length; i++) {
                                         nodeDataObjs[i].fixed = false;
@@ -469,13 +470,13 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                         }
                     },
 
-                    'toggle_opacity' : {
-                        name : "toggle opacity",
-                        icon : null,
-                        disabled : function(key, opt) {
+                    'toggle_opacity': {
+                        name: "toggle opacity",
+                        icon: null,
+                        disabled: function(key, opt) {
                             return !isCircleMap;
                         },
-                        callback : function(key, opt) {
+                        callback: function(key, opt) {
                             var circleMapGElement = circleMapSvgElem.getElementsByClassName("circleMapG")[0];
                             var d3circleMapGElement = d3.select(circleMapGElement);
                             var feature = d3circleMapGElement.attr("feature");
@@ -501,17 +502,17 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                             d3circleMapGElement.transition().duration(500).attr("opacity", newOpacity);
                         }
                     },
-                    "sep2" : "---------",
-                    "reset_fold" : {
-                        name : "reset...",
-                        items : {
-                            "reset_zoom_and_opacity" : {
-                                "name" : "all nodes",
-                                "icon" : null,
-                                "disabled" : function(key, opt) {
+                    "sep2": "---------",
+                    "reset_fold": {
+                        name: "reset...",
+                        items: {
+                            "reset_zoom_and_opacity": {
+                                "name": "all nodes",
+                                "icon": null,
+                                "disabled": function(key, opt) {
                                     return !isCircleMap;
                                 },
-                                "callback" : function(key, opt) {
+                                "callback": function(key, opt) {
                                     utils.deleteCookie(cookieName);
                                     cmGraph.clearCircleMaps();
 
@@ -524,7 +525,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                     }
                 };
                 return {
-                    'items' : items
+                    'items': items
                 };
             }
         });
@@ -538,20 +539,20 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
 
         cmGraph.svgElem = d3.select(cmGraph.containerDivElem).append("svg").attr({
             // TODO need to get better dimensions
-            'width' : windowWidth,
-            'height' : windowHeight,
-            'id' : 'circleMaps'
+            'width': windowWidth,
+            'height': windowHeight,
+            'id': 'circleMaps'
         });
 
         // styling the outer svg element
         cmGraph.svgElem.style({
-            "font-family" : "Verdana",
-            "background-color" : "#FFF",
-            "-webkit-user-select" : "none",
-            "-moz-user-select" : "none",
-            "-ms-user-select" : "none",
-            "-o-user-select" : "none",
-            "user-select" : "none"
+            "font-family": "Verdana",
+            "background-color": "#FFF",
+            "-webkit-user-select": "none",
+            "-moz-user-select": "none",
+            "-ms-user-select": "none",
+            "-o-user-select": "none",
+            "user-select": "none"
         });
 
         // http://www.w3.org/TR/SVG/painting.html#MarkerElement
@@ -559,16 +560,16 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         cmGraph.addMarkerDefs(defsElem);
 
         cmGraph.svgElem.append('g').attr({
-            id : 'linkLayer'
+            id: 'linkLayer'
         });
         cmGraph.svgElem.append('g').attr({
-            id : 'nodeLayer'
+            id: 'nodeLayer'
         });
 
         // for d3 color mapping.
         cmGraph.colorMapper = d3.scale.category10();
         // preset color mapping for paradigm relations
-        var paradigmRelations = ["-t|", "-t>", "-a|", "-a>", "component>", "member>"];
+        var paradigmRelations = ["-t|", "-t>", "-a|", "-a>", "-ap|", "-ap>", "component>", "member>"];
         _.each(paradigmRelations, function(relation) {
             cmGraph.colorMapper(relation);
         });
@@ -582,18 +583,18 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
 
         // add legend node
         cmGraph.graphDataObj.addNode({
-            "name" : "legend",
-            "group" : "legend",
+            "name": "legend",
+            "group": "legend",
             // to set starting position, set fixed to true and provide (x,y)
-            "fixed" : true,
-            "x" : 155,
-            "y" : 55
+            "fixed": true,
+            "x": 155,
+            "y": 55
         });
 
         var legendG = document.createElementNS(utils.svgNamespaceUri, 'g');
         utils.setElemAttributes(legendG, {
-            "id" : "legendG",
-            "transform" : "translate(325,5)"
+            "id": "legendG",
+            "transform": "translate(325,5)"
         });
 
         cmGraph.svgElem.append(function() {
@@ -604,14 +605,14 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         var d3LegendG = d3.select(legendG);
 
         var legendBackground = d3LegendG.append("rect").attr({
-            "id" : "legendBackground"
-            // ,
-            // "width" : 20,
-            // "height" : 20
+            "id": "legendBackground"
+                // ,
+                // "width" : 20,
+                // "height" : 20
         }).style({
-            "stroke-width" : 0.5,
-            "stroke" : "black",
-            "fill" : "white"
+            "stroke-width": 0.5,
+            "stroke": "black",
+            "fill": "white"
         });
 
         var relations = cmGraph.graphDataObj.getRelations();
@@ -620,32 +621,34 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             var x = 0;
             var length = 75;
             var lineElem = d3LegendG.append("line").attr({
-                "x1" : x,
-                "y1" : y,
-                "x2" : x + length,
-                "y2" : y
+                "x1": x,
+                "y1": y,
+                "x2": x + length,
+                "y2": y
             });
             var decorations = cmGraph.getLinkDecorations(relation, 3);
             lineElem.style(decorations);
 
             var textElem = d3LegendG.append("text").attr({
-                "x" : x + length,
-                "y" : y,
-                "dx" : "1em",
-                "dy" : "0.3em",
-                "text-anchor" : "start"
+                "x": x + length,
+                "y": y,
+                "dx": "1em",
+                "dy": "0.3em",
+                "text-anchor": "start"
             }).style({
-                "stroke" : "darkslategrey",
-                "fill" : "darkslategrey",
-                "overflow" : "visible"
+                "stroke": "darkslategrey",
+                "fill": "darkslategrey",
+                "overflow": "visible"
             }).text(function() {
                 var displayNames = {
-                    "-t|" : "inhibit transcription",
-                    "-t>" : "activate transcription",
-                    "-a|" : "inhibit activity",
-                    "-a>" : "activate activity",
-                    "component>" : "component",
-                    "member>" : "member"
+                    "-t|": "inhibit transcription",
+                    "-t>": "activate transcription",
+                    "-a|": "inhibit activity",
+                    "-a>": "activate activity",
+                    "-ap|": "inhibit process",
+                    "-ap>": "activate process",
+                    "component>": "component",
+                    "member>": "member"
                 };
                 var displayName = displayNames[relation];
                 if (_.isUndefined(displayName)) {
@@ -660,8 +663,8 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         // element must be attached to the document to get brect
         var brect = legendG.getBoundingClientRect();
         legendBackground.attr({
-            "width" : brect.width,
-            "height" : brect.height
+            "width": brect.width,
+            "height": brect.height
         });
 
         // dragging
@@ -673,8 +676,8 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             // d3.event.sourceEvent.stopPropagation();
             var d3Mouse = d3.mouse(cmGraph.svgElem.node());
             var origin = {
-                "x" : d3Mouse[0],
-                "y" : d3Mouse[1]
+                "x": d3Mouse[0],
+                "y": d3Mouse[1]
             };
             return origin;
         });
@@ -686,7 +689,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
             var x = d3Mouse[0];
             var y = d3Mouse[1];
             d3LegendG.attr({
-                "transform" : "translate(" + x + "," + y + ")"
+                "transform": "translate(" + x + "," + y + ")"
             });
         });
     };
@@ -698,50 +701,50 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         var offset = 34;
 
         var marker = d3svgDefsElem.append("marker").attr({
-            id : "Triangle",
-            viewBox : "0 0 10 10",
-            refX : 10 + offset,
-            refY : "5",
+            id: "Triangle",
+            viewBox: "0 0 10 10",
+            refX: 10 + offset,
+            refY: "5",
             // markerUnits : "strokeWidth",
-            markerUnits : "userSpaceOnUse",
-            markerWidth : "9",
-            markerHeight : "9",
-            orient : "auto"
+            markerUnits: "userSpaceOnUse",
+            markerWidth: "9",
+            markerHeight: "9",
+            orient: "auto"
         });
         marker.append("path").attr({
-            d : "M 0 0 L 10 5 L 0 10 z"
+            d: "M 0 0 L 10 5 L 0 10 z"
         });
 
         marker = d3svgDefsElem.append("marker").attr({
-            id : "Bar",
-            viewBox : "0 0 10 10",
-            refX : 3 + offset,
-            refY : "5",
+            id: "Bar",
+            viewBox: "0 0 10 10",
+            refX: 3 + offset,
+            refY: "5",
             // markerUnits : "strokeWidth",
-            markerUnits : "userSpaceOnUse",
-            markerWidth : "9",
-            markerHeight : "9",
-            orient : "auto"
+            markerUnits: "userSpaceOnUse",
+            markerWidth: "9",
+            markerHeight: "9",
+            orient: "auto"
         });
         marker.append("path").attr({
-            d : "M 0 0 L 0 10 L 3 10 L 3 0 z"
+            d: "M 0 0 L 0 10 L 3 10 L 3 0 z"
         });
 
         marker = d3svgDefsElem.append("marker").attr({
-            id : "Circle",
-            viewBox : "0 0 10 10",
-            refX : 10 + offset,
-            refY : "5",
+            id: "Circle",
+            viewBox: "0 0 10 10",
+            refX: 10 + offset,
+            refY: "5",
             // markerUnits : "strokeWidth",
-            markerUnits : "userSpaceOnUse",
-            markerWidth : "9",
-            markerHeight : "9",
-            orient : "auto"
+            markerUnits: "userSpaceOnUse",
+            markerWidth: "9",
+            markerHeight: "9",
+            orient: "auto"
         });
         marker.append("circle").attr({
-            cx : 5,
-            cy : 5,
-            r : 5
+            cx: 5,
+            cy: 5,
+            r: 5
         });
     };
 
@@ -834,7 +837,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         var linkSelection = svgLinkLayer.selectAll(".link").data(graph.links).enter().append("line").attr('id', function(d, i) {
             return 'link' + i;
         }).attr({
-            'class' : "link"
+            'class': "link"
         }).style("stroke", function(d) {
             return cmGraph.colorMapper(d.relation);
         }).style("stroke-opacity", ".6");
@@ -956,7 +959,7 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                 console.log("d", d);
             }
             var type = d.group.toString().toLowerCase();
-            if ((type != "drug") && (circleDataLoaded ) && (nodeNames.indexOf(nodeName) >= 0)) {
+            if ((type != "drug") && (circleDataLoaded) && (nodeNames.indexOf(nodeName) >= 0)) {
                 //TODO circleMap
                 var stagedElement = document.getElementById('circleMapSvg' + nodeName);
                 return stagedElement;
@@ -999,10 +1002,10 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                 // triangle
                 var path = utils.allAngledRectSvgPath(-50, -30, 100, 60);
                 var newElement = utils.createSVGPolygonElement({
-                    class : "sbgn",
-                    points : "-30,25 0,-25 30,25",
-                    opacity : opacityVal,
-                    stroke : "black"
+                    class: "sbgn",
+                    points: "-30,25 0,-25 30,25",
+                    opacity: opacityVal,
+                    stroke: "black"
                 });
                 return newElement;
             } else {
@@ -1042,8 +1045,8 @@ circleMapGraph = ( typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         nodeSelection.append("svg:text").attr("text-anchor", "middle").attr('dy', textdy).text(function(d) {
             return d.name;
         }).style({
-            "stroke" : "darkslategrey",
-            "fill" : "darkslategrey"
+            "stroke": "darkslategrey",
+            "fill": "darkslategrey"
         });
 
         // edge tooltips

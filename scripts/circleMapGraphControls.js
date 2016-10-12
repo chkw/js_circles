@@ -2,54 +2,81 @@
  * controls for loading data to a circleMap graph.
  */
 
-circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} : circleMapGraphControls;
-(function(cmgc) {"use strict";
+circleMapGraphControls = (typeof circleMapGraphControls === "undefined") ? {} : circleMapGraphControls;
+(function(cmgc) {
+    "use strict";
 
     cmgc.options = {};
 
     cmgc.buildControls = function(containerElem, circleMapGraphContainerElem) {
         utils.removeChildElems(containerElem);
 
-        cmgc.options["containerDiv"] = circleMapGraphContainerElem;
+        cmgc.options.containerDiv = circleMapGraphContainerElem;
         // cmgc.options["circleDataLoaded"] = (utils.getQueryStringParameterByName('circles').toLowerCase() === 'true');
         // cmgc.options["circleDataLoaded"] = false;
-        cmgc.options["circleDataLoaded"] = true;
+        cmgc.options.circleDataLoaded = true;
 
-        var sifTextAreaElem = document.createElement("textArea");
-        containerElem.appendChild(sifTextAreaElem);
-        utils.setElemAttributes(sifTextAreaElem, {
-            "id" : "sifTextArea",
-            "rows" : 3,
-            "cols" : 25,
-            "placeholder" : "paste in sif data for network graph"
+        var pathwayTextAreaElem = document.createElement("textArea");
+        containerElem.appendChild(pathwayTextAreaElem);
+        utils.setElemAttributes(pathwayTextAreaElem, {
+            "id": "pathwayTextArea",
+            "rows": 3,
+            "cols": 25,
+            "placeholder": "paste in sif data for network graph"
         });
 
-        var sifButtonElem = document.createElement("button");
-        containerElem.appendChild(sifButtonElem);
-        utils.setElemAttributes(sifButtonElem, {
-            "id" : "sifButton"
-        });
-        sifButtonElem.innerHTML = "set graph data";
+        // TODO: pathway file type
+        var pathwayFileTypeRadioDiv = document.createElement("div");
+        containerElem.appendChild(pathwayFileTypeRadioDiv);
 
-        sifButtonElem.onclick = sifButtonClickHandler;
+        var sifFileTypeRadioButton = document.createElement("input");
+        pathwayFileTypeRadioDiv.appendChild(sifFileTypeRadioButton);
+        utils.setElemAttributes(sifFileTypeRadioButton, {
+            "id": "sifFileTypeRadio",
+            "name": "pathwayFileType",
+            "type": "radio",
+            "value": "sif",
+            "checked": true
+        });
+        pathwayFileTypeRadioDiv.innerHTML = pathwayFileTypeRadioDiv.innerHTML + "sif format <BR>";
+
+        var superpathwayFileTypeRadioButton = document.createElement("input");
+        pathwayFileTypeRadioDiv.appendChild(superpathwayFileTypeRadioButton);
+        utils.setElemAttributes(superpathwayFileTypeRadioButton, {
+            "id": "superpathwayFileTypeRadio",
+            "name": "pathwayFileType",
+            "type": "radio",
+            "value": "superpathway"
+        });
+        pathwayFileTypeRadioDiv.innerHTML = pathwayFileTypeRadioDiv.innerHTML + "superpathway format <BR>";
+
+
+        var setPathwayButton = document.createElement("button");
+        containerElem.appendChild(setPathwayButton);
+        utils.setElemAttributes(setPathwayButton, {
+            "id": "setPathwayButton"
+        });
+        setPathwayButton.innerHTML = "set graph data";
+
+        setPathwayButton.onclick = setPathwayClickHandler;
 
         containerElem.appendChild(document.createElement("hr"));
 
         var matrixTextAreaElem = document.createElement("textArea");
         containerElem.appendChild(matrixTextAreaElem);
         utils.setElemAttributes(matrixTextAreaElem, {
-            "id" : "matrixTextArea",
-            "rows" : 3,
-            "cols" : 25,
-            "placeholder" : "paste in matrix data for rings"
+            "id": "matrixTextArea",
+            "rows": 3,
+            "cols": 25,
+            "placeholder": "paste in matrix data for rings"
         });
 
         var matrixTextElem = document.createElement("input");
         containerElem.appendChild(matrixTextElem);
         utils.setElemAttributes(matrixTextElem, {
-            "id" : "matrixText",
-            "type" : "text",
-            "placeholder" : "ring name"
+            "id": "matrixText",
+            "type": "text",
+            "placeholder": "ring name"
         });
 
         // radio buttons for matrix data type
@@ -59,31 +86,31 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
         var numericRadio = document.createElement("input");
         radioButtonsDiv.appendChild(numericRadio);
         utils.setElemAttributes(numericRadio, {
-            "id" : "numericRadio",
-            "name" : "allowedValues",
-            "type" : "radio",
-            "value" : "numeric",
-            "checked" : true
+            "id": "numericRadio",
+            "name": "allowedValues",
+            "type": "radio",
+            "value": "numeric",
+            "checked": true
         });
         radioButtonsDiv.innerHTML = radioButtonsDiv.innerHTML + "numeric data <BR>";
 
         var clinicalRadio = document.createElement("input");
         radioButtonsDiv.appendChild(clinicalRadio);
         utils.setElemAttributes(clinicalRadio, {
-            "id" : "clinicalRadio",
-            "name" : "allowedValues",
-            "type" : "radio",
-            "value" : "clinical"
+            "id": "clinicalRadio",
+            "name": "allowedValues",
+            "type": "radio",
+            "value": "clinical"
         });
         radioButtonsDiv.innerHTML = radioButtonsDiv.innerHTML + "clinical data <BR>";
 
         var centerRadio = document.createElement("input");
         radioButtonsDiv.appendChild(centerRadio);
         utils.setElemAttributes(centerRadio, {
-            "id" : "centerRadio",
-            "name" : "allowedValues",
-            "type" : "radio",
-            "value" : "center"
+            "id": "centerRadio",
+            "name": "allowedValues",
+            "type": "radio",
+            "value": "center"
         });
         radioButtonsDiv.innerHTML = radioButtonsDiv.innerHTML + "node center <BR>";
 
@@ -91,7 +118,7 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
         var matrixButtonElem = document.createElement("button");
         containerElem.appendChild(matrixButtonElem);
         utils.setElemAttributes(matrixButtonElem, {
-            "id" : "matrixButton"
+            "id": "matrixButton"
         });
         matrixButtonElem.innerHTML = "set ring data";
 
@@ -108,16 +135,16 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
         var discreteColorMappingTextAreaElem = document.createElement("textArea");
         containerElem.appendChild(discreteColorMappingTextAreaElem);
         utils.setElemAttributes(discreteColorMappingTextAreaElem, {
-            "id" : "discreteColorMappingTextArea",
-            "rows" : 3,
-            "cols" : 25,
-            "placeholder" : "category - tab - color"
+            "id": "discreteColorMappingTextArea",
+            "rows": 3,
+            "cols": 25,
+            "placeholder": "category - tab - color"
         });
 
         var discreteColorMappingButtonElem = document.createElement("button");
         containerElem.appendChild(discreteColorMappingButtonElem);
         utils.setElemAttributes(discreteColorMappingButtonElem, {
-            "id" : "discreteColorMappingButton"
+            "id": "discreteColorMappingButton"
         });
         discreteColorMappingButtonElem.innerHTML = "set colors";
 
@@ -134,21 +161,21 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
         var perNodeRadio = document.createElement("input");
         colorMappingOptionDiv.appendChild(perNodeRadio);
         utils.setElemAttributes(perNodeRadio, {
-            "id" : "perNodeRadio",
-            "name" : "colorMappingOption",
-            "type" : "radio",
-            "value" : "perNode",
-            "checked" : true
+            "id": "perNodeRadio",
+            "name": "colorMappingOption",
+            "type": "radio",
+            "value": "perNode",
+            "checked": true
         });
         colorMappingOptionDiv.innerHTML = colorMappingOptionDiv.innerHTML + "per node <BR>";
 
         var perDatatypeRadio = document.createElement("input");
         colorMappingOptionDiv.appendChild(perDatatypeRadio);
         utils.setElemAttributes(perDatatypeRadio, {
-            "id" : "perDatatypeRadio",
-            "name" : "colorMappingOption",
-            "type" : "radio",
-            "value" : "perDatatype"
+            "id": "perDatatypeRadio",
+            "name": "colorMappingOption",
+            "type": "radio",
+            "value": "perDatatype"
         });
         colorMappingOptionDiv.innerHTML = colorMappingOptionDiv.innerHTML + "per datatype <BR>";
 
@@ -156,7 +183,7 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
             var name = eventObj.target.name;
             var radioVal = $('input[name="' + name + '"]:checked').val();
             console.log(name + " changed to:", radioVal);
-            cmgc.options["colorMappingOption"] = radioVal;
+            cmgc.options.colorMappingOption = radioVal;
             cmgc.buildCircleMapGraph();
         });
 
@@ -169,31 +196,31 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
         var svgFileTypeRadio = document.createElement("input");
         fileTypeRadioDiv.appendChild(svgFileTypeRadio);
         utils.setElemAttributes(svgFileTypeRadio, {
-            "id" : "svgFileTypeRadio",
-            "name" : "fileTypeRadio",
-            "type" : "radio",
-            "value" : "svg",
-            "checked" : true
+            "id": "svgFileTypeRadio",
+            "name": "fileTypeRadio",
+            "type": "radio",
+            "value": "svg",
+            "checked": true
         });
         fileTypeRadioDiv.innerHTML = fileTypeRadioDiv.innerHTML + "svg <BR>";
 
         var pngFileTypeRadio = document.createElement("input");
         fileTypeRadioDiv.appendChild(pngFileTypeRadio);
         utils.setElemAttributes(pngFileTypeRadio, {
-            "id" : "pngFileTypeRadio",
-            "name" : "fileTypeRadio",
-            "type" : "radio",
-            "value" : "png"
+            "id": "pngFileTypeRadio",
+            "name": "fileTypeRadio",
+            "type": "radio",
+            "value": "png"
         });
         fileTypeRadioDiv.innerHTML = fileTypeRadioDiv.innerHTML + "png <BR>";
 
         var jpgFileTypeRadio = document.createElement("input");
         fileTypeRadioDiv.appendChild(jpgFileTypeRadio);
         utils.setElemAttributes(jpgFileTypeRadio, {
-            "id" : "jpgFileTypeRadio",
-            "name" : "fileTypeRadio",
-            "type" : "radio",
-            "value" : "jpg"
+            "id": "jpgFileTypeRadio",
+            "name": "fileTypeRadio",
+            "type": "radio",
+            "value": "jpg"
         });
         fileTypeRadioDiv.innerHTML = fileTypeRadioDiv.innerHTML + "jpg <BR>";
 
@@ -201,7 +228,7 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
         var saveButtonElem = document.createElement("button");
         containerElem.appendChild(saveButtonElem);
         utils.setElemAttributes(saveButtonElem, {
-            "id" : "saveButton"
+            "id": "saveButton"
         });
         saveButtonElem.innerHTML = "download image file";
 
@@ -235,24 +262,47 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
         console.log("parsed colorMapping", colorMapping);
 
         // load graph data
-        cmgc.options["discreteColorMapping"] = colorMapping;
+        cmgc.options.discreteColorMapping = colorMapping;
 
         // draw graph
         cmgc.buildCircleMapGraph();
     };
 
-    var sifButtonClickHandler = function() {
-        console.log("clicked sifButton");
-        var sifTextAreaElem = document.getElementById("sifTextArea");
-        var sifString = sifTextAreaElem.value;
+    var setPathwayClickHandler = function() {
+        console.log("clicked setPathwayButton");
 
-        if (sifString === "") {
-            window.alert("no sif data");
+        var pathwayFileType = $('input[name="pathwayFileType"]:checked').val();
+        console.log("pathwayFileType", pathwayFileType);
+
+        var pathwayTextAreaElem = document.getElementById("pathwayTextArea");
+        var pathwayTextString = pathwayTextAreaElem.value;
+
+        if (pathwayTextString === "") {
+            window.alert("no pathway data");
             return;
         }
 
+        var extractSifFromSuperpathway = function(pathwayTextString) {
+            var sifLines = [];
+
+            var lines = pathwayTextString.split("\n");
+            _.each(lines, function(line) {
+                var fields = line.split("\t");
+                if (fields.length != 3) {
+                    return null;
+                }
+                sifLines.push(fields[0] + "\t" + fields[2] + "\t" + fields[1]);
+            });
+
+            return sifLines.join("\n");
+        };
+
         // load graph data
-        cmgc.options["sifGraphData"] = sifString;
+        if (pathwayFileType === "superpathway") {
+            cmgc.options.sifGraphData = extractSifFromSuperpathway(pathwayTextString);
+        } else {
+            cmgc.options.sifGraphData = pathwayTextString;
+        }
 
         // draw graph
         cmgc.buildCircleMapGraph();
@@ -297,7 +347,7 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
                 }
             });
             // console.log("centerScores", centerScores);
-            cmgc.options["centerScores"] = centerScores;
+            cmgc.options.centerScores = centerScores;
         } else {
             // load ring data
             cmgc.addRingData(matrixText, matrixString, datasetAllowedVals);
@@ -313,11 +363,11 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
 
         var fileTypeRadioVal = $('input[name="fileTypeRadio"]:checked').val();
         console.log("fileTypeRadioVal", fileTypeRadioVal);
-        cmgc.options["imageFileFormat"] = fileTypeRadioVal;
+        cmgc.options.imageFileFormat = fileTypeRadioVal;
 
         var defaultFileName = "graph";
         var supportDownload = Pablo.support.download;
-        var type = cmgc.options["imageFileFormat"] || "svg";
+        var type = cmgc.options.imageFileFormat || "svg";
 
         if (supportDownload) {
             // get a pablo collection
@@ -355,23 +405,23 @@ circleMapGraphControls = ( typeof circleMapGraphControls === "undefined") ? {} :
 
         // initialize where needed
         if (!cmgc.options.hasOwnProperty("ringsList")) {
-            cmgc.options["ringsList"] = [];
+            cmgc.options.ringsList = [];
         }
 
         if (!cmgc.options.hasOwnProperty("eventAlbum")) {
-            cmgc.options["eventAlbum"] = new eventData.OD_eventAlbum();
+            cmgc.options.eventAlbum = new eventData.OD_eventAlbum();
         }
 
         // load data
-        var eventAlbum = cmgc.options["eventAlbum"];
+        var eventAlbum = cmgc.options.eventAlbum;
 
         var returnFeatures = medbookDataLoader.genericMatrixData(ringData, ringName, eventAlbum, datasetAllowedVals);
 
         if (_.isUndefined(returnFeatures)) {
-            cmgc.options["ringsList"].push(ringName);
+            cmgc.options.ringsList.push(ringName);
         } else {
             _.each(returnFeatures, function(feature) {
-                cmgc.options["ringsList"].push(feature);
+                cmgc.options.ringsList.push(feature);
             });
         }
     };
