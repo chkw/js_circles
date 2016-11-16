@@ -353,18 +353,18 @@ circleMapGraph = (typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                     'title': {
                         name: function() {
                             var s = nodeName;
-                            if (nodeType !== "unspecified entity") {
+                            if (nodeType !== "unspecified entity" && nodeType !== null) {
                                 s = nodeType + ": " + s;
                             }
                             return s;
                         },
                         icon: null,
                         disabled: function(key, opt) {
-                            var disabled = (_.contains(["protein", "drug"], nodeType)) ? false : true;
+                            var disabled = (_.contains(["legend"], nodeName)) ? true : false;
                             return disabled;
                         },
                         callback: function(key, opt) {
-                            var url;
+                            var url = null;
                             switch (nodeType) {
                                 case "drug":
                                     url = "https://www.drugbank.ca/unearth/q?searcher=drugs&query=" + nodeName;
@@ -379,10 +379,15 @@ circleMapGraph = (typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
                                         url = url + "?" + queryString;
                                     }
                                     break;
+                                case "legend":
+                                    break;
                                 default:
-                                    console.log("no url assigned!");
+                                    url = "https://www.genecards.org/cgi-bin/carddisp.pl?gene=" + nodeName;
+                                    console.log("defaulting to genecards link-out for " + nodeName);
                             }
-                            window.open(url, "_nodeLinkOut");
+                            if (url !== null) {
+                                window.open(url, "_nodeLinkOut");
+                            }
                         }
                     },
                     "sep1": "---------",
@@ -904,8 +909,13 @@ circleMapGraph = (typeof circleMapGraph === "undefined") ? {} : circleMapGraph;
         // return "node " + d.name + ' ' + d.group;
         // });
         var cookieObj = getCookieVal();
+        // var nodeSelection = svgNodeLayer.selectAll(".node").data(graph.nodes).enter().append("g").attr('class', function(d, i) {
+        //     return "node " + d.name + ' ' + d.group;
+        // });
         var nodeSelection = svgNodeLayer.selectAll(".node").data(graph.nodes).enter().append("g").attr('class', function(d, i) {
             return "node " + d.name + ' ' + d.group;
+        }).attr("name", function(d) {
+            return d.name;
         });
 
         if (circleDataLoaded) {
